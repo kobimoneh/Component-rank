@@ -1,0 +1,58 @@
+{
+  "name": "component-library",
+  "version": "0.1.0",
+  "description": "Electronic component library and engineering comparison tool — size first",
+  "main": "out/main/index.js",
+  "author": "kobimoneh",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-rebuild -f -w better-sqlite3 || echo 'electron-rebuild skipped'",
+    "package:win": "electron-vite build && electron-builder --win --publish never",
+    "package:linux": "electron-vite build && electron-builder --linux --publish never"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "yaml": "^2.6.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tanstack/react-table": "^8.20.6",
+    "@tanstack/react-virtual": "^3.11.2",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "eslint": "^8.57.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "build": {
+    "appId": "com.kobimoneh.componentlibrary",
+    "productName": "Component Library",
+    "directories": { "output": "release" },
+    "files": ["out/**/*", "resources/**/*", "package.json"],
+    "extraResources": [{ "from": "resources", "to": "resources" }],
+    "win": { "target": ["nsis"], "artifactName": "ComponentLibrary-${version}-setup.${ext}" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+    "linux": { "target": ["AppImage"], "category": "Development" }
+  }
+}
