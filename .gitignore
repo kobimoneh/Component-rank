@@ -12,3 +12,6 @@ data/
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
+
+# Packaged builds, produced by CI or `npm run package:*`
+dist-standalone/
