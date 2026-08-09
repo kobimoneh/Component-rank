@@ -299,3 +299,62 @@ a higher switching frequency is a trade-off, not a win. `Lifecycle`, `Package ty
 
 An unverified value is also never tinted as best, because a number that has not been
 confirmed should not win an argument.
+
+---
+
+## D18 — Rank badge ink is computed per step, not chosen
+
+The rank ramp is sequential — one hue, strongest at #1 — per the standard rule
+that magnitude gets lightness variation and never a set of unrelated hues.
+
+The obvious implementation, white text on every badge, **fails**: white on the
+lightest light-mode step is 2.08:1 and on the lightest dark-mode step 2.82:1.
+Neither is visible as a defect in a screenshot.
+
+**Decision.** Ink is a token per step, chosen by computing the contrast ratio.
+`tests/colour.test.ts` parses the real tokens out of `styles.css` and asserts
+≥ 4.5:1 for every step in both themes, so a future palette edit that breaks it
+turns a named test red rather than shipping.
+
+The same test caught a bug in itself: the first version dropped `channel()` on
+the blue component and computed dark blue on white as 1.24:1. Implausible enough
+to notice — which is the argument for asserting figures you can sanity-check.
+
+---
+
+## D19 — Best/worst may be green and red, because colour is the third channel
+
+Under simulated deuteranopia (Viénot transform, measured in the test rather than
+assumed) the best and worst tints are near-identical. Normally that rules the
+pair out.
+
+**Decision.** Keep them, because colour is not carrying the message:
+
+1. The **leaders strip** names the best part per parameter in plain text.
+2. A best cell is **bold**; a worst cell is not.
+3. Colour, last.
+
+The test asserts the weight cue exists *conditionally on* the simulation showing
+the hues collapse — so removing the redundancy fails the test.
+
+---
+
+## D20 — Removing a parameter is recorded, not just executed
+
+Deleting a `spec_def` row is not enough. The next `config.yaml` import would
+re-create it from upstream, silently undoing a deliberate decision — the same
+class of error as overwriting a manual value.
+
+**Decision.** `category_removed_spec` records the removal, and `writeSpecs`
+skips those keys and reports them as kept-local. Re-adding the parameter clears
+the tombstone.
+
+Removal also deletes the values components held for it, so the count is returned
+and shown in the confirmation before anything is destroyed, and any ranking rule
+or requirement pointing at the dead field is dropped in the same transaction —
+otherwise the category would rank on a field that no longer exists.
+
+Note the guard only runs when upstream *changes* a category; an unchanged
+category is skipped wholesale, so the removal survives either way. The test
+covers both paths separately, because conflating them hid the fact that the
+guard was never being exercised.

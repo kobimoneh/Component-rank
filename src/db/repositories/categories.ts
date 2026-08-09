@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import type { SqlDriver } from '../driver.js'
 import type { Category, SpecDefinition } from '../../domain/categories/model.js'
+import { removedSpecKeys } from './spec-defs.js'
 
 /**
  * Category persistence and non-destructive sync with component-report.
@@ -76,6 +77,9 @@ function writeSpecs(
     .prepare('SELECT id, key, source, locally_modified FROM spec_def WHERE category_id = ?')
     .all<SpecRow>(categoryId)
   const byKey = new Map(existing.map((r) => [r.key, r]))
+  // A parameter you deliberately removed stays removed. Re-adding it on the next
+  // import would quietly undo the decision.
+  const removed = removedSpecKeys(db, categoryId)
 
   const insert = db.prepare(`
     INSERT INTO spec_def (category_id, key, name, type, dimension, unit, unit_label, better,
@@ -91,6 +95,10 @@ function writeSpecs(
   `)
 
   specs.forEach((s, i) => {
+    if (removed.has(s.key)) {
+      report.keptLocal.push(`${slug}.${s.key} (removed here)`)
+      return
+    }
     const row = byKey.get(s.key)
     const enumJson = s.enumValues ? JSON.stringify(s.enumValues) : null
     if (!row) {

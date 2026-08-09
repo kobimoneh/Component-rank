@@ -44,6 +44,11 @@ function createWindow(): BrowserWindow {
           row?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
           return true
         })()`,
+        parameters: `(() => {
+          const btn = [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Parameters')
+          btn?.click()
+          return true
+        })()`,
         compare: `(() => {
           const boxes = [...document.querySelectorAll('table.grid tbody input[type=checkbox]')]
           boxes.slice(0, 4).forEach((b) => b.click())

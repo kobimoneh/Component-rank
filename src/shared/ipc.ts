@@ -203,6 +203,14 @@ export interface RendererApi {
   exportJson(): Promise<ExportOutcome>
   exportCsv(req: SlugRequest): Promise<ExportOutcome>
   providerStatus(): Promise<ProviderStatusInfo[]>
+
+  // Category parameters
+  listSpecDefs(req: SlugRequest): Promise<SpecDefDto[]>
+  addSpecDef(req: AddSpecDefRequest): Promise<AddSpecOutcome>
+  removeSpecDef(req: SpecKeyRequest): Promise<RemoveSpecOutcome>
+  updateSpecDef(req: UpdateSpecDefRequest): Promise<{ ok: boolean; error: string | null }>
+  dimensions(): Promise<DimensionDto[]>
+  leaders(req: SlugRequest): Promise<LeaderBoardDto>
 }
 
 export interface ProviderStatusInfo {
@@ -276,7 +284,99 @@ export const MUTATION_CHANNELS = {
   exportJson: 'export:json',
   exportCsv: 'export:csv',
   providerStatus: 'ai:status',
+  specDefsList: 'specdef:list',
+  specDefAdd: 'specdef:add',
+  specDefRemove: 'specdef:remove',
+  specDefUpdate: 'specdef:update',
+  dimensions: 'specdef:dimensions',
+  leaders: 'category:leaders',
 } as const
+
+export const AddSpecDefRequest = z.object({
+  slug: z.string().min(1),
+  name: z.string().min(1),
+  type: z.enum(['scalar', 'range', 'number', 'bool', 'enum', 'text']),
+  dimension: z.string().nullable().optional(),
+  unit: z.string().nullable().optional(),
+  better: z.enum(['lower', 'higher', 'none']).optional(),
+  enumValues: z.array(z.string().min(1)).nullable().optional(),
+  tableVisible: z.boolean().optional(),
+})
+export type AddSpecDefRequest = z.infer<typeof AddSpecDefRequest>
+
+export const SpecKeyRequest = z.object({
+  slug: z.string().min(1),
+  key: z.string().min(1),
+})
+export type SpecKeyRequest = z.infer<typeof SpecKeyRequest>
+
+export const UpdateSpecDefRequest = z.object({
+  slug: z.string().min(1),
+  key: z.string().min(1),
+  patch: z.object({
+    name: z.string().min(1).optional(),
+    unit: z.string().nullable().optional(),
+    better: z.enum(['lower', 'higher', 'none']).optional(),
+    tableVisible: z.boolean().optional(),
+  }),
+})
+export type UpdateSpecDefRequest = z.infer<typeof UpdateSpecDefRequest>
+
+export interface SpecDefDto {
+  readonly id: number
+  readonly key: string
+  readonly name: string
+  readonly type: string
+  readonly dimension: string | null
+  readonly unit: string | null
+  readonly better: 'lower' | 'higher' | 'none'
+  readonly enumValues: readonly string[] | null
+  readonly tableVisible: boolean
+  readonly unmapped: boolean
+  readonly source: 'imported' | 'local'
+  readonly locallyModified: boolean
+  readonly sourcePhrase: string | null
+  readonly valueCount: number
+}
+
+export interface DimensionDto {
+  readonly id: string
+  readonly label: string
+  readonly units: readonly string[]
+}
+
+export interface LeaderDto {
+  readonly key: string
+  readonly label: string
+  readonly unit: string | null
+  readonly better: 'lower' | 'higher'
+  readonly componentId: number
+  readonly mpn: string
+  readonly manufacturer: string
+  readonly valueText: string
+  readonly tied: boolean
+  readonly tiedWith: number
+  readonly contenders: number
+  readonly skippedUnverified: number
+}
+
+export interface LeaderBoardDto {
+  readonly slug: string
+  readonly leaders: readonly LeaderDto[]
+  readonly noData: ReadonlyArray<{ key: string; label: string }>
+}
+
+export interface AddSpecOutcome {
+  readonly ok: boolean
+  readonly key: string | null
+  readonly error: string | null
+}
+
+export interface RemoveSpecOutcome {
+  readonly ok: boolean
+  readonly valuesDeleted: number
+  readonly error: string | null
+}
 
 export const CreateComponentRequest = z.object({
   manufacturer: z.string().min(1, 'Manufacturer is required'),

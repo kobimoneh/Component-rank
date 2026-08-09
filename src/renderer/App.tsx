@@ -10,7 +10,9 @@ import type {
 import { Drawer } from './Drawer.js'
 import { AddComponent } from './AddComponent.js'
 import { Compare } from './Compare.js'
-import type { CompareResult } from '../shared/ipc.js'
+import type { CompareResult, LeaderBoardDto } from '../shared/ipc.js'
+import { Leaders } from './Leaders.js'
+import { Parameters } from './Parameters.js'
 
 type SortState = { key: string; dir: 'asc' | 'desc' } | null
 
@@ -31,18 +33,30 @@ export function App(): JSX.Element {
   const [addOpen, setAddOpen] = useState(false)
   const [compare, setCompare] = useState<CompareResult | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [board, setBoard] = useState<LeaderBoardDto | null>(null)
+  const [paramsOpen, setParamsOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const refresh = useCallback(() => {
     void window.api.status().then(setStatus)
     void window.api.listCategories().then(setCategories)
-    if (slug) void window.api.categoryRows({ slug }).then(setRows)
+    if (slug) {
+      void window.api.categoryRows({ slug }).then(setRows)
+      void window.api.categoryDetail({ slug }).then(setDetail)
+      void window.api.leaders({ slug }).then(setBoard)
+    }
     if (openId !== null) void window.api.componentDetail({ id: openId }).then(setComponent)
   }, [slug, openId])
 
   const notify = useCallback((message: string) => {
     setToast(message)
     window.setTimeout(() => setToast(null), 4000)
+  }, [])
+
+  useEffect(() => {
+    // Dark by default; the light theme is designed, not derived.
+    const stored = window.localStorage.getItem('theme')
+    document.documentElement.dataset['theme'] = stored ?? 'dark'
   }, [])
 
   useEffect(() => {
@@ -66,6 +80,7 @@ export function App(): JSX.Element {
     setSelected(new Set())
     void window.api.categoryDetail({ slug }).then(setDetail)
     void window.api.categoryRows({ slug }).then(setRows)
+    void window.api.leaders({ slug }).then(setBoard)
   }, [slug])
 
   useEffect(() => {
@@ -270,6 +285,7 @@ export function App(): JSX.Element {
             const root = document.documentElement
             const next = root.dataset['theme'] === 'light' ? 'dark' : 'light'
             root.dataset['theme'] = next
+            window.localStorage.setItem('theme', next)
           }}
           title="Toggle theme"
         >
@@ -319,6 +335,13 @@ export function App(): JSX.Element {
               <span className="chip">{visible.length} parts</span>
               {selected.size > 0 && <span className="chip">{selected.size} selected</span>}
               <button
+                className="btn"
+                onClick={() => setParamsOpen(true)}
+                title="Add, edit or remove this category's parameters"
+              >
+                Parameters
+              </button>
+              <button
                 className="btn btn-primary"
                 disabled={selected.size < 2}
                 title={selected.size < 2 ? 'Select at least two parts' : 'Compare selection'}
@@ -329,6 +352,8 @@ export function App(): JSX.Element {
             </div>
           </header>
         )}
+
+        <Leaders board={board} onOpen={(id) => setOpenId(id)} />
 
         <div className="table-scroll">
           {visible.length === 0 ? (
@@ -379,8 +404,17 @@ export function App(): JSX.Element {
                       />
                     </td>
                     <td className="num">
-                      <span className={`rank${row.rank === 1 ? ' rank-1' : ''}`}>
-                        {row.rank === null ? '—' : `#${row.rank}`}
+                      <span
+                        className={`rank ${
+                          row.rank === null ? 'rank-none'
+                          : row.rank === 1 ? 'rank-1'
+                          : row.rank === 2 ? 'rank-2'
+                          : row.rank === 3 ? 'rank-3'
+                          : 'rank-n'
+                        }`}
+                        title={row.unrankedReason ?? `Rank ${row.rank} in this category`}
+                      >
+                        {row.rank === null ? '—' : row.rank}
                       </span>
                     </td>
                     {columns.map((col) => {
@@ -460,6 +494,14 @@ export function App(): JSX.Element {
       />
 
       <Compare result={compare} onClose={() => setCompare(null)} />
+
+      <Parameters
+        open={paramsOpen}
+        slug={slug}
+        categoryName={detail?.name ?? ''}
+        onClose={() => setParamsOpen(false)}
+        onChanged={refresh}
+      />
 
       {toast && <div className="toast">{toast}</div>}
     </div>

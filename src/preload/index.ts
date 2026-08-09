@@ -40,6 +40,13 @@ const api: RendererApi = {
   exportJson: () => invoke(MUTATION_CHANNELS.exportJson),
   exportCsv: (req) => invoke(MUTATION_CHANNELS.exportCsv, req),
   providerStatus: () => invoke(MUTATION_CHANNELS.providerStatus),
+
+  listSpecDefs: (req) => invoke(MUTATION_CHANNELS.specDefsList, req),
+  addSpecDef: (req) => invoke(MUTATION_CHANNELS.specDefAdd, req),
+  removeSpecDef: (req) => invoke(MUTATION_CHANNELS.specDefRemove, req),
+  updateSpecDef: (req) => invoke(MUTATION_CHANNELS.specDefUpdate, req),
+  dimensions: () => invoke(MUTATION_CHANNELS.dimensions),
+  leaders: (req) => invoke(MUTATION_CHANNELS.leaders, req),
 }
 
 contextBridge.exposeInMainWorld('api', api)

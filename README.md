@@ -11,7 +11,7 @@ This is not an inventory or BOM tool. It is a parts-selection instrument: dense
 comparison tables inside engineering categories, ranked by what actually matters in each
 one, with every number traceable to where it came from.
 
-![The LDO category: category-specific columns, unverified dimensions shown in italic with a dotted underline, and no rank because those dimensions are not yet confirmed.](docs/screenshot.png)
+![The LDO category: coloured rank badges, a leaders strip naming the best part per parameter, and best/worst tinting on IC size. Three parts are genuinely tied at rank 1 and the tie is reported rather than broken silently.](docs/screenshot.png)
 
 ---
 
@@ -33,9 +33,11 @@ one, with every number traceable to where it came from.
 | Compare view + scaled size visualization | ✅ 12 tests |
 | Solution profiles and externals editing | ✅ |
 | JSON backup + CSV export | ✅ |
+| Coloured ranks + per-parameter leaders | ✅ 22 colour-contrast tests |
+| Add / edit / remove category parameters | ✅ 23 tests |
 | Datasheet AI ingestion | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
 
-`npm test` → **205 passing**. `npm run typecheck` and `npm run lint` → clean.
+`npm test` → **250 passing**. `npm run typecheck` and `npm run lint` → clean.
 
 `tests/acceptance.test.ts` walks the brief's twenty V1 criteria as a single session:
 import the taxonomy → add an MCU, an LDO and a flash device by hand → store max
@@ -46,6 +48,13 @@ parts → read the size rectangles → export and back up.
 ### Comparison and size visualization
 
 ![Compare view: scaled rectangles at one shared physical scale, dashed where dimensions are unverified, and direction arrows only on specifications where lower or higher is actually better.](docs/screenshot-compare.png)
+
+### Editable parameters
+
+Every category's parameters can be added, retyped, hidden or removed from inside the
+app — no code change, and a re-import never puts back something you removed.
+
+![The parameters editor: each parameter's type, unit, better-direction and value count, with a source badge showing whether it came from component-report or from you.](docs/screenshot-parameters.png)
 
 ### Component detail
 
@@ -97,6 +106,7 @@ the two stay in step, then lets the definitions grow here without touching sourc
 | [GROSS_SIZE_MODEL.md](docs/GROSS_SIZE_MODEL.md) | The four measurements and the estimator |
 | [DATASHEET_EXTRACTION.md](docs/DATASHEET_EXTRACTION.md) | AI ingestion, provenance, anti-hallucination |
 | [UX.md](docs/UX.md) | Screens, interaction, motion policy |
+| [COLOUR.md](docs/COLOUR.md) | Rank ramp, best/worst, contrast arithmetic |
 | [DECISIONS.md](docs/DECISIONS.md) | Engineering decisions and why they were made |
 
 ---

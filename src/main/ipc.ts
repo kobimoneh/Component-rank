@@ -17,6 +17,9 @@ import {
   SetSpecRequest,
   SlugRequest,
   UpdateComponentRequest,
+  AddSpecDefRequest,
+  SpecKeyRequest,
+  UpdateSpecDefRequest,
   type AppStatus,
   type CategoryDetail,
   type CategoryNavItem,
@@ -30,6 +33,10 @@ import {
 import { compareComponents } from '../db/repositories/compare.js'
 import { exportCategoryCsv, exportJson } from '../db/repositories/export.js'
 import { ClaudeCliProvider } from '../ai/claude-cli.js'
+import {
+  addSpecDef, availableDimensions, listSpecDefs, removeSpecDef, updateSpecDef,
+} from '../db/repositories/spec-defs.js'
+import { categoryLeaders } from '../db/repositories/leaders.js'
 import { listCategories } from '../db/repositories/categories.js'
 import {
   categoryColumns,
@@ -295,6 +302,43 @@ export function registerMutationIpc(
       cancelled: saved.cancelled,
     }
   })
+
+  ipc.handle(MUTATION_CHANNELS.specDefsList, (_e, payload: unknown) =>
+    listSpecDefs(db, SlugRequest.parse(payload).slug),
+  )
+
+  ipc.handle(MUTATION_CHANNELS.dimensions, () => availableDimensions())
+
+  ipc.handle(MUTATION_CHANNELS.specDefAdd, (_e, payload: unknown) => {
+    const req = AddSpecDefRequest.parse(payload)
+    const result = addSpecDef(db, {
+      slug: req.slug,
+      name: req.name,
+      type: req.type,
+      dimension: (req.dimension ?? null) as never,
+      unit: req.unit ?? null,
+      ...(req.better ? { better: req.better } : {}),
+      enumValues: req.enumValues ?? null,
+      ...(req.tableVisible === undefined ? {} : { tableVisible: req.tableVisible }),
+    })
+    return result.ok
+      ? { ok: true, key: result.key, error: null }
+      : { ok: false, key: null, error: result.error }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.specDefRemove, (_e, payload: unknown) => {
+    const req = SpecKeyRequest.parse(payload)
+    return removeSpecDef(db, req.slug, req.key)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.specDefUpdate, (_e, payload: unknown) => {
+    const req = UpdateSpecDefRequest.parse(payload)
+    return updateSpecDef(db, req.slug, req.key, req.patch)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.leaders, (_e, payload: unknown) =>
+    categoryLeaders(db, SlugRequest.parse(payload).slug),
+  )
 
   ipc.handle(MUTATION_CHANNELS.providerStatus, async () => {
     const provider = new ClaudeCliProvider({
