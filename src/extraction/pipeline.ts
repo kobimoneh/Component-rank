@@ -1,7 +1,7 @@
 import type { SqlDriver } from '../db/driver.js'
 import { extractPdfText, rankPagesFor, type ExtractedPage } from './pdf-text.js'
 import { verifyAll, type ExtractedClaim, type PageText, type VerifiedClaim } from './evidence.js'
-import { setDatasheetPages, storeDatasheet } from '../db/repositories/datasheets.js'
+import { getDatasheetPages, setDatasheetPages, storeDatasheet } from '../db/repositories/datasheets.js'
 import { enqueueJob } from '../db/repositories/ingest.js'
 import { listSpecDefs } from '../db/repositories/spec-defs.js'
 import { listCategories } from '../db/repositories/categories.js'
@@ -63,9 +63,16 @@ export interface ReviewField {
   readonly pageText: string | null
 }
 
+export interface PageChars {
+  readonly page: number
+  readonly chars: number
+}
+
 export interface IngestOutcome {
   readonly jobId: number
   readonly datasheetId: number
+  /** Per-page character counts, so the renderer knows which pages need OCR. */
+  readonly pageChars: readonly PageChars[]
   readonly stages: readonly StageReport[]
   readonly identity: DetectedIdentity | null
   readonly packageVariants: readonly PackageVariant[]
@@ -163,6 +170,7 @@ export async function ingestDatasheet(
     })
     return {
       jobId, datasheetId: stored.id, stages,
+      pageChars: extracted.pages.map((p) => ({ page: p.page, chars: p.chars })),
       identity: null, packageVariants: [], packageChoiceRequired: false,
       resolvedPackage: null, fields: [], externals: [],
       needsOcr: extracted.needsOcr, pageCount: extracted.pageCount,
@@ -272,6 +280,7 @@ export async function ingestDatasheet(
   return {
     jobId,
     datasheetId: stored.id,
+    pageChars: extracted.pages.map((p) => ({ page: p.page, chars: p.chars })),
     stages,
     identity: {
       manufacturer: result.manufacturer,
@@ -296,7 +305,7 @@ function fail(
   jobId: number, datasheetId: number, stages: StageReport[], error: string,
 ): IngestOutcome {
   return {
-    jobId, datasheetId, stages,
+    jobId, datasheetId, pageChars: [], stages,
     identity: null, packageVariants: [], packageChoiceRequired: false,
     resolvedPackage: null, fields: [], externals: [],
     needsOcr: false, pageCount: 0, error,
@@ -373,4 +382,179 @@ export function guessCategory(db: SqlDriver, pages: readonly ExtractedPage[]): s
   // Only suggest a category that actually exists in this database.
   const exists = db.prepare('SELECT 1 AS x FROM category WHERE slug = ?').get<{ x: number }>(best.slug)
   return exists ? best.slug : null
+}
+
+
+export interface OcrPageInput {
+  readonly page: number
+  readonly text: string
+  readonly confidence: number
+}
+
+/**
+ * Re-run extraction after the renderer has OCR'd the unreadable pages.
+ *
+ * The OCR text is merged into what the text layer already gave us — a datasheet
+ * is often part text, part scanned drawing — and the whole document is then read
+ * again. Evidence is verified against the merged text, so a quote from an OCR'd
+ * page verifies exactly like one from a text layer, and the page's `method`
+ * records which it was.
+ */
+export async function reExtractWithOcr(
+  db: SqlDriver,
+  jobId: number,
+  datasheetId: number,
+  ocrPages: readonly OcrPageInput[],
+  provider: ExtractionProvider | null,
+  opts: { budgetChars?: number } = {},
+): Promise<IngestOutcome> {
+  const stages: StageReport[] = []
+  const existing = getDatasheetPages(db, datasheetId)
+  const byPage = new Map(existing.map((p) => [p.page, p]))
+
+  for (const o of ocrPages) {
+    const current = byPage.get(o.page)
+    // Only replace a page the text layer could not read; never overwrite good text.
+    if (current && current.text.replace(/\s/g, '').length >= 40) continue
+    byPage.set(o.page, {
+      page: o.page, text: o.text, method: 'ocr', confidence: o.confidence,
+    })
+  }
+
+  const merged = [...byPage.values()].sort((a, b) => a.page - b.page)
+  setDatasheetPages(
+    db, datasheetId,
+    merged.map((p) => ({
+      page: p.page,
+      text: p.text,
+      method: (p.method === 'ocr' ? 'ocr' : p.method === 'none' ? 'none' : 'text-layer'),
+      confidence: p.confidence,
+    })),
+    'tesseract.js',
+  )
+
+  const avg = ocrPages.length
+    ? ocrPages.reduce((n, p) => n + p.confidence, 0) / ocrPages.length
+    : 0
+  stages.push({
+    stage: 'text-extracted',
+    ok: true,
+    detail: `${ocrPages.length} page${ocrPages.length === 1 ? '' : 's'} read by OCR (mean confidence ${(avg * 100).toFixed(0)}%), merged with the text layer.`,
+  })
+
+  const pages: ExtractedPage[] = merged.map((p) => ({
+    page: p.page,
+    text: p.text,
+    method: p.method === 'ocr' ? 'none' : 'text-layer',
+    chars: p.text.replace(/\s/g, '').length,
+  }))
+
+  const job = db
+    .prepare('SELECT category_hint AS hint, mpn_hint AS mpn FROM ingest_job WHERE id = ?')
+    .get<{ hint: string | null; mpn: string | null }>(jobId)
+
+  const categorySlug = job?.hint ?? guessCategory(db, pages)
+  const specs = categorySlug ? listSpecDefs(db, categorySlug) : []
+  stages.push({
+    stage: 'category-suggested',
+    ok: categorySlug !== null,
+    detail: categorySlug
+      ? `${categorySlug} — asking for ${specs.length} parameters.`
+      : 'Could not guess a category; the model will be asked to choose.',
+  })
+
+  if (!provider) {
+    stages.push({
+      stage: 'model-called', ok: false,
+      detail: 'No extraction model configured. The OCR text is saved and searchable.',
+    })
+    return {
+      jobId, datasheetId, stages,
+      pageChars: pages.map((p) => ({ page: p.page, chars: p.chars })),
+      identity: null, packageVariants: [], packageChoiceRequired: false,
+      resolvedPackage: null, fields: [], externals: [],
+      needsOcr: false, pageCount: pages.length, error: null,
+    }
+  }
+
+  const terms = [
+    ...specs.map((s) => s.name),
+    'ordering information', 'mechanical', 'package', 'dimensions',
+    'absolute maximum', 'electrical characteristics', 'application circuit',
+  ]
+  const chosen = selectPages(pages, terms, opts.budgetChars ?? DEFAULT_BUDGET)
+
+  let result: ExtractionResult
+  try {
+    result = await provider.extract({
+      pages: chosen.map((p) => ({ page: p.page, text: p.text })),
+      mpnHint: job?.mpn ?? null,
+      categories: categorySlug
+        ? [{
+            slug: categorySlug, name: categorySlug, description: '',
+            specs: specs.map((s) => ({ key: s.key, name: s.name, unit: s.unit, ai: null })),
+          }]
+        : [],
+    })
+    stages.push({
+      stage: 'model-called', ok: true,
+      detail: `${provider.id} read ${chosen.length} of ${pages.length} pages.`,
+    })
+    stages.push({
+      stage: 'validated', ok: true,
+      detail: `${result.claims.length} values, ${result.packageVariants.length} package variants, ${result.suggestedExternals.length} externals.`,
+    })
+  } catch (err) {
+    stages.push({ stage: 'model-called', ok: false, detail: (err as Error).message })
+    return fail(jobId, datasheetId, stages, (err as Error).message)
+  }
+
+  const allPages: PageText[] = pages.map((p) => ({ page: p.page, text: p.text }))
+  const verification = verifyAll(
+    result.claims.map((c) => ({
+      specKey: c.specKey, value: c.value, unit: c.unit,
+      page: c.page, evidence: c.evidence, confidence: c.confidence,
+    })),
+    allPages,
+  )
+  stages.push({
+    stage: 'verified',
+    ok: verification.rejected === 0,
+    detail: `${verification.verified} verified, ${verification.rejected} rejected as unsupported, ${verification.reportedUnknown} reported as not found.`,
+  })
+
+  const byKey = new Map(specs.map((s) => [s.key, s.name]))
+  const pageTextByNumber = new Map(pages.map((p) => [p.page, p.text]))
+  const fields: ReviewField[] = verification.claims.map((c) => ({
+    specKey: c.specKey,
+    label: byKey.get(c.specKey) ?? c.specKey,
+    rawValue: c.value === null ? null : String(c.value),
+    unit: c.unit, page: c.page, evidence: c.evidence,
+    verified: c.verified, status: c.status, explanation: c.explanation,
+    confidence: c.confidence,
+    pageText: c.page === null ? null : (pageTextByNumber.get(c.page) ?? null),
+  }))
+
+  const variant = resolvePackageVariant(result.packageVariants, result.mpn ?? job?.mpn ?? null)
+  const duplicate = result.manufacturer && result.mpn
+    ? findDuplicate(db, result.manufacturer, result.mpn)
+    : null
+
+  stages.push({ stage: 'proposed', ok: true, detail: 'Ready for review.' })
+
+  return {
+    jobId, datasheetId, stages,
+    pageChars: pages.map((p) => ({ page: p.page, chars: p.chars })),
+    identity: {
+      manufacturer: result.manufacturer, mpn: result.mpn,
+      productName: result.productName,
+      categorySlug: result.categorySlug ?? categorySlug,
+      categoryConfidence: result.categoryConfidence, duplicate,
+    },
+    packageVariants: result.packageVariants,
+    packageChoiceRequired: variant.mustAsk,
+    resolvedPackage: variant.resolved,
+    fields, externals: result.suggestedExternals,
+    needsOcr: false, pageCount: pages.length, error: null,
+  }
 }

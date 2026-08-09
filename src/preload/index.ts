@@ -49,6 +49,7 @@ const api: RendererApi = {
   leaders: (req) => invoke(MUTATION_CHANNELS.leaders, req),
 
   ingestDatasheet: (req) => invoke(MUTATION_CHANNELS.ingestDatasheet, req),
+  submitOcr: (req) => invoke(MUTATION_CHANNELS.ingestOcr, req),
   applyReview: (req) => invoke(MUTATION_CHANNELS.applyReview, req),
   discardReview: (req) => invoke(MUTATION_CHANNELS.discardReview, req),
   getAiSettings: () => invoke(MUTATION_CHANNELS.aiSettingsGet),

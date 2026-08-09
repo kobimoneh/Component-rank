@@ -158,10 +158,14 @@ Your database lives in `%APPDATA%\component-library\components.sqlite`.
 
 ![The review screen: each pipeline stage reported, identity and category detected, and every extracted value shown with the quote that supports it.](docs/screenshot-review.png)
 
-Drag a PDF anywhere onto the window. The app stores it in the database, reads its text,
-guesses the category from the document's own words, asks your model for that category's
-parameters, checks every quote against the page it cites, and shows you the result. Nothing
-is written to the library until you press **Save**.
+Drag a PDF anywhere onto the window — or press **+ Add component**, which leads with the
+datasheet and keeps typing-it-by-hand as the fallback. The app stores it in the database, reads its text,
+**OCR-ing any page with no text layer**, guesses the category from the document's own words,
+asks your model for that category's parameters, checks every quote against the page it cites,
+and shows you the result. Nothing is written to the library until you press **Save**.
+
+OCR runs as WebAssembly in the renderer with the language data bundled, so a scanned
+datasheet works with no network, no extra install and no worker script.
 
 Point it at a model in **⚙ → Extraction model**: any OpenAI-compatible server works —
 Ollama, llama.cpp, LM Studio, vLLM. With no model configured the drop still stores the

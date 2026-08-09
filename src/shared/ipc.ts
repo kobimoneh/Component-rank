@@ -215,6 +215,7 @@ export interface RendererApi {
 
   // Datasheet ingestion
   ingestDatasheet(req: IngestRequest): Promise<IngestOutcomeDto>
+  submitOcr(req: OcrRequest): Promise<IngestOutcomeDto>
   applyReview(req: ApplyReviewRequest): Promise<ApplyResultDto>
   discardReview(req: { jobId: number }): Promise<void>
   getAiSettings(): Promise<AiSettings & { status: ProviderStatusInfo | null }>
@@ -303,7 +304,19 @@ export const MUTATION_CHANNELS = {
   discardReview: 'ingest:discard',
   aiSettingsGet: 'ai:settings:get',
   aiSettingsSet: 'ai:settings:set',
+  ingestOcr: 'ingest:ocr',
 } as const
+
+export const OcrRequest = z.object({
+  jobId: z.number().int().positive(),
+  datasheetId: z.number().int().positive(),
+  pages: z.array(z.object({
+    page: z.number().int().positive(),
+    text: z.string(),
+    confidence: z.number().min(0).max(1),
+  })).min(1),
+})
+export type OcrRequest = z.infer<typeof OcrRequest>
 
 export const IngestRequest = z.object({
   fileName: z.string().min(1),
@@ -417,6 +430,7 @@ export interface SuggestedExternalDto {
 export interface IngestOutcomeDto {
   readonly jobId: number
   readonly datasheetId: number
+  readonly pageChars: ReadonlyArray<{ page: number; chars: number }>
   readonly stages: readonly StageReportDto[]
   readonly identity: {
     readonly manufacturer: string | null

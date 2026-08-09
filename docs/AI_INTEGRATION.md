@@ -353,6 +353,7 @@ The API above exists for driving the library at scale from your own tooling. For
 adding parts one at a time you do not need it at all:
 
 **Drag a PDF onto the window.** The app stores it, extracts its text with pdf.js,
+OCR-ing any page the text layer could not read,
 guesses the category from the document's own words, asks the configured model for
 exactly that category's parameters, verifies every quote against the page it
 cites, and opens the review screen. Press Save.
@@ -400,6 +401,8 @@ Built and tested end to end:
   scanned document that is flagged rather than mined for nonsense.
 - `tests/local-api.test.ts` — 26 tests over the HTTP round trip.
 
-Not built: **OCR inside the app**. A scanned datasheet is detected and reported,
-but converting it to text still means running your own OCR and posting the pages
-via `PUT /datasheets/:id/pages`.
+**OCR is now built in.** Any page with no text layer is rendered and read with
+Tesseract (WebAssembly, in the renderer), then merged with whatever the text
+layer did give and read again. The language data ships with the app — no network,
+no install, no worker script. `PUT /datasheets/:id/pages` remains available for
+posting text from your own OCR if you prefer it.

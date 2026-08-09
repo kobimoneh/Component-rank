@@ -43,6 +43,7 @@ export function App(): JSX.Element {
   const [review, setReview] = useState<IngestOutcomeDto | null>(null)
   const [aiOpen, setAiOpen] = useState(false)
   const [ingesting, setIngesting] = useState(false)
+  const [pickToken, setPickToken] = useState(0)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const refresh = useCallback(() => {
@@ -507,6 +508,7 @@ export function App(): JSX.Element {
           refresh()
           notify('Component saved.')
         }}
+        onPickPdf={() => setPickToken((n) => n + 1)}
       />
 
       <Compare result={compare} onClose={() => setCompare(null)} />
@@ -520,6 +522,7 @@ export function App(): JSX.Element {
       />
 
       <DropZone
+        pickToken={pickToken}
         onStart={() => setIngesting(true)}
         onDone={(outcome) => {
           setIngesting(false)

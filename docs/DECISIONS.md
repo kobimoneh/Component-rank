@@ -530,3 +530,45 @@ into a form.
 
 It is searchable, so "what did I use on the sensor node?" is answerable, and it
 is filled in by hand — no extraction writes to it.
+
+---
+
+## D28 — OCR runs in the renderer, as WebAssembly
+
+A scanned datasheet was the one case the drop workflow could not handle, and
+telling the user to run their own OCR made the "zero-effort" path conditional on
+effort.
+
+**Decision.** Do it in the renderer. Electron's renderer is a real browser, which
+is exactly what OCR needs: a `<canvas>` to render PDF pages onto and WebAssembly
+to run Tesseract. No native module, no build step, no sidecar process. pdf.js
+renders each unreadable page at 2.5x — datasheet body text is small, and 1x
+produces mush — and tesseract.js reads it.
+
+Every asset is bundled: the Tesseract worker, the wasm core, and
+`eng.traineddata.gz` (2.9 MB). Tesseract.js otherwise fetches all three from a
+CDN on first use, which would make the feature fail on exactly the offline
+machine it exists for. ~16 MB added to the renderer; acceptable for a desktop app
+that must work with no network.
+
+**The CSP had to change, and that was the real trap.** The production policy was
+`default-src 'self'`, which blocks WebAssembly compilation outright. OCR would
+have worked in development and failed only in the packaged build — the worst
+place to discover it. The policy now allows `'wasm-unsafe-eval'` and
+`worker-src blob:`, and still permits no remote origin whatsoever.
+
+Verified by dropping a PDF whose page has graphics but **no text operators**, so
+the text layer reads zero characters and the real drop path falls through to OCR:
+"1 page read by OCR, merged with the text layer", zero CSP violations.
+
+---
+
+## D29 — Add component leads with the datasheet
+
+The manual form was the first thing the Add panel showed, which made the fast
+path feel like the alternative.
+
+**Decision.** The panel now opens on a single large drop target that explains
+what the app will do with the PDF, with "Enter it by hand instead" collapsed
+below it for a part with no datasheet to hand. Choosing the drop target opens a
+file picker; dropping anywhere on the window works at any time and always has.

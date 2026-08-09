@@ -22,6 +22,7 @@ import {
   SpecKeyRequest,
   UpdateSpecDefRequest,
   IngestRequest,
+  OcrRequest,
   ApplyReviewRequest,
   AiSettingsSchema,
   IdRequest as _IdRequest,
@@ -42,7 +43,7 @@ import {
   addSpecDef, availableDimensions, listSpecDefs, removeSpecDef, updateSpecDef,
 } from '../db/repositories/spec-defs.js'
 import { categoryLeaders } from '../db/repositories/leaders.js'
-import { ingestDatasheet } from '../extraction/pipeline.js'
+import { ingestDatasheet, reExtractWithOcr } from '../extraction/pipeline.js'
 import { applyReview, discardReview } from '../extraction/apply.js'
 import { LocalOpenAiProvider } from '../ai/local-openai.js'
 import type { ExtractionProvider } from '../ai/provider.js'
@@ -413,6 +414,11 @@ export function registerMutationIpc(
       },
       buildProvider(),
     )
+  })
+
+  ipc.handle(MUTATION_CHANNELS.ingestOcr, async (_e, payload: unknown) => {
+    const req = OcrRequest.parse(payload)
+    return reExtractWithOcr(db, req.jobId, req.datasheetId, req.pages, buildProvider())
   })
 
   ipc.handle(MUTATION_CHANNELS.applyReview, (_e, payload: unknown) => {

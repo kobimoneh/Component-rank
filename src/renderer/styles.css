@@ -847,3 +847,35 @@ textarea { width: 100%; resize: vertical; font-family: inherit; }
 }
 
 .param-table tr.excluded td { opacity: 0.55; }
+
+/* --------------------------------------------------- add: datasheet first */
+
+.drop-cta {
+  display: flex; align-items: flex-start; gap: 14px;
+  width: 100%; text-align: left;
+  padding: 18px 20px;
+  border: 2px dashed var(--accent);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent-soft), transparent);
+  color: var(--text);
+  font: inherit; cursor: default;
+  transition: transform 110ms var(--ease-out), box-shadow 140ms ease;
+}
+.drop-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+.drop-cta:active { transform: scale(0.99); }
+.drop-cta-icon {
+  font-size: 24px; color: var(--accent); line-height: 1; flex: none;
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); border: 1px solid var(--accent);
+}
+.drop-cta-title { font-size: 14px; font-weight: 600; letter-spacing: -0.012em; margin-bottom: 3px; }
+
+.progress {
+  height: 5px; margin-top: 12px;
+  background: var(--bg-active); border-radius: 3px; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; background: var(--accent);
+  transition: width 220ms var(--ease-out);
+}

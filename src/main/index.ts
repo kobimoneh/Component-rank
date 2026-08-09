@@ -117,6 +117,28 @@ function createWindow(): BrowserWindow {
           window.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }))
           return true
         })()`,
+        ocrcheck: `(() => {
+          // A page with graphics but NO text operators: the text layer reads
+          // zero characters, which is exactly what makes the real drop path
+          // fall through to OCR.
+          const content = '0.1 0.1 0.1 rg 40 600 520 120 re f'
+          const objs = [
+            '<< /Type /Catalog /Pages 2 0 R >>',
+            '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>',
+            '<< /Length ' + content.length + ' >>\\nstream\\n' + content + '\\nendstream',
+          ]
+          let pdf = '%PDF-1.4\\n'; const offs = []
+          objs.forEach((b, i) => { offs.push(pdf.length); pdf += (i+1) + ' 0 obj\\n' + b + '\\nendobj\\n' })
+          const xref = pdf.length
+          pdf += 'xref\\n0 ' + (objs.length+1) + '\\n0000000000 65535 f \\n'
+          for (const o of offs) pdf += String(o).padStart(10,'0') + ' 00000 n \\n'
+          pdf += 'trailer\\n<< /Size ' + (objs.length+1) + ' /Root 1 0 R >>\\nstartxref\\n' + xref + '\\n%%EOF\\n'
+          const file = new File([new TextEncoder().encode(pdf)], 'scanned.pdf', { type: 'application/pdf' })
+          const dt = new DataTransfer(); dt.items.add(file)
+          window.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }))
+          return true
+        })()`,
         parameters: `(() => {
           const btn = [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Parameters')
           btn?.click()
@@ -134,7 +156,7 @@ function createWindow(): BrowserWindow {
       setTimeout(() => {
         void win.webContents
           .executeJavaScript(action)
-          .then(() => new Promise((r) => setTimeout(r, process.env['SCREENSHOT_ACTION'] === 'review' ? 6000 : 1200)))
+          .then(() => new Promise((r) => setTimeout(r, ['review','ocrcheck'].includes(process.env['SCREENSHOT_ACTION'] ?? '') ? 25000 : 1200)))
           .then(() => win.webContents.capturePage())
           .then((img) => {
             writeFileSync(shot, img.toPNG())
@@ -177,9 +199,21 @@ app.whenReady().then(() => {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
+          // OCR runs as WebAssembly in the renderer, and both Tesseract and
+          // pdf.js spawn workers from blob URLs. `default-src 'self'` alone
+          // blocks WASM compilation outright — the feature would fail only in
+          // the packaged build, which is the worst place to find out.
+          // Still no remote origin: everything loaded is from the app itself.
           process.env['ELECTRON_RENDERER_URL']
-            ? "default-src 'self' 'unsafe-inline' data: blob: ws: http://localhost:*"
-            : "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:",
+            ? "default-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' data: blob: ws: http://localhost:*"
+            : [
+                "default-src 'self'",
+                "script-src 'self' 'wasm-unsafe-eval' blob:",
+                "worker-src 'self' blob:",
+                "style-src 'self' 'unsafe-inline'",
+                "img-src 'self' data: blob:",
+                "connect-src 'self' data: blob:",
+              ].join('; '),
         ],
       },
     })
