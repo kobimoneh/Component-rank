@@ -1,7 +1,7 @@
 {
   "name": "component-library",
   "version": "0.1.0",
-  "description": "Electronic component library and engineering comparison tool — size first",
+  "description": "Electronic component library and engineering comparison tool \u2014 size first",
   "main": "out/main/index.cjs",
   "author": "kobimoneh",
   "license": "UNLICENSED",
@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "package:win": "electron-vite build && electron-builder --win --publish never",
-    "package:linux": "electron-vite build && electron-builder --linux --publish never"
+    "package:linux": "electron-vite build && electron-builder --linux --publish never",
+    "package:all": "npm run lint && npm run typecheck && npm test && electron-vite build && electron-builder --win --linux --publish never"
   },
   "dependencies": {
     "pdfjs-dist": "^4.10.38",
@@ -51,7 +52,15 @@
     },
     "files": [
       "out/**/*",
-      "package.json"
+      "package.json",
+      "!**/*.map",
+      "!node_modules/pdfjs-dist/build/**",
+      "!node_modules/pdfjs-dist/web/**",
+      "!node_modules/pdfjs-dist/types/**",
+      "!node_modules/pdfjs-dist/image_decoders/**",
+      "!node_modules/pdfjs-dist/legacy/web/**",
+      "!node_modules/pdfjs-dist/legacy/image_decoders/**",
+      "!node_modules/@napi-rs/**"
     ],
     "extraResources": [
       {

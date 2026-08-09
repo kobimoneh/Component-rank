@@ -172,6 +172,41 @@ the installer is built on a Windows runner rather than here.
 The app is fully self-contained: no runtime to install, no `node-gyp`, no native modules.
 Your database lives in `%APPDATA%\component-library\components.sqlite`.
 
+**Installing on a machine with no network.** Copy one `.exe` across and run it. Everything
+first run needs is inside: the category taxonomy, the 150 seed parts, the OCR engine and
+its English training data. Nothing is fetched. The first launch creates the database,
+applies the migrations and imports the taxonomy, which takes a second or two.
+
+**SmartScreen will warn on first run** — "Windows protected your PC" → *More info* → *Run
+anyway*. The build is unsigned, because signing needs a code-signing certificate. Nothing
+is wrong with the file.
+
+**Moving your library to another machine.** Use `Back up` to write the whole database as
+JSON, or just copy `components.sqlite`. It is a plain SQLite file with no external
+references — no cloud account, no lock-in.
+
+### Linux
+
+`npm run package:linux` produces `release/Component Library-<version>.AppImage`: a single
+executable file, `chmod +x` and run. Built and verified here.
+
+### What is in the package, and what was left out
+
+The Windows installer is roughly 100 MB and about 380 MB installed; most of that is
+Electron's own Chromium. Of what this project adds, the largest single item is the bundled
+OCR engine and English training data (~16 MB) — deliberate, because a datasheet tool that
+needs a CDN on first use is no use on the machine it exists for.
+
+Excluded from the package after checking each is genuinely unreachable at runtime:
+pdf.js's modern build, image decoders and web viewer (only the `legacy` build is loaded),
+all source maps, and `@napi-rs/canvas` — pdf.js's **Node** canvas factory, which is only
+reached when rendering a page in the main process, and rendering happens in the renderer
+on the browser's own canvas. Together, 60 MB.
+
+Verified rather than assumed: after trimming, the packaged binary was run again on all
+three paths that could have broken — first-run migrate and seed, pdf.js text extraction in
+the main process, and WebAssembly OCR in the renderer under the production CSP.
+
 ### Drop a datasheet
 
 ![The review screen: each pipeline stage reported, identity and category detected, and every extracted value shown with the quote that supports it.](docs/screenshot-review.png)

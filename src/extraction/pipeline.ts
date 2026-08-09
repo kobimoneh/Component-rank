@@ -140,8 +140,10 @@ export async function ingestDatasheet(
     stage: 'text-extracted',
     ok: !extracted.needsOcr,
     detail: extracted.needsOcr
-      ? `${extracted.pageCount} pages, but ${extracted.emptyPages.length} have no text layer — this looks like a scan and needs OCR.`
-      : `${extracted.pageCount} pages read from the text layer.`,
+      ? `${extracted.pageCount} page${extracted.pageCount === 1 ? '' : 's'}, but ` +
+        `${extracted.emptyPages.length} ${extracted.emptyPages.length === 1 ? 'has' : 'have'} ` +
+        'no text layer — this looks like a scan and needs OCR.'
+      : `${extracted.pageCount} page${extracted.pageCount === 1 ? '' : 's'} read from the text layer.`,
   })
 
   const jobId = enqueueJob(db, {
