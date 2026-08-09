@@ -97,7 +97,7 @@ export function parseHeadline(headline: string | null | undefined): ParsedHeadli
   }
   if (!headline) return empty
 
-  const text = headline.replace(/ /g, ' ').trim()
+  const text = headline.replace(/\u00A0/g, ' ').trim()
 
   const dims = DIM_PAIR.exec(text)
   const xMm = num(dims, 1)

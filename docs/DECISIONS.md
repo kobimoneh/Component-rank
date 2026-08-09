@@ -253,3 +253,49 @@ environment**, which makes the Electron binary run as plain Node, with no `app`,
 `node:electron/js2c/node_init` rather than `browser_init`, and Node's own error formatter.
 
 If you ever see an empty `electron` module, check that variable before changing anything.
+
+---
+
+## D15 — Extraction cannot overwrite a manual value, and the check lives in the repository
+
+The rule "manual edits win" is easy to state and easy to violate from one forgotten call
+site.
+
+**Decision.** `applyExtraction()` is the only path by which extracted values reach the
+database, and it reads the existing `origin` before every write. A field currently marked
+`manual` is skipped and returned as `kept-manual` carrying both the old and the new value,
+so the UI can offer the change explicitly. Overwriting requires the caller to name that
+field in `acceptManualOverwrites` — which is what the approve button does.
+
+The same function rejects any field whose evidence failed verification, before type
+coercion is even attempted. Tests cover all four outcomes: written, kept-manual, rejected,
+and written-after-approval.
+
+---
+
+## D16 — A spec value that will not parse is an error, not a zero
+
+`coerceSpecInput()` returns a discriminated result, and the form shows the message. Typing
+"quite low" into quiescent current fails with *"quite low" is not a value for Quiescent
+current. Try something like "25 µA"* and nothing is written.
+
+An empty input is different: it means "unknown" and **deletes** the row rather than storing
+a zero. The distinction matters because zero is a legitimate engineering value and the
+absence of knowledge is not.
+
+Entering a value from the wrong dimension — `3.3 V` into a current field — is refused by
+the unit registry (D5) rather than silently converted.
+
+---
+
+## D17 — Comparison highlights only where a direction exists
+
+Every spec definition carries `better: lower | higher | none`. The compare view tints best
+and worst only for `lower` and `higher`.
+
+Colouring an informational spec would assert a preference the data does not support:
+a higher switching frequency is a trade-off, not a win. `Lifecycle`, `Package type` and
+`Dimension basis` are therefore never coloured, and a test asserts it.
+
+An unverified value is also never tinted as best, because a number that has not been
+confirmed should not win an argument.

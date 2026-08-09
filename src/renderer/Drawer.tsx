@@ -6,6 +6,8 @@ interface Props {
   readonly component: ComponentDetail | null
   readonly open: boolean
   readonly onClose: () => void
+  /** Refetch after a mutation. */
+  readonly onChanged: () => void
 }
 
 function area(v: number | null): string {
@@ -13,10 +15,7 @@ function area(v: number | null): string {
 }
 
 function Section({
-  title,
-  children,
-  defaultOpen = true,
-  badge,
+  title, children, defaultOpen = true, badge,
 }: {
   title: string
   children: ReactNode
@@ -27,9 +26,7 @@ function Section({
   return (
     <div className="section">
       <button className="section-head" onClick={() => setOpen((o) => !o)}>
-        <span>
-          {open ? '▾' : '▸'} {title}
-        </span>
+        <span>{open ? '▾' : '▸'} {title}</span>
         {badge && <span className="chip">{badge}</span>}
       </button>
       {open && <div className="section-body">{children}</div>}
@@ -42,8 +39,7 @@ function Section({
  * so the sort, filters and selection you built survive — and j/k keep walking
  * rows with it open.
  */
-export function Drawer({ component, open, onClose }: Props): JSX.Element {
-  const c = component
+export function Drawer({ component: c, open, onClose, onChanged }: Props): JSX.Element {
   const s = c?.solution
 
   return (
@@ -64,9 +60,20 @@ export function Drawer({ component, open, onClose }: Props): JSX.Element {
                   <div className="drawer-mfr">{c.manufacturer}</div>
                   <div className="drawer-mpn">{c.mpn}</div>
                 </div>
-                <button className="btn" onClick={onClose} title="Close (Esc)">
-                  ✕
-                </button>
+                <div style={{ display: 'flex', gap: 6, flex: 'none' }}>
+                  <button
+                    className="btn"
+                    title={c.favorite ? 'Remove from favourites' : 'Add to favourites'}
+                    onClick={() => {
+                      void window.api
+                        .updateComponent({ id: c.id, patch: { favorite: !c.favorite } })
+                        .then(onChanged)
+                    }}
+                  >
+                    {c.favorite ? '★' : '☆'}
+                  </button>
+                  <button className="btn" onClick={onClose} title="Close (Esc)">✕</button>
+                </div>
               </div>
               <div className="drawer-sub">
                 {c.categoryName ?? 'Uncategorised'}
@@ -95,27 +102,33 @@ export function Drawer({ component, open, onClose }: Props): JSX.Element {
                   <div className="headline-label">Gross solution</div>
                   <div className="headline-value">{area(s?.effectiveAreaMm2 ?? null)}</div>
                   <div className="headline-note">
-                    {s?.origin ? (
-                      <span className={`origin-tag origin-${s.origin}`}>{s.origin}</span>
-                    ) : (
-                      'No solution profile yet'
-                    )}
+                    {s?.origin
+                      ? <span className={`origin-tag origin-${s.origin}`}>{s.origin}</span>
+                      : 'No solution profile yet'}
                   </div>
                 </div>
               </div>
 
-              {c.package.unverified && c.package.unverifiedReason && (
-                <div className="chip chip-warn" style={{ marginBottom: 12 }}>
-                  {c.package.unverifiedReason}
+              {c.package.unverified && (
+                <div className="callout">
+                  <div>{c.package.unverifiedReason}</div>
+                  <button
+                    className="btn"
+                    style={{ marginTop: 8 }}
+                    onClick={() => { void window.api.confirmPackage({ id: c.id }).then(onChanged) }}
+                  >
+                    I checked the datasheet — confirm these dimensions
+                  </button>
+                  <div className="hint" style={{ marginTop: 6 }}>
+                    Confirming makes this part eligible for ranking.
+                  </div>
                 </div>
               )}
 
               <Section title="Physical">
                 <dl className="specs">
                   <dt>Dimensions</dt>
-                  <dd className={c.package.unverified ? 'unverified' : ''}>
-                    {c.package.dimensionsText}
-                  </dd>
+                  <dd className={c.package.unverified ? 'unverified' : ''}>{c.package.dimensionsText}</dd>
                   <dt>Basis</dt>
                   <dd>{c.package.basis ?? '—'}</dd>
                   <dt>IC area</dt>
@@ -127,65 +140,7 @@ export function Drawer({ component, open, onClose }: Props): JSX.Element {
                 </dl>
               </Section>
 
-              <Section title="Solution size" badge={s?.profileName ?? 'not defined'}>
-                {s && s.profileName ? (
-                  <dl className="specs">
-                    <dt>A · IC area</dt>
-                    <dd>{area(s.icAreaMm2)}</dd>
-                    <dt>B · Externals</dt>
-                    <dd>{area(s.externalAreaMm2)}</dd>
-                    <dt>C · Gross component</dt>
-                    <dd>{area(s.grossComponentAreaMm2)}</dd>
-                    <dt>D · Estimated PCB</dt>
-                    <dd>{s.estimateText ?? '—'}</dd>
-                  </dl>
-                ) : (
-                  <div style={{ color: 'var(--text-faint)' }}>
-                    No solution profile defined. Gross size stays unknown rather than
-                    reporting the IC footprint as a solution size.
-                  </div>
-                )}
-                {s?.warnings.map((w) => (
-                  <div key={w} className="chip chip-warn" style={{ marginTop: 8 }}>
-                    {w}
-                  </div>
-                ))}
-              </Section>
-
-              <Section title="Externals" badge={String(s?.externals.length ?? 0)}>
-                {s && s.externals.length > 0 ? (
-                  <table className="ext-table">
-                    <thead>
-                      <tr>
-                        <th />
-                        <th>Part</th>
-                        <th>Function</th>
-                        <th className="num">Qty</th>
-                        <th>Package</th>
-                        <th className="num">Area</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {s.externals.map((e) => (
-                        <tr key={e.id}>
-                          <td>
-                            <input type="checkbox" checked={e.included} readOnly />
-                          </td>
-                          <td>{e.name}</td>
-                          <td style={{ color: 'var(--text-dim)' }}>{e.function}</td>
-                          <td className="num">{e.qty}</td>
-                          <td className="mono">{e.packageName ?? '—'}</td>
-                          <td className="num">{e.areaMm2 === null ? '—' : e.areaMm2.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div style={{ color: 'var(--text-faint)' }}>
-                    No required externals recorded yet.
-                  </div>
-                )}
-              </Section>
+              <SolutionSection component={c} onChanged={onChanged} />
 
               <Section title="Category specifications" badge={String(c.specs.length)}>
                 {c.specs.length > 0 ? (
@@ -195,26 +150,25 @@ export function Drawer({ component, open, onClose }: Props): JSX.Element {
                         <dt>{sp.label}</dt>
                         <dd className={sp.unverified ? 'unverified' : ''}>
                           {sp.value ?? <span className="missing">Unknown</span>}
+                          {sp.origin === 'extracted' && (
+                            <sup className="prov" title="Extracted from a datasheet">•</sup>
+                          )}
                         </dd>
                       </Fragment>
                     ))}
                   </dl>
                 ) : (
-                  <div style={{ color: 'var(--text-faint)' }}>
-                    No specifications recorded. Seed data imports identity and datasheet
-                    links only — specifications come from a datasheet extraction.
+                  <div className="hint">
+                    No specifications recorded. Seed data imports identity and datasheet links
+                    only — specifications come from a datasheet, read by you or extracted.
                   </div>
                 )}
               </Section>
 
               <Section title="Datasheet" defaultOpen={false}>
-                {c.datasheetUrl ? (
-                  <a href={c.datasheetUrl} style={{ color: 'var(--accent)' }}>
-                    {c.datasheetUrl}
-                  </a>
-                ) : (
-                  <span className="missing">No datasheet linked</span>
-                )}
+                {c.datasheetUrl
+                  ? <a href={c.datasheetUrl} style={{ color: 'var(--accent)' }}>{c.datasheetUrl}</a>
+                  : <span className="missing">No datasheet linked</span>}
                 {c.price1k !== null && (
                   <div style={{ marginTop: 8, color: 'var(--text-dim)' }}>
                     Price @1k: ${c.price1k.toFixed(2)}
@@ -223,21 +177,202 @@ export function Drawer({ component, open, onClose }: Props): JSX.Element {
               </Section>
 
               <Section title="Notes" defaultOpen={false}>
-                <pre
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    margin: 0,
-                    font: 'inherit',
-                    color: 'var(--text-dim)',
-                  }}
-                >
-                  {c.notes || 'No notes.'}
-                </pre>
+                <pre className="notes">{c.notes || 'No notes.'}</pre>
               </Section>
             </div>
           </>
         )}
       </aside>
+    </>
+  )
+}
+
+/** Solution size: the four measurements, the profile, and an editable BOM. */
+function SolutionSection({
+  component: c, onChanged,
+}: {
+  component: ComponentDetail
+  onChanged: () => void
+}): JSX.Element {
+  const s = c.solution
+  const [name, setName] = useState('')
+  const [pkg, setPkg] = useState('')
+  const [x, setX] = useState('')
+  const [y, setY] = useState('')
+  const [qty, setQty] = useState('1')
+  const [ow, setOw] = useState('')
+  const [oh, setOh] = useState('')
+  const [profileId, setProfileId] = useState<number | null>(null)
+
+  const num = (v: string): number | null => {
+    const n = Number(v.trim())
+    return v.trim() !== '' && Number.isFinite(n) && n > 0 ? n : null
+  }
+
+  const ensureProfile = async (): Promise<number> => {
+    if (profileId !== null) return profileId
+    const id = await window.api.createProfile({
+      componentId: c.id, name: 'Recommended', makeDefault: true,
+    })
+    setProfileId(id)
+    return id
+  }
+
+  if (!s.profileName) {
+    return (
+      <Section title="Solution size" badge="not defined">
+        <div className="hint" style={{ marginBottom: 10 }}>
+          Gross size stays unknown until you define what this part needs around it.
+          The IC footprint is never reported as a solution size.
+        </div>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            void window.api
+              .createProfile({ componentId: c.id, name: 'Recommended', makeDefault: true })
+              .then(onChanged)
+          }}
+        >
+          Define a solution profile
+        </button>
+      </Section>
+    )
+  }
+
+  return (
+    <>
+      <Section title="Solution size" badge={s.profileName}>
+        <dl className="specs">
+          <dt>A · IC area</dt><dd>{area(s.icAreaMm2)}</dd>
+          <dt>B · Externals</dt><dd>{area(s.externalAreaMm2)}</dd>
+          <dt>C · Gross component</dt><dd>{area(s.grossComponentAreaMm2)}</dd>
+          <dt>D · Estimated PCB</dt><dd>{s.estimateText ?? '—'}</dd>
+        </dl>
+
+        <div className="override-row">
+          <span className="hint">Override (if you have measured it):</span>
+          <input placeholder="width" value={ow} onChange={(e) => setOw(e.target.value)} style={{ width: 66 }} />
+          <span>×</span>
+          <input placeholder="height" value={oh} onChange={(e) => setOh(e.target.value)} style={{ width: 66 }} />
+          <span className="hint">mm</span>
+          <button
+            className="btn"
+            onClick={() => {
+              void (async () => {
+                const id = await ensureProfile()
+                const w = num(ow); const h = num(oh)
+                if (w === null || h === null) return
+                await window.api.setOverride({
+                  profileId: id,
+                  override: { widthMm: w, heightMm: h, areaMm2: null, note: null },
+                })
+                onChanged()
+              })()
+            }}
+          >
+            Set
+          </button>
+          {s.origin === 'manual' && (
+            <button
+              className="btn"
+              onClick={() => {
+                void (async () => {
+                  const id = await ensureProfile()
+                  await window.api.setOverride({ profileId: id, override: null })
+                  setOw(''); setOh('')
+                  onChanged()
+                })()
+              }}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {s.warnings.map((w) => (
+          <div key={w} className="chip chip-warn" style={{ marginTop: 8, display: 'block' }}>{w}</div>
+        ))}
+      </Section>
+
+      <Section title="Externals" badge={String(s.externals.length)}>
+        {s.externals.length > 0 && (
+          <table className="ext-table">
+            <thead>
+              <tr>
+                <th title="Include in the gross-size calculation" />
+                <th>Part</th>
+                <th className="num">Qty</th>
+                <th>Package</th>
+                <th className="num">Area</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {s.externals.map((e) => (
+                <tr key={e.id} className={e.included ? '' : 'excluded'}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={e.included}
+                      title={e.included ? 'Counted in gross size' : 'Not counted'}
+                      onChange={() => {
+                        void window.api
+                          .updateExternal({ id: e.id, patch: { included: !e.included } })
+                          .then(onChanged)
+                      }}
+                    />
+                  </td>
+                  <td>{e.name}</td>
+                  <td className="num">{e.qty}</td>
+                  <td className="mono">{e.packageName ?? '—'}</td>
+                  <td className="num">{e.areaMm2 === null ? '—' : e.areaMm2.toFixed(2)}</td>
+                  <td>
+                    <button
+                      className="linkbtn"
+                      title="Remove"
+                      onClick={() => { void window.api.deleteExternal({ id: e.id }).then(onChanged) }}
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        <div className="ext-add">
+          <input placeholder="10 µF cap" value={name} onChange={(e) => setName(e.target.value)} />
+          <input placeholder="0402" value={pkg} onChange={(e) => setPkg(e.target.value)} style={{ width: 70 }} />
+          <input placeholder="X" value={x} onChange={(e) => setX(e.target.value)} style={{ width: 54 }} />
+          <input placeholder="Y" value={y} onChange={(e) => setY(e.target.value)} style={{ width: 54 }} />
+          <input placeholder="qty" value={qty} onChange={(e) => setQty(e.target.value)} style={{ width: 46 }} />
+          <button
+            className="btn"
+            disabled={!name.trim()}
+            onClick={() => {
+              void (async () => {
+                const id = await ensureProfile()
+                await window.api.addExternal({
+                  profileId: id,
+                  name: name.trim(),
+                  packageName: pkg.trim() || null,
+                  xMm: num(x),
+                  yMm: num(y),
+                  qty: Math.max(1, Number(qty) || 1),
+                })
+                setName(''); setPkg(''); setX(''); setY(''); setQty('1')
+                onChanged()
+              })()
+            }}
+          >
+            Add
+          </button>
+        </div>
+        <div className="hint" style={{ marginTop: 6 }}>
+          An external with no dimensions is listed but not counted, and says so.
+        </div>
+      </Section>
     </>
   )
 }

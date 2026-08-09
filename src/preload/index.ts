@@ -1,36 +1,45 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { CHANNELS } from '../shared/ipc.js'
-import type {
-  AppStatus,
-  CategoryDetail,
-  CategoryNavItem,
-  CategoryRow,
-  CategoryRowsRequest,
-  ComponentDetail,
-  IdRequest,
-  RendererApi,
-  SearchHit,
-  SearchRequest,
-  SlugRequest,
-} from '../shared/ipc.js'
+import { CHANNELS, MUTATION_CHANNELS } from '../shared/ipc.js'
+import type { RendererApi } from '../shared/ipc.js'
 
 /**
  * The entire capability surface available to the renderer.
  *
  * Named methods only — `ipcRenderer` itself is never exposed, so the renderer
- * cannot reach a channel that is not listed here.
+ * cannot reach a channel that is not listed here. Every payload is re-validated
+ * against a Zod schema in the main process before it reaches a repository.
  */
+const invoke = <T>(channel: string, payload?: unknown): Promise<T> =>
+  ipcRenderer.invoke(channel, payload) as Promise<T>
+
 const api: RendererApi = {
-  status: () => ipcRenderer.invoke(CHANNELS.appStatus) as Promise<AppStatus>,
-  listCategories: () => ipcRenderer.invoke(CHANNELS.categoriesList) as Promise<CategoryNavItem[]>,
-  categoryDetail: (req: SlugRequest) =>
-    ipcRenderer.invoke(CHANNELS.categoryDetail, req) as Promise<CategoryDetail | null>,
-  categoryRows: (req: CategoryRowsRequest) =>
-    ipcRenderer.invoke(CHANNELS.categoryRows, req) as Promise<CategoryRow[]>,
-  componentDetail: (req: IdRequest) =>
-    ipcRenderer.invoke(CHANNELS.componentDetail, req) as Promise<ComponentDetail | null>,
-  search: (req: SearchRequest) => ipcRenderer.invoke(CHANNELS.search, req) as Promise<SearchHit[]>,
-  resync: () => ipcRenderer.invoke(CHANNELS.resync) as Promise<AppStatus>,
+  status: () => invoke(CHANNELS.appStatus),
+  listCategories: () => invoke(CHANNELS.categoriesList),
+  categoryDetail: (req) => invoke(CHANNELS.categoryDetail, req),
+  categoryRows: (req) => invoke(CHANNELS.categoryRows, req),
+  componentDetail: (req) => invoke(CHANNELS.componentDetail, req),
+  search: (req) => invoke(CHANNELS.search, req),
+  resync: () => invoke(CHANNELS.resync),
+
+  createComponent: (req) => invoke(MUTATION_CHANNELS.componentCreate, req),
+  updateComponent: (req) => invoke(MUTATION_CHANNELS.componentUpdate, req),
+  deleteComponent: (req) => invoke(MUTATION_CHANNELS.componentDelete, req),
+  setPackage: (req) => invoke(MUTATION_CHANNELS.packageSet, req),
+  confirmPackage: (req) => invoke(MUTATION_CHANNELS.packageConfirm, req),
+  setSpec: (req) => invoke(MUTATION_CHANNELS.specSet, req),
+  categorySpecs: (req) => invoke(MUTATION_CHANNELS.categorySpecs, req),
+
+  createProfile: (req) => invoke(MUTATION_CHANNELS.profileCreate, req),
+  setDefaultProfile: (req) => invoke(MUTATION_CHANNELS.profileSetDefault, req),
+  setOverride: (req) => invoke(MUTATION_CHANNELS.profileSetOverride, req),
+  addExternal: (req) => invoke(MUTATION_CHANNELS.externalAdd, req),
+  updateExternal: (req) => invoke(MUTATION_CHANNELS.externalUpdate, req),
+  deleteExternal: (req) => invoke(MUTATION_CHANNELS.externalDelete, req),
+
+  compare: (req) => invoke(MUTATION_CHANNELS.compare, req),
+  exportJson: () => invoke(MUTATION_CHANNELS.exportJson),
+  exportCsv: (req) => invoke(MUTATION_CHANNELS.exportCsv, req),
+  providerStatus: () => invoke(MUTATION_CHANNELS.providerStatus),
 }
 
 contextBridge.exposeInMainWorld('api', api)

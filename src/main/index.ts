@@ -1,9 +1,9 @@
-import { app, BrowserWindow, shell, ipcMain, session } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, session, dialog } from 'electron'
 import { writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bootstrap, type BootstrapResult } from './bootstrap.js'
-import { registerIpc } from './ipc.js'
+import { registerIpc, registerMutationIpc } from './ipc.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 
@@ -36,12 +36,33 @@ function createWindow(): BrowserWindow {
     // the renderer without a human at the screen.
     const shot = process.env['SCREENSHOT_PATH']
     if (shot) {
+      // Named actions only — never arbitrary script from the environment.
+      const ACTIONS: Record<string, string> = {
+        table: 'true',
+        drawer: `(() => {
+          const row = document.querySelector('table.grid tbody tr:nth-child(2)')
+          row?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+          return true
+        })()`,
+        compare: `(() => {
+          const boxes = [...document.querySelectorAll('table.grid tbody input[type=checkbox]')]
+          boxes.slice(0, 4).forEach((b) => b.click())
+          const btn = [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Compare')
+          btn?.click()
+          return true
+        })()`,
+      }
+      const action = ACTIONS[process.env['SCREENSHOT_ACTION'] ?? 'table'] ?? 'true'
       setTimeout(() => {
-        void win.webContents.capturePage().then((img) => {
-          writeFileSync(shot, img.toPNG())
-          app.quit()
-        })
-      }, 3500)
+        void win.webContents
+          .executeJavaScript(action)
+          .then(() => new Promise((r) => setTimeout(r, 1200)))
+          .then(() => win.webContents.capturePage())
+          .then((img) => {
+            writeFileSync(shot, img.toPNG())
+            app.quit()
+          })
+      }, 3000)
     }
   })
 
@@ -84,6 +105,17 @@ app.whenReady().then(() => {
   try {
     boot = bootstrap(app.getPath('userData'))
     registerIpc(ipcMain, boot)
+    registerMutationIpc(ipcMain, boot, {
+      async saveFile(defaultName, contents) {
+        const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+        const result = win
+          ? await dialog.showSaveDialog(win, { defaultPath: defaultName })
+          : await dialog.showSaveDialog({ defaultPath: defaultName })
+        if (result.canceled || !result.filePath) return { path: null, cancelled: true }
+        writeFileSync(result.filePath, contents, 'utf8')
+        return { path: result.filePath, cancelled: false }
+      },
+    })
   } catch (err) {
     // Fail loudly and visibly rather than opening an empty window that looks fine.
     console.error('Startup failed:', err)

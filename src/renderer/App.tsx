@@ -8,6 +8,9 @@ import type {
   ComponentDetail,
 } from '../shared/ipc.js'
 import { Drawer } from './Drawer.js'
+import { AddComponent } from './AddComponent.js'
+import { Compare } from './Compare.js'
+import type { CompareResult } from '../shared/ipc.js'
 
 type SortState = { key: string; dir: 'asc' | 'desc' } | null
 
@@ -24,7 +27,23 @@ export function App(): JSX.Element {
   const [openId, setOpenId] = useState<number | null>(null)
   const [component, setComponent] = useState<ComponentDetail | null>(null)
   const [cursor, setCursor] = useState(0)
+  const [selected, setSelected] = useState<ReadonlySet<number>>(new Set())
+  const [addOpen, setAddOpen] = useState(false)
+  const [compare, setCompare] = useState<CompareResult | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
   const searchRef = useRef<HTMLInputElement>(null)
+
+  const refresh = useCallback(() => {
+    void window.api.status().then(setStatus)
+    void window.api.listCategories().then(setCategories)
+    if (slug) void window.api.categoryRows({ slug }).then(setRows)
+    if (openId !== null) void window.api.componentDetail({ id: openId }).then(setComponent)
+  }, [slug, openId])
+
+  const notify = useCallback((message: string) => {
+    setToast(message)
+    window.setTimeout(() => setToast(null), 4000)
+  }, [])
 
   useEffect(() => {
     void window.api.status().then(setStatus)
@@ -44,6 +63,7 @@ export function App(): JSX.Element {
     if (!slug) return
     setSort(null)
     setCursor(0)
+    setSelected(new Set())
     void window.api.categoryDetail({ slug }).then(setDetail)
     void window.api.categoryRows({ slug }).then(setRows)
   }, [slug])
@@ -124,6 +144,21 @@ export function App(): JSX.Element {
     return out
   }, [visible, detail])
 
+  const toggleSelected = useCallback((id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else if (next.size < 10) next.add(id)
+      return next
+    })
+  }, [])
+
+  const openCompare = useCallback(() => {
+    const ids = [...selected]
+    if (ids.length < 2) return
+    void window.api.compare({ ids }).then(setCompare)
+  }, [selected])
+
   const toggleSort = useCallback((key: string) => {
     setSort((prev) => {
       if (!prev || prev.key !== key) return { key, dir: 'asc' }
@@ -169,11 +204,17 @@ export function App(): JSX.Element {
       } else if (e.key === 'Enter') {
         const row = visible[cursor]
         if (row) setOpenId(row.id)
+      } else if (e.key === ' ') {
+        e.preventDefault()
+        const row = visible[cursor]
+        if (row) toggleSelected(row.id)
+      } else if (e.key === 'c') {
+        openCompare()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [visible, cursor, openId])
+  }, [visible, cursor, openId, toggleSelected, openCompare])
 
   const columns = detail?.columns ?? []
 
@@ -196,8 +237,32 @@ export function App(): JSX.Element {
           <span className="kbd">Ctrl K</span>
         </div>
         <div style={{ flex: 1 }} />
-        <button className="btn" disabled title="Datasheet ingestion arrives in phase 5">
+        <button className="btn btn-primary" onClick={() => setAddOpen(true)}>
           + Add component
+        </button>
+        <button
+          className="btn"
+          disabled={!slug}
+          title="Export this category as CSV"
+          onClick={() => {
+            if (!slug) return
+            void window.api.exportCsv({ slug }).then((r) => {
+              if (r.ok) notify(`Exported ${r.bytes.toLocaleString()} bytes to ${r.path}`)
+            })
+          }}
+        >
+          Export CSV
+        </button>
+        <button
+          className="btn"
+          title="Back up the whole database as JSON"
+          onClick={() => {
+            void window.api.exportJson().then((r) => {
+              if (r.ok) notify(`Backed up ${r.bytes.toLocaleString()} bytes to ${r.path}`)
+            })
+          }}
+        >
+          Back up
         </button>
         <button
           className="btn"
@@ -252,6 +317,15 @@ export function App(): JSX.Element {
             </div>
             <div style={{ display: 'flex', gap: 6, alignItems: 'center', flex: 'none' }}>
               <span className="chip">{visible.length} parts</span>
+              {selected.size > 0 && <span className="chip">{selected.size} selected</span>}
+              <button
+                className="btn btn-primary"
+                disabled={selected.size < 2}
+                title={selected.size < 2 ? 'Select at least two parts' : 'Compare selection'}
+                onClick={openCompare}
+              >
+                Compare
+              </button>
             </div>
           </header>
         )}
@@ -266,6 +340,7 @@ export function App(): JSX.Element {
             <table className="grid">
               <thead>
                 <tr>
+                  <th style={{ width: 28 }} />
                   <th style={{ width: 46 }} className="num">#</th>
                   {columns.map((col) => (
                     <th
@@ -295,6 +370,14 @@ export function App(): JSX.Element {
                     }}
                     title={row.unrankedReason ?? undefined}
                   >
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selected.has(row.id)}
+                        onChange={() => toggleSelected(row.id)}
+                        title="Select for comparison"
+                      />
+                    </td>
                     <td className="num">
                       <span className={`rank${row.rank === 1 ? ' rank-1' : ''}`}>
                         {row.rank === null ? '—' : `#${row.rank}`}
@@ -358,7 +441,27 @@ export function App(): JSX.Element {
         </div>
       </main>
 
-      <Drawer component={component} open={openId !== null} onClose={() => setOpenId(null)} />
+      <Drawer
+        component={component}
+        open={openId !== null}
+        onClose={() => setOpenId(null)}
+        onChanged={refresh}
+      />
+
+      <AddComponent
+        open={addOpen}
+        categories={categories}
+        initialCategory={slug}
+        onClose={() => setAddOpen(false)}
+        onCreated={() => {
+          refresh()
+          notify('Component saved.')
+        }}
+      />
+
+      <Compare result={compare} onClose={() => setCompare(null)} />
+
+      {toast && <div className="toast">{toast}</div>}
     </div>
   )
 }

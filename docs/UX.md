@@ -186,3 +186,52 @@ in each.
 
 Typography: one UI sans with tabular figures, one mono for MPNs and package codes. MPNs are
 strings you compare character by character — they get the mono.
+
+---
+
+## What is built
+
+The screens described above exist and run. Specifics worth knowing:
+
+**Selection and compare.** A checkbox column selects up to 10 parts; `Space` toggles the
+row under the cursor and `c` opens the comparison. The compare view has an
+**Only differences** filter, and the size visualization switches between package and gross
+solution — the same two parts can swap order between those views, which is the argument
+for the feature.
+
+**Confirming imported dimensions.** A seeded part shows a callout naming exactly why its
+dimensions are untrusted, with one button to confirm them. Confirming does not change the
+numbers; it changes their status, and the part becomes rankable immediately.
+
+**Defining a solution.** A part with no profile says so, and gross size stays blank rather
+than reporting the IC footprint as a solution size. One button creates a profile; externals
+are added inline with name, package, X, Y and quantity, and each row's checkbox includes or
+excludes it from the calculation without deleting it.
+
+**Overrides.** Width × height typed into the override row wins immediately and the figure
+is marked `manual`. Adding more externals afterwards does not disturb it. Clearing the
+override returns to the estimate.
+
+**Export.** `Export CSV` writes the current category as displayed, with units in the header
+and unverified values suffixed `(unverified)` so a spreadsheet cannot launder them into
+facts. `Back up` writes the whole database as JSON, provenance included.
+
+### Motion, as implemented
+
+| Element | Implemented |
+|---|---|
+| Table sort / filter / select / `Ctrl+K` | No animation |
+| Drawer | 220 ms, `cubic-bezier(0.32, 0.72, 0, 1)`, `translateX(100%)` |
+| Modal | 180 ms, scale 0.98 → 1, origin centre (it is not anchored to a trigger) |
+| Buttons | `scale(0.97)` on `:active`, 140 ms |
+| Toast | 200 ms, 8 px rise |
+
+`prefers-reduced-motion` removes movement from all four while keeping opacity. Nothing
+animates a measurement: when an external is toggled, the gross size changes immediately
+rather than counting up to its new value.
+
+### Not yet built
+
+Column resizing and reordering, the numeric range filter row, the density toggle, row
+virtualization (unnecessary at 150 parts, necessary at 5 000), and the home screen. The
+category table currently filters by part number and manufacturer only.

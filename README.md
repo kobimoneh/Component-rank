@@ -17,24 +17,33 @@ one, with every number traceable to where it came from.
 
 ## Status
 
-Foundation complete and tested. The application shell and UI are in progress.
+**Phases 1–4 complete.** The app builds, launches and does the job.
 
 | Area | State |
 |---|---|
-| Unit system (SI, ranges, logarithmic, binary capacity) | ✅ Built, 22 tests |
-| Package dimensions (min/nom/**max**), IC area | ✅ Built |
-| Gross solution size (externals, profiles, estimator, override) | ✅ Built, 22 tests |
-| Category model + spec lexicon + `component-report` importer | ✅ Built, 22 tests |
-| SQLite schema, migrations, non-destructive sync | ✅ Built, 15 tests |
-| Ranking engine (ordered rules, hard requirements) | ✅ Built, 13 tests |
-| Electron shell, secure IPC, renderer | ✅ Built, launches |
-| Category tables, search, duplicate detection, seed | ✅ Built, 20 integration tests |
-| Component CRUD (create/edit forms) | ⏳ Phase 2 |
-| Compare view, size visualization | ⏳ Phase 3 |
-| Solution profile + externals editing UI | ⏳ Phase 4 |
-| Datasheet AI ingestion | ⏳ Phase 5 — interfaces stubbed, nothing calls a model yet |
+| Unit system (SI, ranges, logarithmic, binary capacity) | ✅ 22 tests |
+| Package dimensions (min/nom/**max**), IC area | ✅ |
+| Gross solution size (externals, profiles, estimator, override) | ✅ 22 tests |
+| Category model + spec lexicon + `component-report` importer | ✅ 22 tests |
+| SQLite schema, migrations, non-destructive sync | ✅ 15 tests |
+| Ranking engine (ordered rules, hard requirements) | ✅ 13 tests |
+| Electron shell, secure IPC, renderer | ✅ |
+| Category tables, search, duplicate detection, seed | ✅ 20 integration tests |
+| Component create + spec editing + annotations | ✅ 25 tests |
+| Compare view + scaled size visualization | ✅ 12 tests |
+| Solution profiles and externals editing | ✅ |
+| JSON backup + CSV export | ✅ |
+| Datasheet AI ingestion | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
 
-`npm test` → **125 passing**. `npm run typecheck` → clean. The app builds and runs.
+`npm test` → **186 passing**. `npm run typecheck` and `npm run lint` → clean.
+
+### Comparison and size visualization
+
+![Compare view: scaled rectangles at one shared physical scale, dashed where dimensions are unverified, and direction arrows only on specifications where lower or higher is actually better.](docs/screenshot-compare.png)
+
+### Component detail
+
+![The slide-over: IC area and gross solution side by side, a prompt to confirm imported dimensions, and the four separate size measurements.](docs/screenshot-drawer.png)
 
 ---
 
@@ -55,6 +64,8 @@ These are not style preferences. Each one has a test that fails when it is viola
    without your explicit approval.
 6. **Nothing is invented.** A specification the source did not state is stored as `null`.
 7. **Re-import never destroys local work.** Categories you edited are kept and reported.
+8. **Evidence is checked, not trusted.** An extracted value must quote the datasheet, and the
+   quote is searched for in the text of the page it cites. Unverifiable values are refused.
 
 ---
 

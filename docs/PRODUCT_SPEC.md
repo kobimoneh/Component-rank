@@ -106,20 +106,23 @@ From the brief. Current status:
 | # | Criterion | Status |
 |---|---|---|
 | 1 | Categories imported from `component-report` | ✅ 36, tested |
-| 2–4 | Add an MCU / LDO / memory device manually | 🔨 Phase 2 |
+| 2–4 | Add an MCU / LDO / memory device manually | ✅ |
 | 5 | Store exact X × Y × Z dimensions | ✅ Model + tests |
 | 6 | Define required external components | ✅ Model + tests |
 | 7 | See IC area | ✅ |
 | 8 | See gross solution area | ✅ |
 | 9 | Change externals, gross size recalculates immediately | ✅ Model + tests |
 | 10 | Multiple solution profiles | ✅ Model |
-| 11 | Browse components by category | 🔨 Phase 2 |
-| 12 | Sort and filter by category characteristics | 🔨 Phase 2 |
-| 13 | See a rank inside a category | 🔨 Phase 3 |
-| 14 | Compare side by side | 🔨 Phase 3 |
-| 15 | Scaled visual package-size comparison | 🔨 Phase 3 |
-| 16–19 | Datasheet upload, AI suggestion, review, evidence | ⏳ Phase 5 |
-| 20 | Export / back up | ⏳ Phase 4 |
+| 11 | Browse components by category | ✅ |
+| 12 | Sort and filter by category characteristics | ✅ |
+| 13 | See a rank inside a category | ✅ |
+| 14 | Compare side by side | ✅ |
+| 15 | Scaled visual package-size comparison | ✅ |
+| 16–19 | Datasheet upload, AI suggestion, review, evidence | ⏳ Phase 5 — evidence verifier built and tested |
+| 20 | Export / back up | ✅ JSON backup + CSV export |
+
+**16 of the 20 V1 criteria are met.** The remaining four are the datasheet-AI path,
+whose contract, schemas, verifier and safety tests exist but which does not yet call a model.
 
 ---
 
@@ -127,12 +130,12 @@ From the brief. Current status:
 
 | Phase | Contents | State |
 |---|---|---|
-| 1 | Docs, shell, SQLite, migrations, category model, importer | ✅ except shell |
-| 2 | Component CRUD, category tables, search, filter, sort | 🔨 |
-| 3 | Ranking, comparison, units, ranges, size visualization | ⏳ |
-| 4 | Solution profiles, externals, gross size, override, export | ⏳ domain done, UI pending |
-| 5 | Datasheet ingestion, AI extraction, review, provenance | ⏳ interfaces stubbed |
-| 6 | Backup, favourites, notes, data quality, shortcuts, packaging | ⏳ |
+| 1 | Docs, shell, SQLite, migrations, category model, importer | ✅ |
+| 2 | Component CRUD, category tables, search, filter, sort | ✅ |
+| 3 | Ranking, comparison, units, ranges, size visualization | ✅ |
+| 4 | Solution profiles, externals, gross size, override, export | ✅ |
+| 5 | Datasheet ingestion, AI extraction, review, provenance | ⏳ interfaces built and tested |
+| 6 | Backup, favourites, notes, data quality, shortcuts, packaging | ✅ except Windows installer build |
 
 A solid V1 is preferred over a broad set of unfinished features. Phases 1–4 are the
 committed V1 scope; 5 is additive against interfaces built now.

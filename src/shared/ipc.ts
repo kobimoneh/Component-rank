@@ -180,4 +180,258 @@ export interface RendererApi {
   componentDetail(req: IdRequest): Promise<ComponentDetail | null>
   search(req: SearchRequest): Promise<SearchHit[]>
   resync(): Promise<AppStatus>
+
+  // Mutations
+  createComponent(req: CreateComponentRequest): Promise<CreateOutcome>
+  updateComponent(req: UpdateComponentRequest): Promise<void>
+  deleteComponent(req: IdRequest): Promise<void>
+  setPackage(req: SetPackageRequest): Promise<void>
+  confirmPackage(req: IdRequest): Promise<void>
+  setSpec(req: SetSpecRequest): Promise<SetSpecOutcome>
+  categorySpecs(req: SlugRequest): Promise<SpecFieldDef[]>
+
+  // Solution size
+  createProfile(req: ProfileCreateRequest): Promise<number>
+  setDefaultProfile(req: ProfileDefaultRequest): Promise<void>
+  setOverride(req: OverrideRequest): Promise<void>
+  addExternal(req: ExternalAddRequest): Promise<number>
+  updateExternal(req: ExternalUpdateRequest): Promise<void>
+  deleteExternal(req: IdRequest): Promise<void>
+
+  // Comparison and export
+  compare(req: CompareRequest): Promise<CompareResult>
+  exportJson(): Promise<ExportOutcome>
+  exportCsv(req: SlugRequest): Promise<ExportOutcome>
+  providerStatus(): Promise<ProviderStatusInfo[]>
+}
+
+export interface ProviderStatusInfo {
+  readonly id: string
+  readonly available: boolean
+  readonly reason: string | null
+}
+
+export interface CompareCellDto {
+  readonly text: string | null
+  readonly sort: number | null
+  readonly unverified: boolean
+  readonly best: boolean
+  readonly worst: boolean
+}
+
+export interface CompareRowDto {
+  readonly key: string
+  readonly label: string
+  readonly unit: string | null
+  readonly numeric: boolean
+  readonly better: 'lower' | 'higher' | 'none'
+  readonly values: readonly CompareCellDto[]
+  readonly differs: boolean
+}
+
+export interface CompareSizeDto {
+  readonly id: number
+  readonly mpn: string
+  readonly icWidthMm: number | null
+  readonly icHeightMm: number | null
+  readonly icAreaMm2: number | null
+  readonly grossWidthMm: number | null
+  readonly grossHeightMm: number | null
+  readonly grossAreaMm2: number | null
+  readonly grossOrigin: 'manual' | 'estimated' | null
+  readonly unverified: boolean
+}
+
+export interface CompareResult {
+  readonly components: ReadonlyArray<{
+    readonly id: number
+    readonly mpn: string
+    readonly manufacturer: string
+    readonly categoryName: string | null
+  }>
+  readonly rows: readonly CompareRowDto[]
+  readonly sizes: readonly CompareSizeDto[]
+  readonly mixedCategories: boolean
+}
+
+// =============================================================================
+// Mutations, comparison and export
+// =============================================================================
+
+export const MUTATION_CHANNELS = {
+  componentCreate: 'component:create',
+  componentUpdate: 'component:update',
+  componentDelete: 'component:delete',
+  packageSet: 'component:setPackage',
+  packageConfirm: 'component:confirmPackage',
+  specSet: 'component:setSpec',
+  categorySpecs: 'category:specs',
+  profileCreate: 'profile:create',
+  profileSetDefault: 'profile:setDefault',
+  profileSetOverride: 'profile:setOverride',
+  externalAdd: 'external:add',
+  externalUpdate: 'external:update',
+  externalDelete: 'external:delete',
+  compare: 'compare:rows',
+  exportJson: 'export:json',
+  exportCsv: 'export:csv',
+  providerStatus: 'ai:status',
+} as const
+
+export const CreateComponentRequest = z.object({
+  manufacturer: z.string().min(1, 'Manufacturer is required'),
+  mpn: z.string().min(1, 'Part number is required'),
+  family: z.string().nullable().optional(),
+  categorySlug: z.string().nullable().optional(),
+  lifecycle: z.enum(['active', 'nrnd', 'eol', 'obsolete', 'unknown']).optional(),
+  productUrl: z.string().nullable().optional(),
+  datasheetUrl: z.string().nullable().optional(),
+  notes: z.string().optional(),
+  price1k: z.number().nullable().optional(),
+  package: z
+    .object({
+      type: z.string().nullable().optional(),
+      name: z.string().nullable().optional(),
+      pinCount: z.number().int().positive().nullable().optional(),
+      xMin: z.number().positive().nullable().optional(),
+      xNom: z.number().positive().nullable().optional(),
+      xMax: z.number().positive().nullable().optional(),
+      yMin: z.number().positive().nullable().optional(),
+      yNom: z.number().positive().nullable().optional(),
+      yMax: z.number().positive().nullable().optional(),
+      zMin: z.number().positive().nullable().optional(),
+      zNom: z.number().positive().nullable().optional(),
+      zMax: z.number().positive().nullable().optional(),
+    })
+    .optional(),
+})
+export type CreateComponentRequest = z.infer<typeof CreateComponentRequest>
+
+export const UpdateComponentRequest = z.object({
+  id: z.number().int().positive(),
+  patch: z.object({
+    family: z.string().nullable().optional(),
+    lifecycle: z.enum(['active', 'nrnd', 'eol', 'obsolete', 'unknown']).optional(),
+    productUrl: z.string().nullable().optional(),
+    notes: z.string().optional(),
+    price1k: z.number().nullable().optional(),
+    favorite: z.boolean().optional(),
+    flag: z.enum(['reference', 'best_in_class', 'avoid']).nullable().optional(),
+  }),
+})
+export type UpdateComponentRequest = z.infer<typeof UpdateComponentRequest>
+
+export const SetPackageRequest = z.object({
+  id: z.number().int().positive(),
+  patch: z.object({
+    type: z.string().nullable().optional(),
+    name: z.string().nullable().optional(),
+    pinCount: z.number().int().positive().nullable().optional(),
+    xMin: z.number().positive().nullable().optional(),
+    xNom: z.number().positive().nullable().optional(),
+    xMax: z.number().positive().nullable().optional(),
+    yMin: z.number().positive().nullable().optional(),
+    yNom: z.number().positive().nullable().optional(),
+    yMax: z.number().positive().nullable().optional(),
+    zMin: z.number().positive().nullable().optional(),
+    zNom: z.number().positive().nullable().optional(),
+    zMax: z.number().positive().nullable().optional(),
+  }),
+})
+export type SetPackageRequest = z.infer<typeof SetPackageRequest>
+
+export const SetSpecRequest = z.object({
+  componentId: z.number().int().positive(),
+  specKey: z.string().min(1),
+  value: z.string(),
+})
+export type SetSpecRequest = z.infer<typeof SetSpecRequest>
+
+export const ProfileCreateRequest = z.object({
+  componentId: z.number().int().positive(),
+  name: z.string().min(1),
+  makeDefault: z.boolean().optional(),
+})
+export type ProfileCreateRequest = z.infer<typeof ProfileCreateRequest>
+
+export const ProfileDefaultRequest = z.object({
+  componentId: z.number().int().positive(),
+  profileId: z.number().int().positive(),
+})
+export type ProfileDefaultRequest = z.infer<typeof ProfileDefaultRequest>
+
+export const OverrideRequest = z.object({
+  profileId: z.number().int().positive(),
+  override: z
+    .object({
+      widthMm: z.number().positive().nullable(),
+      heightMm: z.number().positive().nullable(),
+      areaMm2: z.number().positive().nullable(),
+      note: z.string().nullable(),
+    })
+    .nullable(),
+})
+export type OverrideRequest = z.infer<typeof OverrideRequest>
+
+export const ExternalAddRequest = z.object({
+  profileId: z.number().int().positive(),
+  name: z.string().min(1),
+  function: z.string().optional(),
+  qty: z.number().int().positive().optional(),
+  necessity: z.enum(['required', 'recommended', 'optional', 'configuration']).optional(),
+  valueText: z.string().nullable().optional(),
+  packageName: z.string().nullable().optional(),
+  xMm: z.number().positive().nullable().optional(),
+  yMm: z.number().positive().nullable().optional(),
+  zMm: z.number().positive().nullable().optional(),
+})
+export type ExternalAddRequest = z.infer<typeof ExternalAddRequest>
+
+export const ExternalUpdateRequest = z.object({
+  id: z.number().int().positive(),
+  patch: z.object({
+    name: z.string().min(1).optional(),
+    function: z.string().optional(),
+    qty: z.number().int().positive().optional(),
+    necessity: z.enum(['required', 'recommended', 'optional', 'configuration']).optional(),
+    valueText: z.string().nullable().optional(),
+    packageName: z.string().nullable().optional(),
+    xMm: z.number().positive().nullable().optional(),
+    yMm: z.number().positive().nullable().optional(),
+    included: z.boolean().optional(),
+  }),
+})
+export type ExternalUpdateRequest = z.infer<typeof ExternalUpdateRequest>
+
+export const CompareRequest = z.object({
+  ids: z.array(z.number().int().positive()).min(2).max(10),
+})
+export type CompareRequest = z.infer<typeof CompareRequest>
+
+export interface SpecFieldDef {
+  readonly key: string
+  readonly label: string
+  readonly type: string
+  readonly unit: string | null
+  readonly enumValues: readonly string[] | null
+  readonly hint: string | null
+  readonly unmapped: boolean
+}
+
+export interface CreateOutcome {
+  readonly ok: boolean
+  readonly id: number | null
+  readonly duplicate: { readonly id: number; readonly mpn: string; readonly manufacturer: string } | null
+}
+
+export interface SetSpecOutcome {
+  readonly ok: boolean
+  readonly error: string | null
+}
+
+export interface ExportOutcome {
+  readonly ok: boolean
+  readonly path: string | null
+  readonly bytes: number
+  readonly cancelled: boolean
 }

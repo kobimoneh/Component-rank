@@ -32,7 +32,7 @@ export interface ParseOptions {
 
 function normalize(input: string): string {
   return input
-    .replace(/ /g, ' ')
+    .replace(/\u00A0/g, ' ')
     .replace(/μ/g, 'µ')
     .replace(/−/g, '-')
     .replace(/(\d),(\d{3})\b/g, '$1$2')
