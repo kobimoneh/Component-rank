@@ -2,7 +2,7 @@
   "name": "component-library",
   "version": "0.1.0",
   "description": "Electronic component library and engineering comparison tool \u2014 size first",
-  "main": "out/main/index.js",
+  "main": "out/main/index.cjs",
   "author": "kobimoneh",
   "license": "UNLICENSED",
   "private": true,

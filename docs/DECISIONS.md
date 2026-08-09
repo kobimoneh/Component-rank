@@ -213,3 +213,43 @@ not found is never stored as confirmed.
 To fabricate a number, a model must also fabricate a quote that happens to appear in the
 PDF. That turns an unfalsifiable claim into a checkable one — and it is a pure function,
 testable without a model.
+
+---
+
+## D13 — A component can belong to several categories
+
+**Found by real data.** Seeding the 160 parts created only 150 components: ten were
+rejected as duplicates. They were not duplicates. `RF1630` is listed by
+`component-report` under RF switch 2.4 GHz, cellular *and* 5–6 GHz; `GRF5510` under
+sub-GHz and cellular PA; `QPL9547` under 2.4 GHz and 5–6 GHz LNA.
+
+A single `component.category_id` silently dropped those parts from two of the three
+categories they genuinely belong to. Opening "RF switch — cellular" would not have shown
+one of its best candidates, and nothing would have said so.
+
+**Decision.** Added `component_category(component_id, category_id, is_primary)`.
+`component.category_id` remains the primary category shown on the part itself; browsing
+and ranking go through the membership table. The part stays one row — one MPN, one set of
+dimensions, one solution profile — appearing in every category it serves.
+
+150 components, 160 memberships. A test asserts `RF1630` appears in all three switch
+categories while `SELECT COUNT(*) … WHERE mpn_norm='RF1630'` returns exactly 1.
+
+---
+
+## D14 — Main and preload are CommonJS
+
+`electron-vite` follows `package.json` `"type": "module"` and emits ESM for the main
+process. Electron 43 does support ESM in main, but the conventional and best-supported
+form — and the required form for preload scripts — is CommonJS. Main and preload are
+built with `output: { format: 'cjs', entryFileNames: '[name].cjs' }`.
+
+**A debugging note that cost real time here.** The symptom that started this was
+`TypeError: Cannot read properties of undefined (reading 'whenReady')`, with
+`require('electron')` returning an empty object and named ESM imports failing. The cause
+was not Electron's module format at all: **`ELECTRON_RUN_AS_NODE=1` was set in the
+environment**, which makes the Electron binary run as plain Node, with no `app`, no
+`BrowserWindow` and no browser init. The stack trace gives it away — it shows
+`node:electron/js2c/node_init` rather than `browser_init`, and Node's own error formatter.
+
+If you ever see an empty `electron` module, check that variable before changing anything.

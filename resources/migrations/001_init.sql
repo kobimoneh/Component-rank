@@ -125,6 +125,19 @@ CREATE TABLE component (
 CREATE INDEX idx_component_category ON component(category_id);
 CREATE INDEX idx_component_mpn_norm ON component(mpn_norm);
 
+-- A part can legitimately belong to several categories: RF1630 is an RF switch
+-- for 2.4 GHz, cellular AND 5-6 GHz, and the real component-report data lists it
+-- in all three. `component.category_id` is the primary category shown on the
+-- part itself; membership for browsing and ranking lives here.
+CREATE TABLE component_category (
+  component_id INTEGER NOT NULL REFERENCES component(id) ON DELETE CASCADE,
+  category_id  INTEGER NOT NULL REFERENCES category(id) ON DELETE CASCADE,
+  is_primary   INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (component_id, category_id)
+);
+
+CREATE INDEX idx_component_category_cat ON component_category(category_id);
+
 CREATE TABLE component_tag (
   component_id INTEGER NOT NULL REFERENCES component(id) ON DELETE CASCADE,
   tag          TEXT NOT NULL,

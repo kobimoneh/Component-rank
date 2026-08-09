@@ -136,6 +136,23 @@ This is enforced in the repository layer and covered by test, not left to caller
 
 ---
 
+## A component can belong to several categories
+
+`component.category_id` is the *primary* category. Membership for browsing and ranking
+lives in `component_category(component_id, category_id, is_primary)`.
+
+This is not theoretical: `RF1630` is listed upstream as an RF switch for 2.4 GHz, cellular
+and 5–6 GHz. One category per component would drop it from two of them, with no warning.
+The seed produces 150 components and 160 memberships for exactly this reason.
+
+```mermaid
+erDiagram
+  COMPONENT ||--o{ COMPONENT_CATEGORY : "appears in"
+  CATEGORY  ||--o{ COMPONENT_CATEGORY : contains
+```
+
+---
+
 ## Duplicate detection
 
 `UNIQUE (manufacturer_id, mpn_norm)` where `mpn_norm` is case- and separator-normalized.

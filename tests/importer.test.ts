@@ -19,7 +19,7 @@ let report: ImportReport
 
 beforeAll(() => {
   lexicon = SpecLexicon.fromYaml(read('../resources/spec-lexicon.yaml'))
-  configYaml = read('./fixtures/component-report.config.yaml')
+  configYaml = read('../resources/component-report/config.yaml')
   report = importCategories(configYaml, lexicon)
 })
 

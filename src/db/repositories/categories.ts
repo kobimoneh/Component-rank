@@ -247,7 +247,7 @@ export function listCategories(db: SqlDriver): CategoryListItem[] {
   return db
     .prepare(`
       SELECT c.id, c.slug, c.name, c.group_name AS "group",
-             (SELECT COUNT(*) FROM component p WHERE p.category_id = c.id) AS componentCount
+             (SELECT COUNT(*) FROM component_category cc WHERE cc.category_id = c.id) AS componentCount
       FROM category c
       ORDER BY c.group_name, c.sort_order, c.name
     `)

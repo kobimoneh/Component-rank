@@ -11,6 +11,8 @@ This is not an inventory or BOM tool. It is a parts-selection instrument: dense
 comparison tables inside engineering categories, ranked by what actually matters in each
 one, with every number traceable to where it came from.
 
+![The LDO category: category-specific columns, unverified dimensions shown in italic with a dotted underline, and no rank because those dimensions are not yet confirmed.](docs/screenshot.png)
+
 ---
 
 ## Status
@@ -24,12 +26,15 @@ Foundation complete and tested. The application shell and UI are in progress.
 | Gross solution size (externals, profiles, estimator, override) | ✅ Built, 22 tests |
 | Category model + spec lexicon + `component-report` importer | ✅ Built, 22 tests |
 | SQLite schema, migrations, non-destructive sync | ✅ Built, 15 tests |
-| Electron shell, IPC, renderer | 🔨 In progress |
-| Component CRUD, search, category tables | ⏳ Phase 2 |
-| Ranking, compare, size visualization | ⏳ Phase 3 |
+| Ranking engine (ordered rules, hard requirements) | ✅ Built, 13 tests |
+| Electron shell, secure IPC, renderer | ✅ Built, launches |
+| Category tables, search, duplicate detection, seed | ✅ Built, 20 integration tests |
+| Component CRUD (create/edit forms) | ⏳ Phase 2 |
+| Compare view, size visualization | ⏳ Phase 3 |
+| Solution profile + externals editing UI | ⏳ Phase 4 |
 | Datasheet AI ingestion | ⏳ Phase 5 — interfaces stubbed, nothing calls a model yet |
 
-`npm test` → **81 passing**. `npm run typecheck` → clean.
+`npm test` → **125 passing**. `npm run typecheck` → clean. The app builds and runs.
 
 ---
 

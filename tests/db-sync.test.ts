@@ -17,9 +17,9 @@ import type { Category } from '../src/domain/categories/model.js'
 const url = (rel: string): string => fileURLToPath(new URL(rel, import.meta.url))
 const read = (rel: string): string => readFileSync(url(rel), 'utf8')
 
-const MIGRATIONS = loadMigrations(url('../src/db/migrations'))
+const MIGRATIONS = loadMigrations(url('../resources/migrations'))
 const LEXICON = SpecLexicon.fromYaml(read('../resources/spec-lexicon.yaml'))
-const CATEGORIES = importCategories(read('./fixtures/component-report.config.yaml'), LEXICON).categories
+const CATEGORIES = importCategories(read('../resources/component-report/config.yaml'), LEXICON).categories
 
 let db: SqlDriver
 
