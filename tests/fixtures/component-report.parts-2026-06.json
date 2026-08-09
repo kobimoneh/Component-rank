@@ -1,0 +1,1962 @@
+[
+  {
+    "slug": "tiny-ldo",
+    "name": "Very small LDO regulator",
+    "markdown": "### Best in class right now\n**TPS7A0233PYCHR (TPS7A02 family)** \u2014 Texas Instruments. **0.41 mm\u00b2 footprint** (0.64 \u00d7 0.64 mm, 4-ball DSBGA/YCH); 25 nA typical Iq (even in dropout), 200 mA max, 270 mV dropout at 200 mA, Vin 1.5\u20136.0 V, Vout 0.8\u20135.0 V fixed. Availability: Active/in production, stocked at DigiKey & Mouser (\u2248$0.83/1; ~$0.40 at 1k est.). **Why it wins:** It sits at the smallest practical LDO footprint (a 4-bump CSP ~0.64 mm square) *and* breaks the tie at that size with the lowest quiescent current in the class \u2014 25 nA, roughly 10\u00d7 lower than the other parts sharing the same 0.41 mm\u00b2 footprint.\n\n### Shortlist (ranked by the metric)\n- **TPS7A02** (Texas Instruments) \u2014 0.41 mm\u00b2 (0.64\u00d70.64 DSBGA) \u2014 winner: smallest footprint *and* lowest Iq (25 nA).\n- **AP7350** (Diodes Inc.) \u2014 0.41 mm\u00b2 (0.64\u00d70.64 WLCSP) \u2014 exact footprint tie, but 250 nA operating Iq (20 nA standby) and 150 mA max; cheaper.\n- **RP122** (Nisshinbo Micro Devices) \u2014 0.41 mm\u00b2 (0.64\u00d70.64 WLCSP-4-P8) \u2014 footprint tie; trades nanopower Iq for higher load capability (not a low-Iq part).\n- **ADP162** (Analog Devices) \u2014 ~0.9 mm\u00b2 (4-ball, 0.5 mm-pitch WLCSP) \u2014 slightly larger; 560 nA Iq, 150 mA, very low noise.\n- **NCP170** (onsemi) \u2014 1.0 mm\u00b2 (1.0\u00d71.0 XDFN4) \u2014 larger footprint; 500 nA Iq, ultra-low noise/high-PSRR option when area is less critical.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Package | Iq (typ) | Iout max | Dropout | Vin / Vout | ~1k price |\n|------|-----------------|---------|----------|----------|---------|-----------|-----------|\n| **TPS7A02** (TI) | **0.41** | 0.64\u00d70.64 DSBGA | **25 nA** | 200 mA | 270 mV @200 mA | 1.5\u20136.0 / 0.8\u20135.0 V | ~$0.40 |\n| AP7350 (Diodes) | 0.41 | 0.64\u00d70.64 WLCSP | 250 nA | 150 mA | ~120 mV @150 mA | 1.9\u20136.0 / 0.8\u20135.0 V | ~$0.25 |\n| RP122 (Nisshinbo) | 0.41 | 0.64\u00d70.64 WLCSP-4 | \u00b5A-class | 200 mA | low | to 5.5 V in | ~$0.20 |\n| ADP162 (ADI) | ~0.9 | 0.5 mm WLCSP | 560 nA | 150 mA | ~140 mV | 2.0\u20135.5 / 0.8\u20135.0 V | ~$0.55 |\n| NCP170 (onsemi) | 1.0 | 1.0\u00d71.0 XDFN4 | 500 nA | 150 mA | 170 mV @150 mA | 1.7\u20135.5 / 0.8\u20135.0 V | ~$0.30 |\n\n### Caveats\nThe three smallest parts (TPS7A02, AP7350, RP122) are an exact footprint tie at 0.64 \u00d7 0.64 mm (0.41 mm\u00b2) \u2014 the practical floor for a 4-bump WLCSP/DSBGA LDO \u2014 so the winner is decided on the Iq tiebreak, where the TPS7A02's 25 nA is decisive. The ~1k prices are estimates: I confirmed the TPS7A02 DSBGA as Active and orderable (DigiKey \u2248$0.83/1) and the AP7350 WLCSP in stock at LCSC (\u2248$0.44 in small qty), but did not independently verify exact 1,000-piece pricing or confirm RP122's precise Iq from its datasheet. Note bare WLCSP/DSBGA parts are light-sensitive and demand fine-pitch assembly \u2014 if that's unacceptable, the smallest leaded fallback is the same TPS7A02 in 1.0 \u00d7 1.0 mm X2SON.",
+    "mpns": [
+      "TPS7A0233PYCHR",
+      "AP7350-33CF4-7",
+      "RP122",
+      "ADP162AUJZ-R7",
+      "NCP170AXV330T2G"
+    ],
+    "parts": [
+      {
+        "mpn": "TPS7A0233PYCHR",
+        "manufacturer": "Texas Instruments",
+        "role": "winner",
+        "headline": "0.41 mm^2 (0.64x0.64 mm DSBGA)",
+        "price_1k": "~$0.40",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps7a02.pdf",
+        "note": "Smallest practical footprint AND lowest Iq (25 nA) at that size; 200 mA, Active"
+      },
+      {
+        "mpn": "AP7350-33CF4-7",
+        "manufacturer": "Diodes Incorporated",
+        "role": "shortlist",
+        "headline": "0.41 mm^2 (0.64x0.64 mm WLCSP)",
+        "price_1k": "~$0.25",
+        "datasheet_url": "https://www.diodes.com/assets/Datasheets/AP7350.pdf",
+        "note": "Exact footprint tie but 250 nA Iq, 150 mA max; cheaper"
+      },
+      {
+        "mpn": "RP122",
+        "manufacturer": "Nisshinbo Micro Devices",
+        "role": "shortlist",
+        "headline": "0.41 mm^2 (0.64x0.64 mm WLCSP-4-P8)",
+        "price_1k": "~$0.20",
+        "datasheet_url": "https://www.nisshinbo-microdevices.co.jp/en/products/ldo-linear-regulator/",
+        "note": "Footprint tie; higher current capability but not a nanopower-Iq part"
+      },
+      {
+        "mpn": "ADP162AUJZ-R7",
+        "manufacturer": "Analog Devices",
+        "role": "shortlist",
+        "headline": "~0.9 mm^2 (0.5 mm-pitch 4-ball WLCSP)",
+        "price_1k": "~$0.55",
+        "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/adp160_161_162_163.pdf",
+        "note": "Slightly larger; 560 nA Iq, 150 mA, very low noise"
+      },
+      {
+        "mpn": "NCP170AXV330T2G",
+        "manufacturer": "onsemi",
+        "role": "shortlist",
+        "headline": "1.0 mm^2 (1.0x1.0 mm XDFN4)",
+        "price_1k": "~$0.30",
+        "datasheet_url": "https://www.onsemi.com/pdf/datasheet/ncp170-d.pdf",
+        "note": "Larger footprint; 500 nA Iq, ultra-low noise/high PSRR"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "buck-5v-3v3",
+    "name": "Small buck converter, 5V \u2192 3.3V",
+    "markdown": "### Best in class right now\n**TPSM82823SILR** \u2014 Texas Instruments. **~12 mm\u00b2 total solution size** built around a 5 mm\u00b2 (2.0 \u00d7 2.5 \u00d7 1.1 mm) 10-pin \u00b5SiL module with the inductor integrated; only input/output ceramics (plus two feedback resistors) sit outside the module. Vin 2.4\u20135.5 V, Vout adjustable 0.6\u20134 V (covers 3.3 V), 3 A max, 4 \u00b5A operating Iq, 4 MHz switching. Availability: DigiKey (TPSM82823SILR), Active/in production, ~$2.00 at the 500-pc break (\u2248$1.8\u20132.0/1k); stock has fluctuated (0 to ~15k seen). **Why it wins:** integrating a 3 A converter *and* its inductor into a 5 mm\u00b2 package, plus the 4 MHz switching that shrinks the external caps, gives one of the smallest complete 5 V\u21923.3 V footprints you can actually order today.\n\n### Shortlist (ranked by the metric)\n- **TPSM82823SILR** (Texas Instruments) \u2014 ~12 mm\u00b2 total solution \u2014 winner; smallest complete 3 A footprint, but adjustable-only (the fixed-Vout figure assumes no FB resistors).\n- **TPSM82813SILR** (Texas Instruments) \u2014 ~7.5 mm\u00b2 (MagPack) / 12 mm\u00b2 (\u00b5SIP) module \u2014 sibling that adds frequency sync and lower output ripple and stretches Vin to 6 V, at slightly higher cost and a larger orderable (\u00b5SIP) package.\n- **MPM3610AGQV** (Monolithic Power Systems) \u2014 ~15 mm\u00b2 module (3 \u00d7 5 mm QFN) \u2014 only 1.2 A and needs external caps, but tolerates 4.5\u201321 V in if you ever need headroom above 5 V.\n- **TPSM82913RDUR / TPSM82912RDUR** (Texas Instruments) \u2014 ~24.75 mm\u00b2 module (4.5 \u00d7 5.5 mm QFN) \u2014 much larger; justified only when its integrated ferrite-bead low-noise/low-ripple filter and 17 V Vin are required.\n\n### Comparison\n| Part | Total solution / module | IC package | Integrated L | Iout max | Iq | Fsw | Vin | ~1k price |\n|------|------------------------|-----------|--------------|----------|-----|-----|-----|-----------|\n| TPSM82823SILR (TI) | ~12 mm\u00b2 total | 5 mm\u00b2 (2.0\u00d72.5) | Yes | 3 A | 4 \u00b5A | 4 MHz | 2.4\u20135.5 V | ~$2.0 |\n| TPSM82813SILR (TI) | 7.5\u201312 mm\u00b2 module | 7.5/12 mm\u00b2 | Yes | 3 A | 15 \u00b5A | 1.8\u20134 MHz | 2.75\u20136 V | ~$2.7 |\n| MPM3610AGQV (MPS) | ~15 mm\u00b2 module | 15 mm\u00b2 (3\u00d75) | Yes | 1.2 A | \u2014 | 2 MHz | 4.5\u201321 V | ~$2.5 |\n| TPSM82913RDUR (TI) | ~24.75 mm\u00b2 module | 24.75 mm\u00b2 (4.5\u00d75.5) | Yes | 3 A | \u2014 | 2.2 MHz | 3\u201317 V | \u2014 |\n\n### Caveats\nThe winning **~12 mm\u00b2 total-solution** figure is TI's number for the *fixed-output* configuration; the orderable TPSM82823SILR is adjustable, so two small feedback resistors add a fraction of a mm\u00b2 \u2014 still the smallest in this set. Prices are taken from the 500-piece DigiKey break (true 1k tiers weren't displayed) and stock readings conflicted between sources, so treat availability as \"orderable but verify live.\" For the shortlist I list module/package footprints rather than full verified BOM areas where TI/MPS don't publish a complete-solution number, so cross-part footprint comparisons below the winner are approximate.",
+    "mpns": [
+      "TPSM82823SILR",
+      "TPSM82813SILR",
+      "MPM3610AGQV",
+      "TPSM82913RDUR"
+    ],
+    "parts": [
+      {
+        "mpn": "TPSM82823SILR",
+        "manufacturer": "Texas Instruments",
+        "role": "winner",
+        "headline": "~12 mm^2 total solution (5 mm^2 module)",
+        "price_1k": "~$2.0",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tpsm82823.pdf",
+        "note": "3 A, Vin 2.4-5.5 V, integrated inductor, 4 MHz, 4 uA Iq; smallest orderable complete 5V->3.3V footprint"
+      },
+      {
+        "mpn": "TPSM82813SILR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "7.5-12 mm^2 module",
+        "price_1k": "~$2.7",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tpsm82813.pdf",
+        "note": "3 A sync/low-ripple sibling, Vin to 6 V; slightly larger orderable package and pricier"
+      },
+      {
+        "mpn": "MPM3610AGQV",
+        "manufacturer": "Monolithic Power Systems",
+        "role": "shortlist",
+        "headline": "~15 mm^2 module (3x5 mm QFN)",
+        "price_1k": "~$2.5",
+        "datasheet_url": "https://www.monolithicpower.com/en/mpm3610.html",
+        "note": "Only 1.2 A and needs external caps, but wide 4.5-21 V input"
+      },
+      {
+        "mpn": "TPSM82913RDUR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "~24.75 mm^2 module (4.5x5.5 mm QFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tpsm82913.pdf",
+        "note": "Much larger; pick only for integrated low-noise ferrite-bead filter and 17 V Vin"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "buck-12v-3v3",
+    "name": "Small buck converter, 12V \u2192 3.3V",
+    "markdown": "### Best in class right now\n**TPSM82903SISR** \u2014 Texas Instruments. **8.4 mm\u00b2 package footprint** (3.0 \u00d7 2.8 \u00d7 1.6 mm 11-pin MicroSiP with fully integrated 1 \u00b5H inductor); 3\u201317 V input (meets \u226516 V), 0.4\u20135.5 V out at up to 3 A, 4 \u00b5A Iq, selectable 1.0/2.5 MHz. Needs only an input + output cap (and a feedback divider) to complete the design, so total solution stays in the mid-teens mm\u00b2. Availability: Active/in-production, listed at Mouser, DigiKey, Arrow, Newark; DigiKey currently shows backorder (0 stock, ~20 wk lead at some sources) \u2014 confirm Mouser/TI stock. ~1k price \u2248 $2.80\u20133.00. **Why it wins:** it packs the inductor *and* a 3 A synchronous buck into the same 8.4 mm\u00b2 uSiP as TI's 1 A parts, giving the smallest total 12 V\u21923.3 V solution while still carrying real load and a 17 V rating.\n\n### Shortlist (ranked by the metric)\n- **TPSM82903SISR** (Texas Instruments) \u2014 8.4 mm\u00b2 package \u2014 winner; most current (3 A) inside the smallest footprint, 17 V max.\n- **TPSM82901SISR** (Texas Instruments) \u2014 8.4 mm\u00b2 package \u2014 same MicroSiP/footprint and 4 \u00b5A Iq, but only 1 A; pick it if your 3.3 V rail is light and you want the cheapest of the family.\n- **TPS82150SILR** (Texas Instruments) \u2014 8.4 mm\u00b2 package \u2014 footprint tie, mature/proven 17 V 1 A MicroSiP; slightly thinner (1.5 mm) but older and 1 A only.\n- **MPM3610AGQV** (Monolithic Power Systems) \u2014 ~15 mm\u00b2 package \u2014 ~1.8\u00d7 the area but a roomier 21 V input margin, 1.2 A, and the cheapest by far; the value pick when the extra Vin headroom matters.\n\n### Comparison\n| Part | Footprint (pkg) | Vin max | Iout max | Inductor | Iq | ~1k price |\n|---|---|---|---|---|---|---|\n| TPSM82903SISR (TI) | 8.4 mm\u00b2 (3.0\u00d72.8) | 17 V | 3 A | Integrated | 4 \u00b5A | ~$3.0 |\n| TPSM82901SISR (TI) | 8.4 mm\u00b2 (3.0\u00d72.8) | 17 V | 1 A | Integrated | 4 \u00b5A | ~$2.5 |\n| TPS82150SILR (TI) | 8.4 mm\u00b2 (3.0\u00d72.8) | 17 V | 1 A | Integrated | ~22 \u00b5A | ~$2.7 |\n| MPM3610AGQV (MPS) | ~15 mm\u00b2 (3\u00d75) | 21 V | 1.2 A | Integrated | ~280 \u00b5A | ~$1.5 |\n\n### Caveats\nThe headline 8.4 mm\u00b2 is TI's quoted MicroSiP package/solution footprint; the true board area adds two small ceramics plus a feedback divider, so real total solution is roughly 12\u201316 mm\u00b2 \u2014 still class-leading, and the three TI MicroSiP parts genuinely *tie* on the package metric (the 3 A TPSM82903 wins only because it does the most in that area). The biggest practical risk is the winner's 17 V rating: it clears the \u226516 V bar but leaves little margin on a noisy/automotive 12 V rail with transients, where the 21 V MPM3610 is safer despite the larger footprint. Both TPSM82903SISR and MPM3610AGQV-Z showed 0 DigiKey stock (backorder) at check time though both are Active \u2014 verify live stock (Mouser/TI, or the in-stock MPM3610AGQV-P variant) before committing, and treat the 1k prices as approximate.",
+    "mpns": [
+      "TPSM82903SISR",
+      "TPSM82901SISR",
+      "TPS82150SILR",
+      "MPM3610AGQV"
+    ],
+    "parts": [
+      {
+        "mpn": "TPSM82903SISR",
+        "manufacturer": "Texas Instruments",
+        "role": "winner",
+        "headline": "8.4 mm^2 package footprint",
+        "price_1k": "~$3.0",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tpsm82903.pdf",
+        "note": "Smallest footprint that still does 3 A; 17 V Vin, integrated 1 uH inductor, 4 uA Iq"
+      },
+      {
+        "mpn": "TPSM82901SISR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "8.4 mm^2 package footprint",
+        "price_1k": "~$2.5",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tpsm82901.pdf",
+        "note": "Same MicroSiP footprint and 4 uA Iq but 1 A only; cheapest of the family"
+      },
+      {
+        "mpn": "TPS82150SILR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "8.4 mm^2 package footprint",
+        "price_1k": "~$2.7",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps82150.pdf",
+        "note": "Footprint tie, mature 17 V 1 A MicroSiP; older, higher Iq"
+      },
+      {
+        "mpn": "MPM3610AGQV",
+        "manufacturer": "Monolithic Power Systems",
+        "role": "shortlist",
+        "headline": "~15 mm^2 package (3x5 mm)",
+        "price_1k": "~$1.5",
+        "datasheet_url": "https://www.monolithicpower.com/en/mpm3610.html",
+        "note": "Larger but 21 V Vin margin and cheapest; 1.2 A integrated-inductor module"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "mini-load-switch",
+    "name": "Miniature load switch / power mux",
+    "markdown": "### Best in class right now\n**GLF72101** \u2014 GLF Integrated Power. **0.77 \u00d7 0.77 mm 4-bump WLCSP \u2248 0.59 mm\u00b2** (0.4 mm pitch, 0.46 mm thick); Ron \u2248 31 m\u03a9 typ @ 5.5 V, 2 A max, Vin 1.1\u20135.5 V (6 V abs-max), with True Reverse Current Blocking (TRCB) and output slew-rate control. Availability: DigiKey Marketplace, ~9,690 in stock, **~$0.13/1k**, Part Status: Active. **Why it wins:** It is the smallest footprint here while still carrying a full 2 A at a genuinely low 31 m\u03a9 \u2014 nothing else combines a sub-0.6 mm\u00b2 package with that current/Ron, and it adds reverse blocking + slew control that the comparably-sized TI parts lack.\n\n### Shortlist (ranked by the metric)\n- **GLF72101** (GLF Integrated Power) \u2014 **0.59 mm\u00b2** (0.77\u00d70.77 WLCSP) \u2014 winner; 31 m\u03a9/2 A plus TRCB and slew control in the smallest package.\n- **TPS22916** (Texas Instruments) \u2014 **0.61 mm\u00b2** (0.78\u00d70.78 WCSP) \u2014 essentially the same size, but higher Ron (60 m\u03a9 typ @ 5 V) and no integrated reverse blocking; wins on ultra-low ~10 nA leakage.\n- **TPS22910A** (Texas Instruments) \u2014 **0.81 mm\u00b2** (0.9\u00d70.9 DSBGA) \u2014 older 2 A part; larger and higher Ron, kept here as a mature, widely-stocked alternative.\n- **ADP195** (Analog Devices) \u2014 **1.0 mm\u00b2** (1.0\u00d71.0 WLCSP) \u2014 has reverse-current blocking, but only >1 A and a narrower 1.1\u20133.6 V input; bigger than the leaders.\n- **NCP451** (onsemi) \u2014 **1.26 mm\u00b2** (0.9\u00d71.4 WLCSP6) \u2014 biggest of the group, but by far the lowest Ron (12 m\u03a9) and highest current (3 A) down to 0.75 V \u2014 the pick when Ron matters more than size.\n\n### Comparison\n\n| Part | Footprint | Package | Ron (typ) | I_max | Vin range | Reverse block | ~1k price |\n|------|-----------|---------|-----------|-------|-----------|---------------|-----------|\n| **GLF72101** | **0.59 mm\u00b2** | 4-WLCSP 0.77\u00d70.77 | 31 m\u03a9 @5.5V | 2 A | 1.1\u20135.5 V | Yes (TRCB) | ~$0.13 |\n| TPS22916 | 0.61 mm\u00b2 | 4-WCSP 0.78\u00d70.78 | 60 m\u03a9 @5V | 2 A | 1.0\u20135.5 V | No | \u2014 |\n| TPS22910A | 0.81 mm\u00b2 | 4-DSBGA 0.9\u00d70.9 | ~85 m\u03a9 | 2 A | 1.4\u20135.5 V | No | \u2014 |\n| ADP195 | 1.0 mm\u00b2 | 4-WLCSP 1.0\u00d71.0 | 65 m\u03a9 @1.8V | >1 A | 1.1\u20133.6 V | Yes | \u2014 |\n| NCP451 | 1.26 mm\u00b2 | 6-WLCSP 0.9\u00d71.4 | 12 m\u03a9 | 3 A | 0.75\u20135.5 V | No | \u2014 |\n\n### Caveats\nAll of these are simple single-channel load switches, not 2:1 power muxes \u2014 a true integrated priority mux (e.g. TI TPS2116, ~2\u00d72 mm) is meaningfully larger, so the \"smallest\" winner here is a load switch, not a mux. The GLF72100/72101 family shares one 0.77\u00d70.77 package and datasheet; I confirmed GLF72101 as Active and in stock at DigiKey (~$0.13/1k) but did not independently verify 1k pricing for the TI/ADI/onsemi parts, and the TPS22910A Ron (~85 m\u03a9) is from secondary sources rather than a fetched datasheet. GLF's own datasheet PDF blocked direct download, so its specs are taken from GLF's product page and the DigiKey listing; the GLF72101 vs GLF72100 input-voltage floor differs slightly between GLF (1.1 V) and the DigiKey parametric (1.5 V).",
+    "mpns": [
+      "GLF72101",
+      "TPS22916BYFPR",
+      "TPS22910AYZVR",
+      "ADP195ACBZ",
+      "NCP451FCT2G"
+    ],
+    "parts": [
+      {
+        "mpn": "GLF72101",
+        "manufacturer": "GLF Integrated Power",
+        "role": "winner",
+        "headline": "0.59 mm^2 (0.77x0.77 mm 4-WLCSP)",
+        "price_1k": "~$0.13",
+        "datasheet_url": "https://www.glfipower.com/products/loadswitches/glf72101",
+        "note": "Smallest footprint with full 2 A at 31 mOhm; adds TRCB reverse blocking + slew control"
+      },
+      {
+        "mpn": "TPS22916BYFPR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "0.61 mm^2 (0.78x0.78 mm 4-WCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps22916.pdf",
+        "note": "Near-identical size but 60 mOhm and no reverse blocking; wins on ~10 nA ultra-low leakage"
+      },
+      {
+        "mpn": "TPS22910AYZVR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "0.81 mm^2 (0.9x0.9 mm 4-DSBGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/tps22910a.pdf",
+        "note": "Older 2 A part; larger and higher Ron, but mature and widely stocked"
+      },
+      {
+        "mpn": "ADP195ACBZ",
+        "manufacturer": "Analog Devices",
+        "role": "shortlist",
+        "headline": "1.0 mm^2 (1.0x1.0 mm 4-WLCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/ADP195.pdf",
+        "note": "Has reverse-current blocking but only >1 A and narrower 1.1-3.6 V input"
+      },
+      {
+        "mpn": "NCP451FCT2G",
+        "manufacturer": "onsemi",
+        "role": "shortlist",
+        "headline": "1.26 mm^2 (0.9x1.4 mm 6-WLCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.onsemi.com/pdf/datasheet/ncp451-d.pdf",
+        "note": "Largest here but lowest Ron (12 mOhm) and highest current (3 A) down to 0.75 V"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "ble-transceiver",
+    "name": "BLE radio transceiver",
+    "markdown": "### Best in class right now\n**EM9305** \u2014 EM Microelectronic. WLCSP23 with a **1.8 \u00d7 1.8 mm PCB footprint (~3.24 mm\u00b2)** \u2014 the smallest standalone BLE radio I could confirm as orderable. BLE 5.4 with LE Coded PHY; RX sensitivity \u221297 dBm @ 1 Mbps (\u2212103 dBm @ 125 kbps coded); 3.1 mA RX / 3.4 mA TX @ 0 dBm (3 V), TX programmable to +10 dBm. Runs as a companion/co-processor IC over HCI to a separate host MCU (or standalone SoC). Availability: in production, orderable at DigiKey (WLCSP `EM9305BS211CS23B` \u2248 $3.37/unit; QFN-28 `EM9305BU106LF28B` \u2248 $3.27/unit). **Why it wins:** It is the most integrated genuine companion-radio on the market \u2014 a sub-3.3 mm\u00b2 wafer-scale BLE 5.4 transceiver with HCI built into ROM \u2014 and still has competitive sensitivity and ~3 mA RX/TX current, so it beats every other co-processor on the size metric without compromising the secondary specs.\n\n### Shortlist (ranked by the metric)\n- **EM9305** (EM Microelectronic) \u2014 **3.24 mm\u00b2 (WLCSP23, 1.8\u00d71.8 mm)** \u2014 winner; smallest, newest (BLE 5.4), best sensitivity/current of the group.\n- **EM9304** (EM Microelectronic) \u2014 **4.37 mm\u00b2 (WLCSP25, 2.09\u00d72.09 mm)** \u2014 the proven predecessor; BLE 5.0, \u221294 dBm RX, TX to +6.1 dBm. Slightly larger and a generation behind, but same companion-IC/HCI architecture.\n- **NXH3670UK** (NXP) \u2014 **7.03 mm\u00b2 (WLCSP34, 2.45\u00d72.87 mm)** \u2014 a true single-chip 2.4 GHz radio, but it runs a *proprietary* low-latency audio protocol (gaming headsets) with an embedded Cortex-M0, not general-purpose BLE host offload. In-category on size, off-category on function.\n- **CC2564C** (Texas Instruments) \u2014 **64 mm\u00b2 (VQFN, 8\u00d78 mm)** \u2014 the classic dual-mode (BR/EDR + LE) HCI network controller for a separate host MCU; BT 5.1, RX to \u221293 dBm. Mature and robust, but ~20\u00d7 the footprint, so it only wins where Classic BT is also required.\n\n### Comparison\n| Part | Footprint | Package | RX sens. (1 Mbps) | RX / TX current | BLE ver. / Coded PHY | ~1k price |\n|------|-----------|---------|-------------------|------------------|----------------------|-----------|\n| **EM9305** | **3.24 mm\u00b2** | WLCSP23 (1.8\u00d71.8) | \u221297 dBm (\u2212103 @125k) | 3.1 / 3.4 mA @0 dBm | 5.4 / yes | ~$3 (qty-1 $3.37) |\n| EM9304 | 4.37 mm\u00b2 | WLCSP25 (2.09\u00d72.09) | \u221294 dBm | n/s (peak <12.5 mA) | 5.0 / yes | n/c |\n| NXH3670UK | 7.03 mm\u00b2 | WLCSP34 (2.45\u00d72.87) | n/s | ultra-low (audio) | proprietary 2.4 GHz | n/c |\n| CC2564C | 64 mm\u00b2 | VQFN (8\u00d78) | \u221293 dBm | n/s | 5.1 dual-mode / n/c | n/c |\n\n### Caveats\nPrices shown are single-unit DigiKey figures, not negotiated 1k pricing, which I could not independently confirm; treat them as order-of-magnitude. \"Standalone radio\" here means a part that runs the link layer/HCI for a separate host \u2014 the EM parts are dual-positioned (companion **or** SoC), and I ranked them as co-processors per the brief. The NXH3670 is included on footprint but is functionally a closed-protocol audio transceiver, not a general BLE host-offload radio, so it is not a true substitute; EM9304/CC2564C RX/TX current and CC2564C coded-PHY support were not stated in the sources I reached (marked n/s / n/c).",
+    "mpns": [
+      "EM9305BS211CS23B",
+      "EM9304V01CS25B",
+      "NXH3670UK/A1Z",
+      "CC2564CRVMR"
+    ],
+    "parts": [
+      {
+        "mpn": "EM9305BS211CS23B",
+        "manufacturer": "EM Microelectronic",
+        "role": "winner",
+        "headline": "3.24 mm^2 (WLCSP23, 1.8x1.8 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.emmicroelectronic.com/sites/default/files/products/datasheets/EM9305-DS.pdf",
+        "note": "Smallest orderable standalone BLE radio; BLE 5.4 companion/HCI, -97 dBm RX, 3.1/3.4 mA RX/TX"
+      },
+      {
+        "mpn": "EM9304V01CS25B",
+        "manufacturer": "EM Microelectronic",
+        "role": "shortlist",
+        "headline": "4.37 mm^2 (WLCSP25, 2.09x2.09 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.emmicroelectronic.com/sites/default/files/products/datasheets/9304-DS.pdf",
+        "note": "Proven predecessor; BLE 5.0 companion IC, -94 dBm RX, one generation behind EM9305"
+      },
+      {
+        "mpn": "NXH3670UK/A1Z",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "7.03 mm^2 (WLCSP34, 2.45x2.87 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/products/wireless-connectivity/bluetooth-le-audio/ultra-low-power-low-latency-audio-for-wireless-gaming-headphone:NXH3670",
+        "note": "True single-chip 2.4 GHz radio but proprietary low-latency audio protocol, not general BLE host offload"
+      },
+      {
+        "mpn": "CC2564CRVMR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "64 mm^2 (VQFN, 8x8 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/cc2564c.pdf",
+        "note": "Classic dual-mode BR/EDR+LE HCI controller for a separate host; mature but ~20x the footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "wifi-transceiver",
+    "name": "Wi-Fi transceiver",
+    "markdown": "### Best in class right now\n**CYW43439KUBGT** \u2014 Infineon (AIROC, ex-Cypress). **13.98 mm\u00b2 footprint (4.87 \u00d7 2.87 mm, 63-ball WLBGA, 0.4 mm pitch)**; single-band 2.4 GHz Wi-Fi 4 (802.11 b/g/n) FullMAC connectivity chip with integrated Bluetooth 5.4, host attach over SDIO or gSPI, integrated PA/LNA/T-R switch. Availability: DigiKey **Active**, 5,445 in stock, **~$4.21/1k**; also Mouser/Arrow. **Why it wins:** It is the smallest genuinely in-production Wi-Fi connectivity IC for an embedded host MCU \u2014 the radio in the Raspberry Pi Pico W \u2014 undercutting the classic 4\u00d74 mm WF200 on area while remaining fully active and the cheapest of the group.\n\n### Shortlist (ranked by the metric)\n1. **CYW43439** (Infineon) \u2014 **13.98 mm\u00b2** (4.87 \u00d7 2.87 WLBGA) \u2014 winner; Wi-Fi 4 + BT combo, host runs the TCP/IP stack (FullMAC), not a stack-offload NCP.\n2. **WF200C / WF200D** (Silicon Labs) \u2014 **16 mm\u00b2** (4\u00d74 QFN32) \u2014 the purest \"Wi-Fi network co-processor\" (no Bluetooth), but WF200C is **NRND** (\"Not For New Designs\"); use WF200D for new work.\n3. **CC3301** (Texas Instruments) \u2014 **25 mm\u00b2** (5\u00d75 QFN40) \u2014 only Wi-Fi **6** silicon here (+ BLE companion), bigger but newer-standard and host-TCP/IP friendly.\n4. **Type 1YN / LBEE5KL1YN** (Murata, on CYW43439) \u2014 **35.8 mm\u00b2** (6.95 \u00d7 5.15 LGA) \u2014 smallest pre-certified *module*; trades bare-die area for a dropped-in, regulatory-certified RF design.\n5. **ST67W611M1** (STMicroelectronics) \u2014 **~151 mm\u00b2** (12.28 \u00d7 12.28 LGA-32) \u2014 largest, but a true offload NCP: Wi-Fi 6 + BLE with on-module TCP/IP, TLS and Matter over a single SPI to the host.\n\n### Comparison\n| Part | Footprint | Type | Wi-Fi std / band | Host I/F | BT | ~1k price |\n|------|-----------|------|------------------|----------|----|-----------|\n| CYW43439 | 13.98 mm\u00b2 | IC (WLBGA) | Wi-Fi 4 b/g/n, 2.4 GHz | SDIO / gSPI | BT 5.4 | ~$4.21 |\n| WF200C/D | 16 mm\u00b2 | IC (QFN32) | Wi-Fi 4 b/g/n, 2.4 GHz | SPI / SDIO | none | ~$4.74 |\n| CC3301 | 25 mm\u00b2 | IC (QFN40) | Wi-Fi 6, 2.4 GHz | SDIO / SPI | BLE | n/c |\n| Type 1YN | 35.8 mm\u00b2 | Module (LGA) | Wi-Fi 4 b/g/n, 2.4 GHz | SDIO | BT 5.x | n/c |\n| ST67W611M1 | ~151 mm\u00b2 | Module (LGA-32) | Wi-Fi 6, 2.4 GHz | SPI / UART | BLE | n/c |\n\n### Caveats\nThe ranking is pure die/module area: by that metric the CYW43439 wins, but note it is a FullMAC combo chip (host runs the network stack and it bundles Bluetooth), whereas the WF200 is the only \"pure\" stack-light Wi-Fi-only co-processor \u2014 and it now carries NRND risk on the WF200C ordering code. Footprints are taken from manufacturer datasheets/distributor parametric data; the 4.87 \u00d7 2.87 mm WLBGA figure for the '43439 appears consistently across Infineon/distributor listings but I could not extract it from the raw datasheet PDF directly. Prices marked \"n/c\" (CC3301, Type 1YN, ST67W611M1) were not independently confirmed at 1k and are omitted rather than guessed.",
+    "mpns": [
+      "CYW43439KUBGT",
+      "WF200C",
+      "CC3301ENJARSBR",
+      "LBEE5KL1YN",
+      "ST67W611M1"
+    ],
+    "parts": [
+      {
+        "mpn": "CYW43439KUBGT",
+        "manufacturer": "Infineon",
+        "role": "winner",
+        "headline": "13.98 mm^2 (4.87 x 2.87 mm WLBGA)",
+        "price_1k": "~$4.21",
+        "datasheet_url": "https://www.infineon.com/part/CYW43439",
+        "note": "Smallest in-production Wi-Fi connectivity IC; Wi-Fi 4 + BT5.4 FullMAC over SDIO/gSPI, host runs TCP/IP."
+      },
+      {
+        "mpn": "WF200C",
+        "manufacturer": "Silicon Labs",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4 x 4 mm QFN32)",
+        "price_1k": "~$4.74",
+        "datasheet_url": "https://www.silabs.com/documents/public/data-sheets/wf200-datasheet.pdf",
+        "note": "Purest Wi-Fi-only network co-processor (no BT), but WF200C is NRND; use WF200D for new designs."
+      },
+      {
+        "mpn": "CC3301ENJARSBR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "25 mm^2 (5 x 5 mm QFN40)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/cc3301.pdf",
+        "note": "Only Wi-Fi 6 silicon here (+BLE companion); larger but newer standard, host TCP/IP."
+      },
+      {
+        "mpn": "LBEE5KL1YN",
+        "manufacturer": "Murata",
+        "role": "shortlist",
+        "headline": "35.8 mm^2 (6.95 x 5.15 mm LGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.murata.com/products/productdata/8815814344734/type1yn.pdf",
+        "note": "Smallest pre-certified module, built on CYW43439; trades area for dropped-in certified RF."
+      },
+      {
+        "mpn": "ST67W611M1",
+        "manufacturer": "STMicroelectronics",
+        "role": "shortlist",
+        "headline": "151 mm^2 (12.28 x 12.28 mm LGA-32)",
+        "price_1k": "",
+        "datasheet_url": "https://www.st.com/resource/en/datasheet/st67w611m1.pdf",
+        "note": "True offload NCP: Wi-Fi 6 + BLE with on-module TCP/IP, TLS and Matter over single SPI."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "uwb-transceiver",
+    "name": "UWB transceiver",
+    "markdown": "### Best in class right now\n**QM33110W** \u2014 Qorvo. WLCSP, **3.1 \u00d7 3.4 mm (\u224810.5 mm\u00b2)** \u2014 the smallest production standalone IEEE 802.15.4z transceiver I could verify. Channels 5 (6.5 GHz) and 9 (8 GHz); HRP PHY at 850 kbps / 6.8 Mbps; single antenna port (TWR ranging, no PDoA), 2.4\u20133.6 V, optimized for coin-cell tags. Availability: in production, orderable at DigiKey/Mouser (sibling QM33120WTR13 \u2248 $11 qty-1; 1k lower). **Why it wins:** identical die-scale footprint to the AoA part but a single RX path means the leanest BOM and lowest ranging power \u2014 exactly the \"smallest footprint, then lowest power\" target.\n\n### Shortlist (ranked by the metric)\n- **QM33110W** (Qorvo) \u2014 3.1 \u00d7 3.4 mm WLCSP (~10.5 mm\u00b2) \u2014 winner; single antenna, lowest-power TWR, no angle measurement.\n- **QM33120W** (Qorvo) \u2014 3.1 \u00d7 3.4 mm WLCSP (~10.5 mm\u00b2) \u2014 same footprint, adds PDoA/AoA (<5\u00b0) via a 2nd antenna port; marginally higher RX power for the extra path.\n- **DW3110** (Qorvo/Decawave) \u2014 3.1 \u00d7 3.4 mm WLCSP \u2014 the same silicon under the legacy Decawave MPN; QM33110W supersedes it, so prefer the QM33 ordering code.\n- **SR150** (NXP Trimension) \u2014 WLCSP68 (larger than the QM33 die) \u2014 AoA-capable, aimed at anchors/phones rather than smallest tags.\n- **SR250** (NXP Trimension) \u2014 5.9 \u00d7 5.7 mm (~33.6 mm\u00b2) \u2014 UWB radar + secure ranging combo; far larger, only if you need integrated sensing.\n\n### Comparison\n| Part | Footprint | Pkg | Channels | Data rates | AoA/PDoA | ~1k price |\n|---|---|---|---|---|---|---|\n| QM33110W | 3.1\u00d73.4 mm (~10.5 mm\u00b2) | WLCSP | 5, 9 | 850k/6.8M | No | ~$ (low qty ~$11) |\n| QM33120W | 3.1\u00d73.4 mm (~10.5 mm\u00b2) | WLCSP | 5, 9 | 850k/6.8M | Yes (<5\u00b0) | ~$11 qty-1 |\n| DW3110 | 3.1\u00d73.4 mm (~10.5 mm\u00b2) | WLCSP | 5, 9 | 850k/6.8M | No | \u2014 |\n| SR150 | larger (WLCSP68) | WLCSP68 | 5, 9 | 850k/6.8M | Yes | \u2014 |\n| SR250 | 5.9\u00d75.7 mm (~33.6 mm\u00b2) | \u2014 | 5, 9 | 850k/6.8M | Yes (+radar) | \u2014 |\n\n### Caveats\nThe QM33110W/QM33120W and the legacy DW3110/DW3120 are the same die in a 3.1 \u00d7 3.4 mm WLCSP, so they tie on the ranking metric; I picked the single-antenna QM33110W as the lowest-power, leanest-BOM option and listed the AoA-capable QM33120W alongside it. I could not independently confirm an exact public footprint for NXP's tag-focused **SR040** (NXP gates the full datasheet), so it is deliberately omitted from the ranked list despite being a plausible small-footprint competitor \u2014 treat that gap as unverified, not as evidence the QM33 is unbeatable. Exact 1k pricing wasn't confirmable at distributors (only qty-1/low-qty figures ~$11), and per-mode ranging current (mA) was not pinned to a primary datasheet number in this pass.",
+    "mpns": [
+      "QM33110W",
+      "QM33120W",
+      "DW3110",
+      "SR150",
+      "SR250"
+    ],
+    "parts": [
+      {
+        "mpn": "QM33110W",
+        "manufacturer": "Qorvo",
+        "role": "winner",
+        "headline": "3.1 x 3.4 mm (~10.5 mm^2) WLCSP",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QM33110W",
+        "note": "Smallest verified 802.15.4z transceiver; single-antenna, lowest-power TWR, no AoA"
+      },
+      {
+        "mpn": "QM33120W",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "3.1 x 3.4 mm (~10.5 mm^2) WLCSP",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QM33120W",
+        "note": "Same footprint as winner, adds PDoA/AoA (<5 deg) via 2nd antenna port"
+      },
+      {
+        "mpn": "DW3110",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "3.1 x 3.4 mm (~10.5 mm^2) WLCSP",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/DW3110",
+        "note": "Legacy Decawave MPN of the same die; superseded by QM33110W"
+      },
+      {
+        "mpn": "SR150",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "WLCSP68 (larger than QM33 die)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/products/SR150",
+        "note": "AoA-capable, aimed at anchors/phones rather than smallest tags"
+      },
+      {
+        "mpn": "SR250",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "5.9 x 5.7 mm (~33.6 mm^2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/products/SR250",
+        "note": "UWB radar + secure ranging combo; much larger footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "smallest-mcu",
+    "name": "Smallest MCU (any)",
+    "markdown": "### Best in class right now\n**MSPM0C1104S8YCJR** \u2014 Texas Instruments. **1.38 mm\u00b2** footprint (8-ball DSBGA/WLCSP, 0.86 \u00d7 1.6 mm, 0.4 mm pitch) \u2014 roughly the size of an 0603 resistor and ~38% smaller than the next-smallest MCU. 24 MHz Arm Cortex-M0+, 16 KB flash, 1 KB SRAM, 6 GPIO, 12-bit 3-ch ADC, UART/SPI/I\u00b2C, 1-ch DMA, CRC-16, 5 V-tolerant I/O. Availability: DigiKey lists it **Active**, ~8,700 in stock, **$0.357 @ 1k**; also stocked at Mouser. **Why it wins:** Launched March 2025 as the explicitly marketed \"world's smallest MCU,\" its sub-1.4 mm\u00b2 die-size package beats every other orderable MCU on pure board area while still carrying a real ADC and the three standard serial buses.\n\n### Shortlist (ranked by the metric)\n- **MSPM0C1104S8YCJR** (Texas Instruments) \u2014 **1.38 mm\u00b2** (0.86 \u00d7 1.6 mm, 8-ball) \u2014 the winner; smallest, but only 6 GPIO / 24 MHz / 1 KB RAM.\n- **STM32C011D6Y6TR** (STMicroelectronics) \u2014 **2.41 mm\u00b2** (1.70 \u00d7 1.42 mm, WLCSP12) \u2014 ~75% larger area, but faster 48 MHz core, 32 KB flash, 6 KB RAM and more I/O.\n- **MKL03Z32CAF4R** (NXP Kinetis KL03) \u2014 **3.22 mm\u00b2** (1.61 \u00d7 2.0 mm, WLCSP20) \u2014 older (2014) part; biggest GPIO budget here (~26 I/O), 48 MHz, 32 KB/2 KB.\n- **ATSAMD11D14A-UUT** (Microchip SAM D11) \u2014 **4.56 mm\u00b2** (1.9 \u00d7 2.4 mm, WLCSP20) \u2014 largest of the group; 48 MHz, 16 KB flash, 4 KB RAM, adds USB if needed elsewhere in family.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Package | Core / Clock | Flash / RAM | GPIO | ~1k price |\n|---|---|---|---|---|---|---|\n| MSPM0C1104S8YCJR | **1.38** | 8-ball DSBGA | Cortex-M0+ / 24 MHz | 16 KB / 1 KB | 6 | $0.36 |\n| STM32C011D6Y6TR | 2.41 | WLCSP12 | Cortex-M0+ / 48 MHz | 32 KB / 6 KB | ~10 | ~$0.60* |\n| MKL03Z32CAF4R | 3.22 | WLCSP20 | Cortex-M0+ / 48 MHz | 32 KB / 2 KB | ~26 | ~$0.80* |\n| ATSAMD11D14A-UUT | 4.56 | WLCSP20 | Cortex-M0+ / 48 MHz | 16 KB / 4 KB | ~20 | ~$0.80* |\n\n### Caveats\nFootprints are package body dimensions from manufacturer/distributor data (die-size CSPs, so the PCB land is essentially the body plus solder-ball spread); all four are 0.35\u20130.5 mm-pitch BGAs needing fine PCB/assembly capability, not hand soldering. Only the TI 1k price ($0.357, DigiKey) was directly verified \u2014 the ST/NXP/Microchip \"~1k\" figures (marked *) are approximations extrapolated from single-unit distributor pricing and should be re-quoted before design-in. The KL03 dates from 2014 and, while still orderable, carries the highest long-term-availability risk of the group; TI's MSPM0C1104 is the newest and the clear, uncontested winner on the size metric.",
+    "mpns": [
+      "MSPM0C1104S8YCJR",
+      "STM32C011D6Y6TR",
+      "MKL03Z32CAF4R",
+      "ATSAMD11D14A-UUT"
+    ],
+    "parts": [
+      {
+        "mpn": "MSPM0C1104S8YCJR",
+        "manufacturer": "Texas Instruments",
+        "role": "winner",
+        "headline": "1.38 mm^2 (0.86 x 1.6 mm, 8-ball DSBGA)",
+        "price_1k": "~$0.36",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/mspm0c1104.pdf",
+        "note": "World's smallest orderable MCU; 24 MHz M0+, 16 KB/1 KB, 6 GPIO, 12-bit ADC"
+      },
+      {
+        "mpn": "STM32C011D6Y6TR",
+        "manufacturer": "STMicroelectronics",
+        "role": "shortlist",
+        "headline": "2.41 mm^2 (1.70 x 1.42 mm, WLCSP12)",
+        "price_1k": "~$0.60",
+        "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32c011d6.pdf",
+        "note": "~75% larger than winner but 48 MHz, 32 KB flash, 6 KB RAM, more I/O"
+      },
+      {
+        "mpn": "MKL03Z32CAF4R",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "3.22 mm^2 (1.61 x 2.0 mm, WLCSP20)",
+        "price_1k": "~$0.80",
+        "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/KL03P24M48SF0.pdf",
+        "note": "2014-era Kinetis KL03; most GPIO (~26), 48 MHz, 32 KB/2 KB; older-part availability risk"
+      },
+      {
+        "mpn": "ATSAMD11D14A-UUT",
+        "manufacturer": "Microchip",
+        "role": "shortlist",
+        "headline": "4.56 mm^2 (1.9 x 2.4 mm, WLCSP20)",
+        "price_1k": "~$0.80",
+        "datasheet_url": "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-42363-SAM-D11_Datasheet.pdf",
+        "note": "Largest here; 48 MHz, 16 KB/4 KB, SAM D11 family adds USB option"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "smallest-zephyr-mcu",
+    "name": "Smallest Zephyr-supported MCU",
+    "markdown": "### Best in class right now\n**STM32C011D6Y6TR** \u2014 STMicroelectronics. **2.41 mm\u00b2** package footprint (WLCSP12, 1.70 \u00d7 1.42 mm); Arm Cortex\u2011M0+ @ 48 MHz, 32 KB flash, 6 KB RAM, no radio (UART/I\u00b2C/SPI, 12\u2011bit ADC). Confirmed upstream: the `stm32c011` die is defined in Zephyr's `dts/arm/st/c0/stm32c0.dtsi` (STM32C0 SoC series support). Availability: in full production, ~60k stock at Future Electronics, ~$0.36 each at 5k (\u2248$0.40/1k). **Why it wins:** at 2.41 mm\u00b2 it is the smallest *orderable* package among MCUs with genuine upstream Zephyr SoC support \u2014 edging the MAX32660 by a hair while being far cheaper.\n\n### Shortlist (ranked by the metric)\n- **STM32C011D6Y6TR** (STMicroelectronics) \u2014 **2.41 mm\u00b2** (WLCSP12) \u2014 smallest footprint and cheapest, but a minimal M0+ (32 KB/6 KB, no radio) and no dedicated Zephyr *board* (SoC/dts support only).\n- **MAX32660GWE+** (Analog Devices) \u2014 **~2.43 mm\u00b2** (16\u2011WLP, 1.55 \u00d7 1.57 mm) \u2014 effectively tied on size; vastly more capable (M4F @ 96 MHz, 256 KB/96 KB) and has a dedicated upstream board (`max32660evsys`), but ~5\u00d7 the price.\n- **nRF52805\u2011CAAA** (Nordic) \u2014 **6.10 mm\u00b2** (WLCSP, 2.48 \u00d7 2.46 mm) \u2014 only one here with a radio (BLE 5.2, M4 @ 64 MHz, 192 KB/24 KB); ~2.5\u00d7 the footprint.\n- **nRF52811\u2011CAAA** (Nordic) \u2014 **6.10 mm\u00b2** (WLCSP, 2.48 \u00d7 2.46 mm) \u2014 same die size as the 52805 with BLE 5.1 direction\u2011finding/LE Coded PHY; included to show the smallest *wireless* Zephyr option.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Package | Core / Clock | Flash / RAM | Connectivity | Zephyr support | ~1k price |\n|---|---|---|---|---|---|---|---|\n| **STM32C011D6Y6TR** | **2.41** | WLCSP12 (1.70\u00d71.42) | M0+ / 48 MHz | 32 KB / 6 KB | UART/I\u00b2C/SPI | SoC (dts) | ~$0.40 |\n| MAX32660GWE+ | ~2.43 | 16\u2011WLP (1.55\u00d71.57) | M4F / 96 MHz | 256 KB / 96 KB | I\u00b2C/SPI/UART | Board (`max32660evsys`) | ~$2.00 |\n| nRF52805\u2011CAAA | 6.10 | WLCSP (2.48\u00d72.46) | M4 / 64 MHz | 192 KB / 24 KB | BLE 5.2 | Board (`nrf52dk/nrf52805`) | n/a |\n| nRF52811\u2011CAAA | 6.10 | WLCSP (2.48\u00d72.46) | M4 / 64 MHz | 192 KB / 24 KB | BLE 5.1 (DF) | Board (`nrf52dk/nrf52811`) | n/a |\n\n### Caveats\nThe top two are a statistical tie: STM32C011 WLCSP12 (2.41 mm\u00b2) vs MAX32660 16\u2011WLP (DigiKey lists 1.55\u00d71.57 \u2248 2.43 mm\u00b2, but ADI's datasheet states 1.6\u00d71.6 \u2248 2.56 mm\u00b2) \u2014 within package-measurement tolerance, so a buyer prioritizing capability over ~0.8% area should treat the MAX32660 as co\u2011leader. Note the STM32C011 has upstream *SoC/dts* support but no dedicated upstream board, whereas the MAX32660 and nRF parts ship with named boards. The genuinely smaller TI MSPM0C1104 (1.38 mm\u00b2) was deliberately excluded: as of June 2026 upstream Zephyr supports only the MSPM0G/L LaunchPads, not the C\u2011series die. nRF 1k pricing was not independently confirmed and is left blank.",
+    "mpns": [
+      "STM32C011D6Y6TR",
+      "MAX32660GWE+",
+      "nRF52805-CAAA",
+      "nRF52811-CAAA"
+    ],
+    "parts": [
+      {
+        "mpn": "STM32C011D6Y6TR",
+        "manufacturer": "STMicroelectronics",
+        "role": "winner",
+        "headline": "2.41 mm^2 (WLCSP12, 1.70 x 1.42 mm)",
+        "price_1k": "~$0.40",
+        "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32c011d6.pdf",
+        "note": "Smallest orderable footprint with upstream Zephyr SoC support; M0+ 48 MHz, 32 KB/6 KB, no radio, very cheap"
+      },
+      {
+        "mpn": "MAX32660GWE+",
+        "manufacturer": "Analog Devices (Maxim)",
+        "role": "shortlist",
+        "headline": "~2.43 mm^2 (16-WLP, 1.55 x 1.57 mm)",
+        "price_1k": "~$2.00",
+        "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX32660.pdf",
+        "note": "Effectively tied on size but far more capable: M4F 96 MHz, 256 KB/96 KB; dedicated upstream board max32660evsys"
+      },
+      {
+        "mpn": "nRF52805-CAAA",
+        "manufacturer": "Nordic Semiconductor",
+        "role": "shortlist",
+        "headline": "6.10 mm^2 (WLCSP, 2.48 x 2.46 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nordicsemi.com/-/media/Software-and-other-downloads/Product-Briefs/nRF52805-SoC-PB.pdf",
+        "note": "Smallest Zephyr MCU with an integrated radio (BLE 5.2); ~2.5x the winner's area"
+      },
+      {
+        "mpn": "nRF52811-CAAA",
+        "manufacturer": "Nordic Semiconductor",
+        "role": "shortlist",
+        "headline": "6.10 mm^2 (WLCSP, 2.48 x 2.46 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nordicsemi.com/-/media/Software-and-other-downloads/Product-Briefs/nRF52811-product-brief.pdf",
+        "note": "Same die size as nRF52805 with BLE 5.1 direction finding / LE Coded PHY"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "ble-mcu-easy-layout",
+    "name": "Smallest easy-to-layout BLE MCU",
+    "markdown": "### Best in class right now\n**DA14531** (DA14531-00000FX2 / -01000OG2) \u2014 Renesas (SmartBond TINY). **1.7 \u00d7 2.0 mm WLCSP17 \u2248 3.4 mm\u00b2** \u2014 the smallest production BLE SoC, and a complete radio needs only **6 external passives + a 32 MHz crystal + power**. Integrated buck/boost/bypass DC-DC PMU (no inductor in bypass off a 1.5 V cell), single-ended RF with a 3-element low-pass match, Arm Cortex-M0+, 48 KB RAM + OTP, ~240 nA hibernation. 2-layer layout is explicitly supported in Renesas' hardware guidelines. Availability: DigiKey, in stock, ~$1.85/1pc (WLCSP), volume noticeably lower. **Why it wins:** nothing orderable beats its footprint, and the 6-passive BOM with on-chip DC-DC means the whole radio fits on a cheap 2-layer board with one matching network \u2014 exactly the ranking metric.\n\n### Shortlist (ranked by the metric)\n- **DA14531** (Renesas) \u2014 ~3.4 mm\u00b2 WLCSP, 6 externals \u2014 the winner; tradeoff is ROM+OTP (no large embedded flash), so OTA designs usually add an external SPI flash.\n- **nRF52805** (Nordic) \u2014 ~6.1 mm\u00b2 WLCSP (2.48 \u00d7 2.46 mm), ~10 externals \u2014 purpose-built for 2-layer boards and has true 192 KB embedded flash, but ~2\u00d7 the area and more passives than the DA14531.\n- **DA14535** (Renesas) \u2014 ~6.6 mm\u00b2 FCGQFN24 (2.2 \u00d7 3.0 mm), 6 externals \u2014 newer BLE 5.3 and the easiest to hand-lay-out (QFN, not WLCSP), pin-compatible with the 531; only the QFN is broadly stocked today, so it's bigger than the 531 WLCSP.\n- **CC2340R2** (TI) \u2014 16 mm\u00b2 QFN24 (4 \u00d7 4 mm), integrated balun \u2192 single-ended 50 \u03a9 \u2014 much larger, but trivially 2-layer-friendly, 256 KB embedded flash, <0.71 \u00b5A standby, and by far the cheapest (~$0.80 class).\n\n### Comparison\n\n| Part | Footprint (mm\u00b2) | Externals | Integrated DC-DC / match | Flash / RAM | Sleep | ~1k price |\n|---|---|---|---|---|---|---|\n| **DA14531** (Renesas) | **~3.4** WLCSP | ~6 + xtal | Buck/boost/bypass; single-ended LPF | OTP+ext / 48 KB | ~240 nA | ~$1.3* |\n| nRF52805 (Nordic) | ~6.1 WLCSP | ~10 + xtal | DC-DC; \u03c0-match | 192 KB / 24 KB | ~0.3 \u00b5A off | ~$2.0* |\n| DA14535 (Renesas) | ~6.6 QFN24 | ~6 + xtal | Buck/boost/bypass; single-ended | OTP+ext / 64 KB | ~150 nA | ~$1.0* |\n| CC2340R2 (TI) | 16 QFN24 | few + xtal | Integrated balun (single-ended 50 \u03a9) | 256 KB / 36 KB | <0.71 \u00b5A | ~$0.8* |\n\n\\*Volume estimates extrapolated from single-unit distributor pricing \u2014 see caveats.\n\n### Caveats\n1k pricing is estimated from confirmed single-unit DigiKey listings (DA14531 ~$1.85, nRF52805 ~$2.76), not independently verified at 1,000 qty. The DA14531/535 are ROM+OTP parts with no large embedded flash, so field-updatable (OTA) designs typically add an external SPI flash \u2014 a part the embedded-flash nRF52805 and CC2340R2 don't need; if you weight \"fewest total externals incl. memory,\" that narrows the 531's lead. WLCSP on 2-layer is feasible but needs careful pad/via design; the QFN DA14535 and CC2340R2 are genuinely easier to route by hand despite larger area.",
+    "mpns": [
+      "DA14531-00000FX2",
+      "NRF52805-CAAA-R",
+      "DA14535-00000FX2",
+      "CC2340R21N0RGER"
+    ],
+    "parts": [
+      {
+        "mpn": "DA14531-00000FX2",
+        "manufacturer": "Renesas",
+        "role": "winner",
+        "headline": "~3.4 mm^2 (1.7x2.0 mm WLCSP17)",
+        "price_1k": "~$1.3",
+        "datasheet_url": "https://www.renesas.com/en/document/dst/da14531-datasheet",
+        "note": "Smallest orderable BLE SoC; 6 passives + xtal, integrated buck/boost DC-DC, 2-layer friendly; ROM+OTP (add ext flash for OTA)"
+      },
+      {
+        "mpn": "NRF52805-CAAA-R",
+        "manufacturer": "Nordic Semiconductor",
+        "role": "shortlist",
+        "headline": "~6.1 mm^2 (2.48x2.46 mm WLCSP)",
+        "price_1k": "~$2.0",
+        "datasheet_url": "https://www.nordicsemi.com/Products/nRF52805",
+        "note": "Purpose-built for 2-layer; true 192 KB embedded flash but ~2x area and ~10 externals"
+      },
+      {
+        "mpn": "DA14535-00000FX2",
+        "manufacturer": "Renesas",
+        "role": "shortlist",
+        "headline": "~6.6 mm^2 (2.2x3.0 mm FCGQFN24)",
+        "price_1k": "~$1.0",
+        "datasheet_url": "https://www.renesas.com/en/document/dst/da14535-datasheet",
+        "note": "BLE 5.3 successor to DA14531, 6 externals, QFN is easiest to lay out; WLCSP not widely stocked yet"
+      },
+      {
+        "mpn": "CC2340R21N0RGER",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4x4 mm QFN24)",
+        "price_1k": "~$0.8",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/cc2340r2.pdf",
+        "note": "Integrated balun, 256 KB embedded flash, cheapest and very 2-layer friendly, but largest footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "ble-mcu-strong",
+    "name": "Smallest high-performance BLE MCU",
+    "markdown": "### Best in class right now\n**NRF54L15-CAAA-R** \u2014 Nordic Semiconductor. **2.45 \u00d7 2.25 mm WLCSP-47 (\u22485.5 mm\u00b2)** \u2014 the smallest footprint among genuinely high-compute BLE SoCs; 128 MHz Arm Cortex-M33 (DSP + FPU), 1.5 MB NVM, 256 KB RAM, TrustScale of TrustZone + CryptoCell-312 secure-boot, Bluetooth 5.4 with LE Coded PHY and Channel Sounding. Availability: DigiKey, in production, ~3,298 in stock, **~$2.60 @1k**. **Why it wins:** No other part pairs a 128 MHz Cortex-M33 with 1.5 MB/256 KB memory in a sub-6 mm\u00b2 package \u2014 it is both the fastest and the smallest of the strong-compute field.\n\n### Shortlist (ranked by the metric)\n- **NRF54L15-CAAA-R** (Nordic) \u2014 **\u22485.5 mm\u00b2 (2.45 \u00d7 2.25)** \u2014 winner: smallest *and* highest-clock (128 MHz) with the largest RAM/flash.\n- **EFR32BG27C320F768GJ39** (Silicon Labs) \u2014 **\u22485.98 mm\u00b2 (2.3 \u00d7 2.6 WLCSP-39)** \u2014 nearly as tiny, but compute-light (76.8 MHz, 768 KB/64 KB, BLE 5.2); only edges the field on size if you relax the \"high-performance\" bar.\n- **EFR32BG24B310F1536IJ42** (Silicon Labs) \u2014 **\u22489.3 mm\u00b2 (3.1 \u00d7 3.0 CSP-42)** \u2014 matches the winner's 1.5 MB/256 KB and adds an AI/ML accelerator + Secure Vault, but ~70% larger and only 78 MHz.\n- **STM32WBA55CG** (STMicroelectronics) \u2014 **\u22489.6 mm\u00b2 (3.1 \u00d7 3.1 Thin WLCSP-41, approx.)** \u2014 100 MHz, TrustZone, BLE 5.4, but half the RAM (128 KB) and a notably bigger die.\n\n### Comparison\n| Part | Footprint | Core / clock | Flash / RAM | Security | BLE | ~1k price |\n|------|-----------|--------------|-------------|----------|-----|-----------|\n| **NRF54L15-CAAA-R** | **5.5 mm\u00b2** | M33 @128 MHz, FPU+DSP | 1.5 MB / 256 KB | TrustZone + CryptoCell | 5.4, CS, Coded | ~$2.60 |\n| EFR32BG27C320F768GJ39 | 5.98 mm\u00b2 | M33 @76.8 MHz | 768 KB / 64 KB | TrustZone | 5.2 | ~$2 (est.) |\n| EFR32BG24B310F1536IJ42 | 9.3 mm\u00b2 | M33 @78 MHz | 1.5 MB / 256 KB | TrustZone + Secure Vault | 5.3/5.4 | ~$3 (est.) |\n| STM32WBA55CG | ~9.6 mm\u00b2 | M33 @100 MHz | 1 MB / 128 KB | TrustZone | 5.4 | ~$2.5 (est.) |\n\n### Caveats\nThe EM9305 (EM Microelectronic) is physically smaller at 1.8 \u00d7 1.8 mm but is **disqualified** here: it runs a Synopsys ARC EM7D core (not a Cortex-M33) with little flash/RAM, so it cannot serve demanding M33/TrustZone firmware. The STM32WBA55 WLCSP-41 area (~3.1 \u00d7 3.1 mm) is approximate \u2014 I could not extract the exact mechanical figure from ST's datasheet (the PDF timed out) \u2014 and the BG27/BG24/WBA \"@1k\" prices are rough estimates, not confirmed distributor quotes (only the nRF54L15 price/stock was verified, at DigiKey). The nRF54L15-CAAA WLCSP is current production, not NRND.",
+    "mpns": [
+      "NRF54L15-CAAA-R",
+      "EFR32BG27C320F768GJ39",
+      "EFR32BG24B310F1536IJ42",
+      "STM32WBA55CG"
+    ],
+    "parts": [
+      {
+        "mpn": "NRF54L15-CAAA-R",
+        "manufacturer": "Nordic Semiconductor",
+        "role": "winner",
+        "headline": "5.5 mm^2 (2.45 x 2.25 WLCSP-47)",
+        "price_1k": "~$2.60",
+        "datasheet_url": "https://www.nordicsemi.com/Products/nRF54L15",
+        "note": "Smallest footprint with the highest clock (128 MHz M33) and largest memory (1.5MB/256KB); BLE 5.4 + Channel Sounding."
+      },
+      {
+        "mpn": "EFR32BG27C320F768GJ39",
+        "manufacturer": "Silicon Labs",
+        "role": "shortlist",
+        "headline": "5.98 mm^2 (2.3 x 2.6 WLCSP-39)",
+        "price_1k": "",
+        "datasheet_url": "https://www.silabs.com/documents/public/data-sheets/efr32bg27-datasheet.pdf",
+        "note": "Nearly as small but compute-light: 76.8 MHz, 768KB/64KB, BLE 5.2."
+      },
+      {
+        "mpn": "EFR32BG24B310F1536IJ42",
+        "manufacturer": "Silicon Labs",
+        "role": "shortlist",
+        "headline": "9.3 mm^2 (3.1 x 3.0 CSP-42)",
+        "price_1k": "",
+        "datasheet_url": "https://www.silabs.com/documents/public/data-sheets/efr32bg24-datasheet-CSP.pdf",
+        "note": "Matches winner's 1.5MB/256KB + AI/ML accelerator, but ~70% larger and only 78 MHz."
+      },
+      {
+        "mpn": "STM32WBA55CG",
+        "manufacturer": "STMicroelectronics",
+        "role": "shortlist",
+        "headline": "~9.6 mm^2 (3.1 x 3.1 WLCSP-41, approx.)",
+        "price_1k": "",
+        "datasheet_url": "https://www.st.com/resource/en/datasheet/stm32wba55ug.pdf",
+        "note": "100 MHz M33, BLE 5.4, but half the RAM (128KB) and a much larger die."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "fpga-weak",
+    "name": "Smallest low-capacity (weak) FPGA",
+    "markdown": "### Best in class right now\n**ICE40UL1K-SWG16ITR50** \u2014 Lattice Semiconductor (iCE40 UltraLite). **1.40 \u00d7 1.48 mm 16-ball WLCSP (\u22482.07 mm\u00b2, 0.35 mm pitch)** \u2014 the smallest packaged FPGA in volume production. 1,248 logic cells (LUT4), 56 Kbit (57,344-bit) sysMEM EBR, 10 I/O in this package, and **NVCM on-chip non-volatile config \u2192 instant-on, single-chip** (no external flash). Availability: in stock at Mouser ~$3.30/1 (the SWG16 reel was discontinued at DigiKey, so qualify a second source); 1k pricing not independently confirmed. **Why it wins:** No other low-density FPGA ships in a footprint this small, and the UL1K packs the most logic of the SWG16-package parts while staying single-chip thanks to NVCM.\n\n### Shortlist (ranked by the metric)\n- **ICE40UL1K-SWG16ITR50** (Lattice) \u2014 1.40 \u00d7 1.48 mm WLCSP (~2.07 mm\u00b2) \u2014 winner; smallest package + most logic (1,248 LE) + NVCM instant-on.\n- **ICE40UL640-SWG16ITR1K** (Lattice) \u2014 1.40 \u00d7 1.48 mm WLCSP (~2.07 mm\u00b2) \u2014 identical package, NVCM; only 640 LE, but the most cleanly orderable of the family (~$1.31/1k via secondary listings).\n- **ICE40LP1K-SWG16TR1K** (Lattice, iCE40 LP) \u2014 1.40 \u00d7 1.48 mm WLCSP (~2.07 mm\u00b2) \u2014 same package, ~1,280 LE, but **SRAM config \u2192 needs an external SPI flash**, so not single-chip/instant-on.\n- **GW1NZ-LV1CS16** (Gowin, GW1NZ) \u2014 1.8 \u00d7 1.8 mm CSP16 (~3.24 mm\u00b2) \u2014 next-smallest; non-volatile (embedded flash), 1,152 LUT4 and far more RAM (72 Kbit BSRAM + 64 Kbit user flash), but ~56% larger footprint.\n\n### Comparison\n\n| Part | Package (mm / mm\u00b2) | Logic (LUT4) | RAM | I/O (this pkg) | Config | ~1k price |\n|------|--------------------|--------------|-----|----------------|--------|-----------|\n| ICE40UL1K-SWG16 (winner) | 1.40\u00d71.48 / 2.07 | 1,248 | 56 Kbit EBR | 10 | NVCM (non-volatile) | n/c (~$3.30/1) |\n| ICE40UL640-SWG16 | 1.40\u00d71.48 / 2.07 | 640 | 28 Kbit EBR | 10 | NVCM (non-volatile) | ~$1.31 |\n| ICE40LP1K-SWG16 | 1.40\u00d71.48 / 2.07 | ~1,280 | 64 Kbit EBR | 10 | SRAM (ext. flash) | ~$1.30 |\n| GW1NZ-LV1CS16 | 1.8\u00d71.8 / 3.24 | 1,152 | 72 Kbit BSRAM +64 Kbit flash | ~11 | Non-volatile (flash) | n/c |\n\n### Caveats\nThe three SWG16 parts are a **true tie on the ranking metric** \u2014 they share the identical 1.40 \u00d7 1.48 mm WLCSP body \u2014 so the winner was chosen on tiebreakers (most logic + single-chip NVCM); pick the UL640 if you want the cleanest stock, or the LP1K if you can spare an external flash. Availability is the main risk: the UL1K SWG16 reel shows as discontinued/0-stock at DigiKey while Mouser still lists it, so verify your distributor and second-source before committing. RAM bit-counts for the UL640 (28 Kbit) and the LP1K I/O/RAM figures come from family datasheets rather than the exact SWG16 part page, and 1k pricing for the WLCSP parts could not be confirmed from a primary distributor (the ~$1.3 figures are from aggregator listings).",
+    "mpns": [
+      "ICE40UL1K-SWG16ITR50",
+      "ICE40UL640-SWG16ITR1K",
+      "ICE40LP1K-SWG16TR1K",
+      "GW1NZ-LV1CS16"
+    ],
+    "parts": [
+      {
+        "mpn": "ICE40UL1K-SWG16ITR50",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "winner",
+        "headline": "1.40 x 1.48 mm WLCSP (2.07 mm^2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.latticesemi.com/~/media/LatticeSemi/Documents/DataSheets/iCE/iCE40UltraLiteDataSheetDS1050.pdf",
+        "note": "Smallest packaged FPGA in production; 1248 LE + NVCM instant-on, single-chip; verify distributor (Mouser stocks, DigiKey discontinued reel)."
+      },
+      {
+        "mpn": "ICE40UL640-SWG16ITR1K",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "1.40 x 1.48 mm WLCSP (2.07 mm^2)",
+        "price_1k": "~$1.31",
+        "datasheet_url": "https://www.latticesemi.com/~/media/LatticeSemi/Documents/DataSheets/iCE/iCE40UltraLiteDataSheetDS1050.pdf",
+        "note": "Same tiny package, NVCM, most cleanly orderable; only 640 LE."
+      },
+      {
+        "mpn": "ICE40LP1K-SWG16TR1K",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "1.40 x 1.48 mm WLCSP (2.07 mm^2)",
+        "price_1k": "~$1.30",
+        "datasheet_url": "https://www.latticesemi.com/~/media/latticesemi/documents/datasheets/ice/ice40lphxfamilydatasheet.pdf",
+        "note": "Identical package, ~1280 LE, but SRAM config needs external SPI flash (not instant-on)."
+      },
+      {
+        "mpn": "GW1NZ-LV1CS16",
+        "manufacturer": "Gowin Semiconductor",
+        "role": "shortlist",
+        "headline": "1.8 x 1.8 mm CSP16 (3.24 mm^2)",
+        "price_1k": "",
+        "datasheet_url": "https://cdn.gowinsemi.com.cn/DS841E.pdf",
+        "note": "Next-smallest; non-volatile flash, 1152 LUT4 with much more RAM, but ~56% larger footprint."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "fpga-medium",
+    "name": "Smallest mid-capacity FPGA",
+    "markdown": "### Best in class right now\n**TI60V64I3** \u2014 Efinix (Titanium Ti60). **64-ball WLCSP, 3.5 \u00d7 3.4 mm \u2248 11.9 mm\u00b2** (0.4 mm pitch); 62,016 logic elements on 16 nm, dedicated DSP blocks, 10\u2011kbit embedded SRAM blocks, hardened MIPI D\u2011PHY (configurable RX/TX lanes) + LPDDR4/4x controller, LVDS I/O. Availability: in production; DigiKey lists the WLCSP industrial part (TI60V64I3) in stock (~2,400 pcs) at ~$36 (1\u2011off) \u2014 1k price lower, not separately confirmed. **Why it wins:** it delivers the most logic (62K LE) in the smallest footprint of any production mid\u2011capacity FPGA \u2014 the same 11.9 mm\u00b2 WLCSP as the lower\u2011density Ti35, so nothing in the 10K\u2013100K LE band reaches the job in a smaller package.\n\n### Shortlist (ranked by the metric)\n- **TI60V64I3 / Ti60** (Efinix) \u2014 **11.9 mm\u00b2** (3.5\u00d73.4 WLCSP\u201164) \u2014 winner; 62K LE, richest logic/DSP/MIPI in the smallest package.\n- **TI35..W64 / Ti35** (Efinix) \u2014 **11.9 mm\u00b2** (3.5\u00d73.4 WLCSP\u201164) \u2014 ties the winner's footprint exactly but with ~36K LE; pick it only if 62K is overkill.\n- **LIFCL-17-..UWG72 / CrossLink-NX-17** (Lattice) \u2014 **15.2 mm\u00b2** (3.7\u00d74.1 WLCSP\u201172) \u2014 ~28% larger; only 17K LC, but very strong MIPI D\u2011PHY (up to 2.5 Gbps/lane) for sensor bridging.\n- **LIFCL-33-..USG84 / CrossLink-NX-33** (Lattice) \u2014 **22.2 mm\u00b2** (3.05\u00d77.28 WLCSP\u201184) \u2014 nearly 2\u00d7 the winner's area for 33K LC; competitive only if you prefer Lattice/Nexus tooling.\n\n### Comparison\n| Part | Smallest pkg (mm\u00b2) | Package | Logic (LE/LC) | MIPI D\u2011PHY | ~1k price |\n|------|-------------------|---------|---------------|-----------|-----------|\n| **Ti60** (TI60V64I3) | **11.9** | WLCSP\u201164, 3.5\u00d73.4 | 62,016 LE | Hardened, up to 1.5 Gbps/lane | ~$36 (1\u2011off) |\n| Ti35 (Ti35 W64) | 11.9 | WLCSP\u201164, 3.5\u00d73.4 | 36,176 LE | Hardened, up to 1.5 Gbps/lane | n/v |\n| CrossLink-NX-17 (LIFCL-17) | 15.2 | WLCSP\u201172, 3.7\u00d74.1 | 17,000 LC | Up to 2.5 Gbps/lane | n/v |\n| CrossLink-NX-33 (LIFCL-33) | 22.2 | WLCSP\u201184, 3.05\u00d77.28 | 33,000 LC | Up to 2.5 Gbps/lane | n/v |\n\n### Caveats\nThe ranking metric (package footprint) is solid and from primary sources, but I could not independently confirm 1k pricing for any part except a single\u2011unit DigiKey figure for the Ti60 WLCSP, nor exact DSP/RAM block counts per device, so those are described qualitatively. Note a real NRND risk on Efinix WLCSP: the *commercial* Ti60 WLCSP (TI60W64C3) is marked obsolete on DigiKey \u2014 the 11.9 mm\u00b2 footprint stays orderable only via the *industrial* TI60V64I3, so verify the exact suffix before designing in. Ti60 and Ti35 are an exact tie on the metric (identical 3.5\u00d73.4 mm WLCSP); the win goes to the Ti60 purely on more usable logic in that same footprint.",
+    "mpns": [
+      "TI60V64I3",
+      "TI35W64C3",
+      "LIFCL-17-7UWG72C",
+      "LIFCL-33-8USG84I"
+    ],
+    "parts": [
+      {
+        "mpn": "TI60V64I3",
+        "manufacturer": "Efinix",
+        "role": "winner",
+        "headline": "11.9 mm^2 (3.5x3.4 mm WLCSP-64)",
+        "price_1k": "~$36 (1-off DigiKey)",
+        "datasheet_url": "https://www.efinixinc.com/docs/titanium60-ds-v2.7.pdf",
+        "note": "62K LE in the smallest production WLCSP; use industrial V64 suffix (commercial W64C3 is obsolete)."
+      },
+      {
+        "mpn": "TI35W64C3",
+        "manufacturer": "Efinix",
+        "role": "shortlist",
+        "headline": "11.9 mm^2 (3.5x3.4 mm WLCSP-64)",
+        "price_1k": "",
+        "datasheet_url": "https://www.efinixinc.com/shop/ti35.php",
+        "note": "Ties winner's footprint exactly but only ~36K LE."
+      },
+      {
+        "mpn": "LIFCL-17-7UWG72C",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "15.2 mm^2 (3.7x4.1 mm WLCSP-72)",
+        "price_1k": "",
+        "datasheet_url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/DataSheets/CrossLink/FPGA-DS-02049-0-83-CrossLink-NX-Family-Preliminary.ashx?document_id=52780",
+        "note": "~28% larger; 17K LC with strong MIPI D-PHY for sensor bridging."
+      },
+      {
+        "mpn": "LIFCL-33-8USG84I",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "22.2 mm^2 (3.05x7.28 mm WLCSP-84)",
+        "price_1k": "",
+        "datasheet_url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/DataSheets/CrossLink/FPGA-DS-02049-0-83-CrossLink-NX-Family-Preliminary.ashx?document_id=52780",
+        "note": "Nearly 2x winner's area for 33K LC; Nexus tooling alternative."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "fpga-strong",
+    "name": "Smallest high-capacity (strong) FPGA",
+    "markdown": "### Best in class right now\n**Ti135F441** \u2014 Efinix (Titanium). **121 mm\u00b2 (11 \u00d7 11 mm, 441-ball FBGA, 0.5 mm pitch)**; 132,192 logic elements, 480 DSP blocks, 9.83 Mb embedded RAM, 8-lane transceiver block (PMA up to 12.5 Gbps) with hardened **PCIe Gen4 x4**, hardened RISC-V, and an LPDDR4/4x x16/x32 controller \u2014 all on TSMC 16 nm. Availability: in production; listed at DigiKey/Mouser via Efinix, eval HW shipping (Sundance SMT135-C). ~1k price not publicly posted (request quote). **Why it wins:** among FPGAs that genuinely qualify as high-performance \u2014 six-figure LE count *plus* real multi-gigabit SerDes and hard PCIe Gen4 \u2014 nothing else puts that capability into an 11 \u00d7 11 mm footprint.\n\n### Shortlist (ranked by the metric)\n- **Ti135F441** (Efinix) \u2014 **121 mm\u00b2 (11\u00d711)** \u2014 winner; 132K LE + PCIe Gen4 + 8\u00d7 \u226412.5 Gbps SerDes in the smallest qualifying package.\n- **Ti85F441** (Efinix) \u2014 **121 mm\u00b2 (11\u00d711)** \u2014 same tiny package and transceiver/PCIe Gen4 fabric but only ~83K LE; shows 11\u00d711 mm is the floor for a transceiver-class Titanium, and Ti135 is the densest part there.\n- **LAV-AT-X70\u2026CSG841** (Lattice, Avant-X) \u2014 **195 mm\u00b2 (15\u00d713, chip-scale BGA)** \u2014 ~500K logic cells (~637K system LC) with up to 25 Gbps SerDes and hard PCIe Gen4: ~4\u00d7 the logic and 2\u00d7 the SerDes rate of the winner, but a larger package and longer lead times.\n- **LAV-AT-E70\u2026CSG841** (Lattice, Avant-E) \u2014 **195 mm\u00b2 (15\u00d713)** \u2014 same ~500K-LC die and package as the X70 but **no SerDes** (high-speed I/O + DDR4/LPDDR4/DDR5 only); the one part with confirmed distributor stock/price (~$696 @ qty 1, DigiKey, 52-wk lead).\n- **Ti375\u2026F529** (Efinix) \u2014 **361 mm\u00b2 (19\u00d719)** \u2014 370,137 LE, 1,344 DSP, hardened RISC-V + PCIe Gen4; the heavyweight reference \u2014 much more logic, much bigger package.\n\n### Comparison\n\n| Part | Footprint (smallest pkg) | Logic | DSP | Transceivers / hard IP | Memory | ~1k price |\n|------|--------------------------|-------|-----|------------------------|--------|-----------|\n| **Ti135F441** (Efinix) | **121 mm\u00b2** (11\u00d711, 441) | 132,192 LE | 480 | 8\u00d7 \u226412.5 Gbps + PCIe Gen4 x4, RISC-V | 9.83 Mb + LPDDR4/4x | n/a (quote) |\n| Ti85F441 (Efinix) | 121 mm\u00b2 (11\u00d711, 441) | ~83,232 LE | 300 | 8\u00d7 \u226412.5 Gbps + PCIe Gen4 | ~6.2 Mb + LPDDR4 | n/a (quote) |\n| LAV-AT-X70 (Lattice) | 195 mm\u00b2 (15\u00d713, CSG841) | ~500K LC | 700\u20131,800 | \u226425 Gbps SerDes + PCIe Gen4 | DDR4/LPDDR4/DDR5 | n/a (quote) |\n| LAV-AT-E70 (Lattice) | 195 mm\u00b2 (15\u00d713, CSG841) | ~500K LC | up to ~1,800 | none (HS I/O + DDR only) | DDR4/LPDDR4/DDR5 | ~$696 @ qty 1 |\n| Ti375\u2026F529 (Efinix) | 361 mm\u00b2 (19\u00d719, 529) | 370,137 LE | 1,344 | SerDes + PCIe Gen4, RISC-V | 27.5 Mb + LPDDR4 | n/a (quote) |\n\n### Caveats\nThe result hinges on how \"high-capacity\" is gated: ranked purely by die footprint, Efinix's transceiver-less Ti120 (123K LE, 13\u00d713 mm/169 mm\u00b2) and the sampling-only Ti125 Edge (~123K LE, reportedly ~8\u00d78 mm) are smaller still, but I excluded them as mid-range parts lacking SerDes/PCIe \u2014 if you only need logic-and-I/O, they (or the 3.5\u00d73.4 mm WLCSP Ti60 at 62K LE) beat everything here on size. Lattice logic *cells* and Efinix logic *elements* are not directly comparable, and the Avant ~500K-LC figure (vendor \"up to 500K,\" ~637K system-LC) plus its CSG841 = 15\u00d713 mm dimension come from distributor/datasheet data I could not cross-check against a Lattice-hosted PDF (their selector guide and datasheet mirrors blocked direct fetch); SerDes lane counts on the smaller CSG841 Avant package are also likely a subset of the full-package maximum. Public 1k pricing was unavailable for the Efinix parts (quote-only), so only the Avant-E70's ~$696 qty-1 figure is distributor-confirmed.",
+    "mpns": [
+      "Ti135F441",
+      "Ti85F441",
+      "LAV-AT-X70-1CSG841I",
+      "LAV-AT-E70-1CSG841I",
+      "Ti375C529"
+    ],
+    "parts": [
+      {
+        "mpn": "Ti135F441",
+        "manufacturer": "Efinix",
+        "role": "winner",
+        "headline": "121 mm^2 (11x11 mm, 441-ball FBGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.efinixinc.com/shop/ti135.php",
+        "note": "132K LE + PCIe Gen4 x4 + 8x <=12.5 Gbps SerDes in the smallest high-performance FPGA package"
+      },
+      {
+        "mpn": "Ti85F441",
+        "manufacturer": "Efinix",
+        "role": "shortlist",
+        "headline": "121 mm^2 (11x11 mm, 441-ball FBGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.efinixinc.com/shop/ti85.php",
+        "note": "Same tiny package and PCIe/SerDes fabric but only ~83K LE; Ti135 is the densest part in 11x11"
+      },
+      {
+        "mpn": "LAV-AT-X70-1CSG841I",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "195 mm^2 (15x13 mm, CSG841 chip-scale BGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.latticesemi.com/en/Products/FPGAandCPLD/Avant-X",
+        "note": "~500K logic cells + up to 25 Gbps SerDes + hard PCIe Gen4; ~4x the logic in a larger CSP"
+      },
+      {
+        "mpn": "LAV-AT-E70-1CSG841I",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "195 mm^2 (15x13 mm, CSG841 chip-scale BGA)",
+        "price_1k": "~$696 @ qty 1",
+        "datasheet_url": "https://www.latticesemi.com/en/Products/FPGAandCPLD/Avant",
+        "note": "Same ~500K-LC die/package as X70 but no SerDes; only part with confirmed DigiKey stock/price"
+      },
+      {
+        "mpn": "Ti375C529",
+        "manufacturer": "Efinix",
+        "role": "shortlist",
+        "headline": "361 mm^2 (19x19 mm, 529-ball FBGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.efinixinc.com/shop/ti375.php",
+        "note": "370K LE, 1344 DSP, hardened RISC-V + PCIe Gen4; heavyweight reference, much larger package"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "tiny-connectors",
+    "name": "Ultra-small board-to-board / board-to-cable connectors",
+    "markdown": "### Best in class right now\n**2033900363** (plug) / **2033890363** (receptacle) \u2014 Molex Quad-Row. **0.175 mm signal pitch** \u2014 the world's finest production B2B pitch, ~half that of every competitor \u2014 achieved via a staggered four-row contact layout giving ~30% PCB area savings; 0.6 mm mated stack height, 32/36 circuits, 0.3 A signal / 3.0 A \"nail\" power contacts, 50 V, LCP V-0 housing. Availability: DigiKey, in stock (1,000+ pcs each of the 32- and 36-pos plug/receptacle); ~$1.72\u2013$2.63 ea. **Why it wins:** it is the only part in this class at 0.175 mm pitch, so it packs the most contacts into the least board area while still hitting the category's lowest 0.6 mm stack height and carrying real power on its nail contacts.\n\n### Shortlist (ranked by the metric)\n- **2033900323 / 2033890323** (Molex Quad-Row, 32-pos) \u2014 **0.175 mm pitch, 0.6 mm height** \u2014 same winning architecture, just the lower circuit count; listed separately only because it's a distinct orderable density.\n- **BM46 series** (Hirose) \u2014 **0.35 mm pitch, 0.6 mm height, 2.0 mm width** \u2014 finest *single-row* B2B with RF-grade contacts (VSWR specs to 12 GHz), but 2\u00d7 the pitch of the winner.\n- **AB6+ / SlimStack** (Molex) \u2014 **0.35 mm pitch, 0.60 mm profile** \u2014 rugged overmolded ultra-slim B2B; broad pin-count range and lower cost, but coarser pitch.\n- **BM29 series** (Hirose) \u2014 **0.35 mm pitch, 0.6 mm height, 1.5 mm depth** \u2014 smallest *hybrid board-to-FPC* (B2C) part on the market; different use case (FPC mating), coarser pitch.\n- **NOVASTACK 35-HDN** (I-PEX) \u2014 **0.35 mm pitch, 0.7 mm height, 2.15 mm depth** \u2014 fully shielded high-speed (20+ Gbps) board-to-FPC with 1.0 A/pin; best for high-speed/EMI, but tallest and coarsest-pitch here.\n\n### Comparison\n\n| Part | Pitch | Mated height | Footprint/width | Pins | Current/contact | ~1k price |\n|---|---|---|---|---|---|---|\n| 2033900363 (Molex Quad-Row) | **0.175 mm** | 0.6 mm | 4-row staggered, ~30% smaller | 36 | 0.3 A sig / 3.0 A nail | ~$1.72 |\n| 2033900323 (Molex Quad-Row) | 0.175 mm | 0.6 mm | 4-row staggered | 32 | 0.3 A sig / 3.0 A nail | ~$2.63 |\n| BM46 (Hirose) | 0.35 mm | 0.6 mm | 2.0 mm wide | 12 | 0.3 A | n/a |\n| AB6+ (Molex SlimStack) | 0.35 mm | 0.60 mm | slim overmolded | varies | ~0.3 A | n/a |\n| BM29 (Hirose) | 0.35 mm | 0.6 mm | 1.5 mm depth | varies | ~0.3 A | n/a |\n| NOVASTACK 35-HDN (I-PEX) | 0.35 mm | 0.7 mm | 2.15 mm depth | 10/20/30 | 1.0 A/pin | n/a |\n\n### Caveats\nThe category mixes pure board-to-board (Molex Quad-Row, Hirose BM46, Molex AB6+) with board-to-FPC \"board-to-cable\" parts (Hirose BM29, I-PEX HDN); they're ranked on the same pitch/height/footprint metric but serve different mating jobs. The 0.6 mm stack height is a three-way tie (Quad-Row, BM46, AB6+, BM29), so the winner is decided purely on its uniquely fine 0.175 mm pitch and four-row density. Distributor prices shown are unit prices observed at DigiKey, not confirmed 1k-break quotes, and I could not independently verify 1k pricing for the 0.35 mm shortlist parts.",
+    "mpns": [
+      "2033900363",
+      "2033900323",
+      "BM46",
+      "BM29",
+      "NOVASTACK 35-HDN"
+    ],
+    "parts": [
+      {
+        "mpn": "2033900363",
+        "manufacturer": "Molex",
+        "role": "winner",
+        "headline": "0.175 mm pitch (world's finest), 0.6 mm height",
+        "price_1k": "~$1.72",
+        "datasheet_url": "https://www.content.molex.com/dxdam/2b/2b4159fd-cb5d-4d4d-9857-be15f421437e/987652-4911.pdf",
+        "note": "Only B2B at 0.175 mm pitch; 4-row staggered layout, ~30% area savings, 3 A nail contacts, in stock at DigiKey"
+      },
+      {
+        "mpn": "2033900323",
+        "manufacturer": "Molex",
+        "role": "shortlist",
+        "headline": "0.175 mm pitch, 0.6 mm height, 32-pos",
+        "price_1k": "~$2.63",
+        "datasheet_url": "https://www.content.molex.com/dxdam/2b/2b4159fd-cb5d-4d4d-9857-be15f421437e/987652-4911.pdf",
+        "note": "Same Quad-Row architecture, lower circuit count"
+      },
+      {
+        "mpn": "BM46",
+        "manufacturer": "Hirose",
+        "role": "shortlist",
+        "headline": "0.35 mm pitch, 0.6 mm height, 2.0 mm width",
+        "price_1k": "",
+        "datasheet_url": "https://www.hirose.com/eu/additional/pressreleases/BM46_eu_en.html",
+        "note": "Finest single-row B2B with RF contacts to 12 GHz; 2x the winner's pitch"
+      },
+      {
+        "mpn": "BM29",
+        "manufacturer": "Hirose",
+        "role": "shortlist",
+        "headline": "0.35 mm pitch, 0.6 mm height, 1.5 mm depth",
+        "price_1k": "",
+        "datasheet_url": "https://www.digikey.com/en/product-highlight/h/hirose/bm29-series-hybrid-board-to-fpc-connectors",
+        "note": "Smallest hybrid board-to-FPC (B2C); coarser pitch, different mating job"
+      },
+      {
+        "mpn": "NOVASTACK 35-HDN",
+        "manufacturer": "I-PEX",
+        "role": "shortlist",
+        "headline": "0.35 mm pitch, 0.7 mm height, 2.15 mm depth",
+        "price_1k": "",
+        "datasheet_url": "https://www.i-pex.com/product/novastack-35-hdn",
+        "note": "Fully shielded 20+ Gbps board-to-FPC, 1.0 A/pin; tallest and coarsest-pitch here"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-pa-2g4",
+    "name": "RF PA \u2014 2.4 GHz (Wi-Fi/BLE/Zigbee)",
+    "markdown": "### Best in class right now\n**SKY66409-11** \u2014 Skyworks Solutions. **1.25 \u00d7 1.7 mm 12-pin CSP = 2.13 mm\u00b2** footprint (0.35 mm height) \u2014 the smallest verified, orderable 2.4 GHz PA/FEM in this survey. Integrated PA delivers **+13 dBm** (up to +15 dBm max) for Zigbee/Thread/802.15.4 and **+10.5 dBm** EDR for Bluetooth; integrated LNA (2.5 dB NF typ.), T/R + bypass switches; **supply 1.8\u20133.6 V**, logic 1.2\u20133.6 V CMOS; 2.400\u20132.4835 GHz. Availability: **DigiKey \u2014 Active, ~3,093 in stock, ~$1.05/ea at 6k** (1k slightly higher). **Why it wins:** With the ranking metric being PCB area, its chip-scale package is ~40% smaller than the next FEM (PE562212, 3.24 mm\u00b2) and ~70% smaller than a 4\u00d74 QFN, while still covering the full +13 dBm BLE/Zigbee power class needed for a coin-cell node.\n\n### Shortlist (ranked by the metric)\n- **SKY66409-11** (Skyworks) \u2014 **2.13 mm\u00b2** (1.25\u00d71.7 CSP) \u2014 winner; smallest footprint, but modest +13 dBm and thinner distributor stock.\n- **PE562212** (pSemi / Murata) \u2014 **3.24 mm\u00b2** (1.8\u00d71.8 LGA) \u2014 52% larger, but much higher **+21 dBm** with 15 dB digital Tx gain control; distributor stock not independently confirmed (largely direct / Richardson RFPD).\n- **SKY66405-11** (Skyworks) \u2014 **3.61 mm\u00b2** (1.9\u00d71.9 MCM) \u2014 same +13 dBm power class as winner; loses on area but is the volume pick \u2014 **Active, 1.35M factory stock, ~$0.82/1k**.\n- **SKY66114-11** (Skyworks) \u2014 **5.76 mm\u00b2** (2.4\u00d72.4 MCM) \u2014 saturated PA + high-gain LNA, 1.8\u20133.6 V; larger and older-generation than the CSP parts.\n- **nRF21540** (Nordic) \u2014 **16 mm\u00b2** (4\u00d74 QFN16) \u2014 highest power here (**+21 dBm**) and easiest to design in, but the largest footprint by far; included as the high-power anchor.\n\n### Comparison\n| Part | Footprint | Pkg | Output power | Supply | Band | ~1k price |\n|---|---|---|---|---|---|---|\n| **SKY66409-11** | **2.13 mm\u00b2** | 1.25\u00d71.7 CSP | +13 dBm (\u2264+15) | 1.8\u20133.6 V | 2.40\u20132.4835 GHz | ~$1.05 (6k) |\n| PE562212 | 3.24 mm\u00b2 | 1.8\u00d71.8 LGA | +21 dBm | ~2.3\u20133.6 V | 2.4 GHz | \u2014 |\n| SKY66405-11 | 3.61 mm\u00b2 | 1.9\u00d71.9 MCM | +13 dBm | 1.7\u20133.6 V | 2.4 GHz | ~$0.82 |\n| SKY66114-11 | 5.76 mm\u00b2 | 2.4\u00d72.4 MCM | sat. PA (n/c) | 1.8\u20133.6 V | 2.4 GHz | \u2014 |\n| nRF21540 | 16 mm\u00b2 | 4\u00d74 QFN16 | +21 dBm | 1.7\u20133.6 V | 2.4 GHz | \u2014 |\n\n### Caveats\nPer the brief, parts are ranked by PCB footprint first; all candidates are PA-integrated front-end modules (FEMs), since the smallest 2.4 GHz \"PAs\" in production are sold as PA+LNA+switch modules rather than discrete amplifiers. PAE figures are not stated cleanly in the public datasheets/briefs and are deliberately omitted rather than estimated; PA gain and SKY66114-11's exact output power were not independently confirmed. The footprint winner (SKY66409-11) trades power for area \u2014 if your link budget needs +20/+21 dBm, PE562212 is the smaller-footprint high-power option but I could not confirm broad distributor stock (treat as direct/design-win), making SKY66405-11 the safest high-volume choice.",
+    "mpns": [
+      "SKY66409-11",
+      "PE562212",
+      "SKY66405-11",
+      "SKY66114-11",
+      "nRF21540"
+    ],
+    "parts": [
+      {
+        "mpn": "SKY66409-11",
+        "manufacturer": "Skyworks Solutions",
+        "role": "winner",
+        "headline": "2.13 mm^2 (1.25x1.7 mm 12-CSP)",
+        "price_1k": "~$1.05",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/SkyWorks/Documents/Products/Data-Sheet/SKY66409-11_206057H.pdf",
+        "note": "Smallest verified orderable 2.4 GHz FEM; +13 dBm (BLE/Zigbee/Thread), Active on DigiKey"
+      },
+      {
+        "mpn": "PE562212",
+        "manufacturer": "pSemi (Murata)",
+        "role": "shortlist",
+        "headline": "3.24 mm^2 (1.8x1.8 mm 14-LGA)",
+        "price_1k": "",
+        "datasheet_url": "https://www.psemi.com/pdf/datasheets/pe562212pb.pdf",
+        "note": "Higher +21 dBm power in a small LGA, but distributor stock not independently confirmed"
+      },
+      {
+        "mpn": "SKY66405-11",
+        "manufacturer": "Skyworks Solutions",
+        "role": "shortlist",
+        "headline": "3.61 mm^2 (1.9x1.9 mm MCM)",
+        "price_1k": "~$0.82",
+        "datasheet_url": "https://www.skyworksinc.com/en/Products/Front-end-Modules/SKY66405-11",
+        "note": "Same +13 dBm class as winner; larger but huge stock (1.35M) and cheapest"
+      },
+      {
+        "mpn": "SKY66114-11",
+        "manufacturer": "Skyworks Solutions",
+        "role": "shortlist",
+        "headline": "5.76 mm^2 (2.4x2.4 mm MCM)",
+        "price_1k": "",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/SkyWorks/Documents/Products/2201-2300/SKY66114-11_203678M.pdf",
+        "note": "Saturated PA + high-gain LNA; larger, older-generation FEM"
+      },
+      {
+        "mpn": "nRF21540",
+        "manufacturer": "Nordic Semiconductor",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4x4 mm QFN16)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nordicsemi.com/Products/nRF21540",
+        "note": "Highest power (+21 dBm) and easiest design-in, but largest footprint by far"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-pa-subghz",
+    "name": "RF PA \u2014 sub-GHz ISM (433/868/915 MHz)",
+    "markdown": "### Best in class right now\n**QPA9510** \u2014 Qorvo. **3.0 \u00d7 3.0 mm 16-pin QFN (\u22489 mm\u00b2)**; +35 dBm P1dB (OP1dB \u224835.4 dBm), 34 dB gain with analog gain control, ~55% PAE, single 2.8\u20133.6 V supply, 100\u20131000 MHz (covers 433/868/915 in one part). Availability: DigiKey/Qorvo store, Active, ~$6.11/1k (low-volume DigiKey listing; ~23-wk lead). **Why it wins:** It sits at the same 9 mm\u00b2 footprint floor as every serious sub-GHz PA, but inside that footprint it delivers the highest output power, the best efficiency, the widest band coverage, and the lowest (battery-friendly) supply \u2014 so nothing smaller does the job, and nothing its size does it better.\n\n### Shortlist (ranked by the metric)\n- **QPA9510** (Qorvo) \u2014 9 mm\u00b2 (3\u00d73 QFN) \u2014 winner; +35 dBm P1dB, 55% PAE, 100\u20131000 MHz, 3 V single supply.\n- **GRF5510** (Guerrilla RF) \u2014 9 mm\u00b2 (3\u00d73 QFN-16) \u2014 same footprint, slightly lower OP1dB (33.8 dBm) and narrower 0.88\u20130.96 GHz tuning; needs 5 V.\n- **GRF5507** (Guerrilla RF) \u2014 9 mm\u00b2 (3\u00d73 QFN-16) \u2014 same footprint, OP1dB 33.4 dBm but tuned 0.7\u20130.91 GHz (great for 868, off-band for 915); 5 V.\n- **SKY66423-11** (Skyworks) \u2014 9 mm\u00b2 (3\u00d73 16-MCM) \u2014 ties on footprint but is a full FEM (PA+LNA+T/R switch) for 860\u2013930 MHz, not a standalone PA; cheapest (~$1.81/1k) if you also need the RX path.\n\n### Comparison\n| Part | Footprint | P1dB / Psat | Gain | PAE | Supply | Band | ~1k price |\n|---|---|---|---|---|---|---|---|\n| QPA9510 (Qorvo) | 3\u00d73 mm QFN (9 mm\u00b2) | +35 dBm | 34 dB | ~55% | 2.8\u20133.6 V | 100\u20131000 MHz | ~$6.11* |\n| GRF5510 (Guerrilla RF) | 3\u00d73 mm QFN-16 (9 mm\u00b2) | 33.8 dBm | 29.2 dB | n/s | 5.0 V | 0.88\u20130.96 GHz | \u2014 |\n| GRF5507 (Guerrilla RF) | 3\u00d73 mm QFN-16 (9 mm\u00b2) | 33.4 dBm | 30.5 dB | n/s | 5.0 V | 0.70\u20130.91 GHz | \u2014 |\n| SKY66423-11 (Skyworks) | 3\u00d73 mm MCM (9 mm\u00b2) | ~+33 dBm (FEM) | n/s | n/s | 3.3\u20135 V | 0.86\u20130.93 GHz | ~$1.81 |\n\n\\*DigiKey low-volume listing; true 1k pricing is likely lower.\n\n### Caveats\nThe footprint metric is effectively tied across all serious candidates: 3\u00d73 mm (9 mm\u00b2) is the practical floor for this power class, since smaller QFN/DFN bodies can't dissipate ~+30 dBm of Tx heat \u2014 I found no in-production sub-GHz PA below this footprint, so the winner is decided on output power, PAE and band coverage within the 9 mm\u00b2 tier. The QPA9510 PAE (~55%) and the SKY66423-11 P1dB are from manufacturer headline/marketing figures and should be confirmed against the datasheet at your exact bias and frequency; Guerrilla RF PAE was not stated on the pages I checked. Note the QPA9510 is described by Qorvo with legacy \"GSM 900 MHz\" language but is specified 100\u20131000 MHz and was repositioned (2025) as their wideband sub-1 GHz ISM PA, so verify the 433 MHz match and harmonic filtering for your design.",
+    "mpns": [
+      "QPA9510",
+      "GRF5510",
+      "GRF5507",
+      "SKY66423-11"
+    ],
+    "parts": [
+      {
+        "mpn": "QPA9510",
+        "manufacturer": "Qorvo",
+        "role": "winner",
+        "headline": "9 mm^2 (3x3 mm 16-QFN)",
+        "price_1k": "~$6.11",
+        "datasheet_url": "https://www.qorvo.com/products/d/da009778",
+        "note": "Smallest-tier footprint with the highest output (+35 dBm P1dB), best PAE (~55%), widest band (100-1000 MHz) and lowest 3V supply."
+      },
+      {
+        "mpn": "GRF5510",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "9 mm^2 (3x3 mm QFN-16)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5510/GRF5510DS.pdf",
+        "note": "Same footprint; OP1dB 33.8 dBm but narrower 0.88-0.96 GHz tuning and needs 5V."
+      },
+      {
+        "mpn": "GRF5507",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "9 mm^2 (3x3 mm QFN-16)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5507/GRF5507DS.pdf",
+        "note": "Same footprint; OP1dB 33.4 dBm but tuned 0.7-0.91 GHz (good for 868, off-band for 915); 5V."
+      },
+      {
+        "mpn": "SKY66423-11",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "9 mm^2 (3x3 mm 16-MCM)",
+        "price_1k": "~$1.81",
+        "datasheet_url": "https://www.skyworksinc.com/en/Products/Front-end-Modules/SKY66423-11",
+        "note": "Ties on footprint but is a full FEM (PA+LNA+switch) for 860-930 MHz, not a standalone PA; cheapest if RX path is also needed."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-pa-cellular",
+    "name": "RF PA \u2014 cellular sub-6 GHz (LTE/5G FR1)",
+    "markdown": "### Best in class right now\n**GRF5112** \u2014 Guerrilla RF. **9.0 mm\u00b2 footprint (3.0 \u00d7 3.0 mm QFN\u201116)**; OP1dB 32 dBm, gain 17.5 dB, broadband 0.03\u20132.7 GHz (one part covers LTE/5G FR1 low\u2011 and mid\u2011bands through B7/n7), VDD 5 V, GaAs pHEMT. Availability: in production and orderable \u2014 RFMW shows ~928 in stock at ~$2.56/1k (1k\u20131.5k tier; $4.02/1). **Why it wins:** every broadly\u2011orderable discrete cellular PA in this class bottoms out at the same 3 \u00d7 3 mm QFN\u201116, so footprint is a dead tie \u2014 the GRF5112 takes it because it delivers that minimal 9 mm\u00b2 while covering essentially the whole sub\u20113 GHz FR1 range in a single in\u2011stock part, instead of one narrow band.\n\n### Shortlist (ranked by the metric)\n- **GRF5112** (Guerrilla RF) \u2014 9.0 mm\u00b2 (3.0 \u00d7 3.0 mm QFN\u201116) \u2014 winner; broadband + in stock, but lower gain (17.5 dB) than the band\u2011tuned parts.\n- **GRF5510** (Guerrilla RF) \u2014 9.0 mm\u00b2 (3.0 \u00d7 3.0 mm QFN\u201116) \u2014 highest raw output (P1dB 33.8 dBm, gain 29.2 dB) but single\u2011band B8/n8 (0.88\u20130.96 GHz) and currently out of stock at RFMW.\n- **GRF5517** (Guerrilla RF) \u2014 9.0 mm\u00b2 (3.0 \u00d7 3.0 mm QFN\u201116) \u2014 P1dB 32.0 dBm, gain 27.5 dB, B3 (1.7\u20131.8 GHz); same footprint, narrowband, out of stock at RFMW.\n- **GRF5518** (Guerrilla RF) \u2014 9.0 mm\u00b2 (3.0 \u00d7 3.0 mm QFN\u201116) \u2014 DCS/PCS/B2 (1.8\u20131.91 GHz) two\u2011stage HBT; rounds out band coverage at the same footprint.\n\n### Comparison\n| Part | Footprint | P1dB | Gain | Freq range | VDD | ~1k price |\n|------|-----------|------|------|------------|-----|-----------|\n| GRF5112 (winner) | 9.0 mm\u00b2 (3.0\u00d73.0 QFN\u201116) | 32.0 dBm | 17.5 dB | 0.03\u20132.7 GHz | 5 V | ~$2.56 |\n| GRF5510 | 9.0 mm\u00b2 (3.0\u00d73.0 QFN\u201116) | 33.8 dBm | 29.2 dB | 0.88\u20130.96 GHz | ~5 V | ~$2.14 |\n| GRF5517 | 9.0 mm\u00b2 (3.0\u00d73.0 QFN\u201116) | 32.0 dBm | 27.5 dB | 1.7\u20131.8 GHz | ~5 V | ~$2.22 |\n| GRF5518 | 9.0 mm\u00b2 (3.0\u00d73.0 QFN\u201116) | ~32 dBm | ~27 dB | 1.8\u20131.91 GHz | ~5 V | ~$2.2 |\n\n### Caveats\nFootprint is identical (9.0 mm\u00b2, 3 \u00d7 3 mm QFN\u201116) across the entire shortlist, so the ranking metric does not separate them \u2014 the winner was chosen on the secondary specs (band coverage + real orderability), and a designer who needs maximum output in one band could legitimately pick the GRF5510 (33.8 dBm) instead. Integrated handset front\u2011end *modules* (Qorvo/Skyworks WLCSP) go well below 9 mm\u00b2, but those are OEM\u2011only parts without public datasheets or distributor stock, so they were excluded as not independently orderable. I could not independently confirm PAE/efficiency figures or the exact VDD for the band\u2011tuned parts (5 V confirmed only for the GRF5112), and GRF5510/5517 showed 0 stock at RFMW at check time though both remain in production (verify live stock before committing).",
+    "mpns": [
+      "GRF5112",
+      "GRF5510",
+      "GRF5517",
+      "GRF5518"
+    ],
+    "parts": [
+      {
+        "mpn": "GRF5112",
+        "manufacturer": "Guerrilla RF",
+        "role": "winner",
+        "headline": "9.0 mm^2 (3.0x3.0 mm QFN-16)",
+        "price_1k": "~$2.56",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5112/GRF5112DS.pdf",
+        "note": "Same minimal 3x3 footprint as the family but broadband 0.03-2.7 GHz and in stock; OP1dB 32 dBm, gain 17.5 dB"
+      },
+      {
+        "mpn": "GRF5510",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "9.0 mm^2 (3.0x3.0 mm QFN-16)",
+        "price_1k": "~$2.14",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5510/GRF5510DS.pdf",
+        "note": "Highest output (P1dB 33.8 dBm, gain 29.2 dB) but single-band B8/n8 and out of stock at RFMW"
+      },
+      {
+        "mpn": "GRF5517",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "9.0 mm^2 (3.0x3.0 mm QFN-16)",
+        "price_1k": "~$2.22",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5517/GRF5517DS.pdf",
+        "note": "P1dB 32.0 dBm, gain 27.5 dB, B3 (1.7-1.8 GHz); same footprint, narrowband"
+      },
+      {
+        "mpn": "GRF5518",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "9.0 mm^2 (3.0x3.0 mm QFN-16)",
+        "price_1k": "~$2.2",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5518/GRF5518DS.pdf",
+        "note": "DCS/PCS/B2 (1.8-1.91 GHz) two-stage HBT; same footprint, fills band coverage"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-pa-5g6",
+    "name": "RF PA \u2014 5\u20136 GHz (Wi-Fi 5/6/6E)",
+    "markdown": "### Best in class right now\n**GRF5458** \u2014 Guerrilla RF. **3.8 \u00d7 2.7 mm \u2248 10.3 mm\u00b2** fully-integrated PA module (single-ended 50 \u03a9 in/out, all matching on-die) \u2014 the smallest discrete transmit PA found in this band. Up to **+31 dBm linear output, ~31 dB gain**, 5 V supply (4.75\u20135.25 V), 5.7\u20136.1 GHz. Availability: orderable/in production via Mouser, RFMW and Richardson RFPD; ~1k price not independently confirmed. **Why it wins:** lowest PCB footprint of any standalone PA here (~35% less board area than the 4 \u00d7 4 mm field) while *also* delivering the highest output power \u2014 but read the band caveat below, because it only covers the upper 5 GHz / lower 6 GHz edge.\n\n### Shortlist (ranked by the metric)\n- **GRF5458** (Guerrilla RF) \u2014 **~10.3 mm\u00b2 (3.8 \u00d7 2.7 mm)** \u2014 smallest + highest power, but narrow 5.7\u20136.1 GHz coverage (no U\u2011NII\u20111/2, no upper 6E).\n- **SKY85408-11** (Skyworks) \u2014 **16 mm\u00b2 (4 \u00d7 4 mm)** \u2014 newest full\u20115 GHz 802.11ax linear PA (+23 dBm, 35 dB gain, integrated power detector); larger but covers the whole U\u2011NII 5 GHz band.\n- **RFPA5542** (Qorvo) \u2014 **16 mm\u00b2 (4 \u00d7 4 mm)** \u2014 broad 4.9\u20135.925 GHz, +23 dBm @ EVM<1.8%, 33 dB gain; mature 802.11ac\u2011era part, verify lifecycle.\n- **QPA0506** (Qorvo) \u2014 **16 mm\u00b2 (4 \u00d7 4 mm)** \u2014 GaN, 36 dBm Psat / 53% PAE over 5\u20136 GHz; far more power/efficiency but an infra/radar driver, not a consumer Wi\u2011Fi linear PA.\n\n### Comparison\n| Part | Footprint | Band | Output power | Gain | PAE | Vcc | ~1k price |\n|------|-----------|------|--------------|------|-----|-----|-----------|\n| **GRF5458** (winner) | ~10.3 mm\u00b2 (3.8\u00d72.7) | 5.7\u20136.1 GHz | +31 dBm lin | 31 dB | n/c | 5 V | n/c |\n| SKY85408-11 | 16 mm\u00b2 (4\u00d74) | ~5.1\u20135.85 GHz | +23 dBm lin (11ax) | 35 dB | 20% @ +26 dBm | 5 V | ~$2\u20133 |\n| RFPA5542 | 16 mm\u00b2 (4\u00d74) | 4.9\u20135.925 GHz | +23 dBm lin | 33 dB | n/c | 5 V | n/c |\n| QPA0506 | 16 mm\u00b2 (4\u00d74) | 5\u20136 GHz | 36 dBm Psat | 18 dB | 53% | GaN bias | n/c |\n\n### Caveats\nThe ranking treats package footprint as the primary metric per the brief, which puts the GRF5458 on top \u2014 but it only covers 5.7\u20136.1 GHz, so it cannot serve U\u2011NII\u20111/2 (5.15\u20135.725 GHz) or the bulk of Wi\u2011Fi 6E (6.1\u20137.1 GHz); a design needing the full 5/6/6E span should step up to the 4 \u00d7 4 mm SKY85408-11 (best current full\u20115 GHz Wi\u2011Fi 6 linear PA) or a 6E front\u2011end module. PAE and 1k pricing for the GRF5458/RFPA5542 could not be independently confirmed and are marked n/c; RFPA5542 is an 802.11ac\u2011generation part whose production status should be verified before design\u2011in. Note that genuinely smaller 6E parts (\u22482 \u00d7 2 mm, e.g. NXP WLAN7207C) exist but are integrated FEMs (PA+LNA+switch), not standalone transmit PAs, so they were excluded from this PA\u2011only ranking.",
+    "mpns": [
+      "GRF5458",
+      "SKY85408-11",
+      "RFPA5542",
+      "QPA0506"
+    ],
+    "parts": [
+      {
+        "mpn": "GRF5458",
+        "manufacturer": "Guerrilla RF",
+        "role": "winner",
+        "headline": "~10.3 mm^2 (3.8 x 2.7 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/5458/GRF5458DS.pdf",
+        "note": "Smallest discrete 5-6 GHz PA and highest power (+31 dBm), but band limited to 5.7-6.1 GHz"
+      },
+      {
+        "mpn": "SKY85408-11",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4 x 4 mm)",
+        "price_1k": "~$2-3",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/B6247D7B6F84425692F8E6CE27D58A60.pdf",
+        "note": "Newest full-5 GHz 802.11ax linear PA, +23 dBm/35 dB gain, integrated detector"
+      },
+      {
+        "mpn": "RFPA5542",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4 x 4 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/RFPA5542",
+        "note": "Broad 4.9-5.925 GHz, +23 dBm at EVM<1.8%, mature 11ac-era part; verify lifecycle"
+      },
+      {
+        "mpn": "QPA0506",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4 x 4 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPA0506",
+        "note": "GaN 36 dBm Psat / 53% PAE over 5-6 GHz, but an infra/radar driver not a Wi-Fi linear PA"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-lna-2g4",
+    "name": "RF LNA \u2014 2.4 GHz (Wi-Fi/BLE/Zigbee)",
+    "markdown": "### Best in class right now\n**GRF2133** \u2014 Guerrilla RF. 1.5 \u00d7 1.5 mm DFN-6 (\u22482.25 mm\u00b2) \u2014 the smallest mainstream 2.4 GHz footprint available, tied with the Skyworks part below; ~0.8 dB NF and ~28.5 dB gain across 0.1\u20134.2 GHz (covers the full 2.4\u20132.5 GHz ISM band), 1.8\u20135.0 V supply, selectable 35\u2013120 mA bias. Availability: in production, orderable at Mouser / RFMW / Richardson RFPD; ~$1.25 ea at 1k. **Why it wins:** at the joint-smallest footprint it also posts the lowest noise figure and highest gain of any part on the shortlist, so it wins the primary metric outright and the NF/gain tiebreak.\n\n### Shortlist (ranked by the metric)\n- **GRF2133** (Guerrilla RF) \u2014 2.25 mm\u00b2 (1.5\u00d71.5 DFN-6) \u2014 winner; smallest footprint *and* best NF/gain, but draws 35\u2013120 mA, far too thirsty for battery BLE/Zigbee/Thread nodes.\n- **SKY65405-21** (Skyworks) \u2014 2.25 mm\u00b2 (1.5\u00d71.5 DFN-6) \u2014 identical footprint and the better pick when power matters (12 mA, 2.8\u20135 V), purpose-built 2.4 GHz first-stage LNA; loses the tiebreak with 1.1 dB NF / 15 dB gain.\n- **BGU7224** (NXP) \u2014 2.56 mm\u00b2 (1.6\u00d71.6) \u2014 purpose-built 2.4 GHz WLAN LNA with integrated bypass mode; slightly larger, NF/gain not independently confirmed here.\n- **BGB741L7ESD** (Infineon) \u2014 2.6 mm\u00b2 (2.0\u00d71.3 TSLP-7) \u2014 flexible wideband (DC\u20135 GHz), ~1.05 dB NF / 16 dB gain at 2.4 GHz with current adjustable 5.5\u201330 mA; larger by area than the DFN-6 parts.\n- **QPL9547** (Qorvo) \u2014 4.0 mm\u00b2 (2.0\u00d72.0) \u2014 class-leading 0.3 dB NF and very high OIP3, but nearly 2\u00d7 the footprint, so it loses the primary metric badly.\n\n### Comparison\n| Part | Footprint | Package | NF @2.4 GHz | Gain | Supply / current | ~1k price |\n|------|-----------|---------|-------------|------|------------------|-----------|\n| GRF2133 (Guerrilla) | **2.25 mm\u00b2** | 1.5\u00d71.5 DFN-6 | ~0.8 dB | ~28.5 dB | 1.8\u20135 V / 35\u2013120 mA | ~$1.25 |\n| SKY65405-21 (Skyworks) | **2.25 mm\u00b2** | 1.5\u00d71.5 DFN-6 | 1.1 dB | 15 dB | 2.8\u20135 V / 12 mA | ~$0.70 |\n| BGU7224 (NXP) | 2.56 mm\u00b2 | 1.6\u00d71.6 | n/c | n/c | 2.4 GHz WLAN, bypass | \u2014 |\n| BGB741L7ESD (Infineon) | 2.6 mm\u00b2 | 2.0\u00d71.3 TSLP-7 | ~1.05 dB | 16 dB | 1.8\u20134 V / 5.5\u201330 mA | \u2014 |\n| QPL9547 (Qorvo) | 4.0 mm\u00b2 | 2.0\u00d72.0 | 0.3 dB | ~19.5 dB | 65 mA bias | \u2014 |\n\n### Caveats\nThe primary metric is a genuine tie: the GRF2133 and SKY65405-21 share the identical 1.5\u00d71.5 mm DFN-6 footprint, and the win was decided on the secondary NF/gain criterion as instructed \u2014 but the GRF2133 is a broadband gain block drawing 35\u2013120 mA, so for low-power BLE/Zigbee/Thread receivers the same-footprint SKY65405-21 (12 mA) is the practical choice. Footprints are quoted from package outline dimensions; Infineon's TSLP-7 is physically the longest part yet larger by *area* than the DFN-6 devices. NXP BGU7224 NF/gain and the 1k prices for BGU7224/BGB741L7ESD/QPL9547 were not independently confirmed (SKY65405-21 price is an LCSC volume figure, approximate); all five parts appear active and orderable, none flagged NRND.",
+    "mpns": [
+      "GRF2133",
+      "SKY65405-21",
+      "BGU7224",
+      "BGB741L7ESD",
+      "QPL9547"
+    ],
+    "parts": [
+      {
+        "mpn": "GRF2133",
+        "manufacturer": "Guerrilla RF",
+        "role": "winner",
+        "headline": "2.25 mm^2 (1.5x1.5 DFN-6)",
+        "price_1k": "~$1.25",
+        "datasheet_url": "https://www.guerrilla-rf.com/includes/prodFiles/2133/GRF2133DS.pdf",
+        "note": "Smallest footprint AND best NF (~0.8 dB)/gain (28.5 dB), but 35-120 mA is too high for battery IoT"
+      },
+      {
+        "mpn": "SKY65405-21",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (1.5x1.5 DFN-6)",
+        "price_1k": "~$0.70",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/SkyWorks/Documents/Products/501-600/SKY65405_21_201446I.pdf",
+        "note": "Same footprint, low power (12 mA) purpose-built 2.4 GHz LNA; loses tiebreak at 1.1 dB NF / 15 dB gain"
+      },
+      {
+        "mpn": "BGU7224",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "2.56 mm^2 (1.6x1.6)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/BGU7224.pdf",
+        "note": "Purpose-built 2.4 GHz WLAN LNA with bypass; slightly larger, NF/gain not confirmed here"
+      },
+      {
+        "mpn": "BGB741L7ESD",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "2.6 mm^2 (2.0x1.3 TSLP-7)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/part/BGB741L7ESD",
+        "note": "Wideband DC-5 GHz, ~1.05 dB NF / 16 dB gain, current adjustable 5.5-30 mA; larger by area"
+      },
+      {
+        "mpn": "QPL9547",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (2.0x2.0)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPL9547",
+        "note": "Best-in-class 0.3 dB NF but nearly 2x the footprint, so it loses the primary metric"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-lna-subghz",
+    "name": "RF LNA \u2014 sub-GHz ISM (433/868/915 MHz)",
+    "markdown": "### Best in class right now\n**BGA7L1N6** \u2014 Infineon. **0.77 mm\u00b2 footprint** (TSNP\u20116\u20112 leadless, 0.7 \u00d7 1.1 mm) \u2014 by far the smallest orderable sub\u2011GHz LNA. NF 0.9 dB, gain 13.3 dB at 900 MHz; 728\u2013960 MHz; VCC 1.5\u20133.3 V at only 4.4 mA; output internally matched to 50 \u03a9, needs 1 external SMD. Availability: in production/orderable (e.g. ~90k units stocked at Silitech, also Rutronik; LCSC carries its TSLP\u20117\u20111 sibling). **Why it wins:** at ~0.77 mm\u00b2 it is roughly 1/5 the board area of every 2\u00d72 mm DFN competitor while still delivering sub\u20111 dB NF and double\u2011digit gain across the 868/915 MHz ISM bands.\n\n### Shortlist (ranked by the metric)\n1. **BGA7L1N6** (Infineon) \u2014 **0.77 mm\u00b2** (TSNP\u20116\u20112) \u2014 smallest by a wide margin, but covers only 728\u2013960 MHz (no 433 MHz) and NF/gain are mid\u2011pack.\n2. **BGB707L7ESD** (Infineon) \u2014 **2.6 mm\u00b2** (TSLP\u20117\u20111, 2.0 \u00d7 1.3 mm) \u2014 next smallest; truly wideband (covers 433/868/915), current\u2011adjustable 2.1\u201325 mA, but higher NF (~1.1 dB) and lower gain (~15 dB).\n3. **GRF2070** (Guerrilla RF) \u2014 **4.0 mm\u00b2** (DFN\u20118, 2.0 \u00d7 2.0 mm) \u2014 4\u00d7 the area, but best\u2011in\u2011class NF (0.35\u20130.4 dB), ~21 dB gain, 0.01\u20131.7 GHz so it covers all three ISM bands.\n4. **SKY67150\u2011396LF** (Skyworks) \u2014 **4.0 mm\u00b2** (DFN\u20118, 2.0 \u00d7 2.0 mm) \u2014 same footprint as GRF2070, NF ~0.45 dB, ~19 dB gain, 300\u20132200 MHz, active and widely stocked.\n\n### Comparison\n\n| Part | Footprint | Band coverage | NF | Gain | VCC / ICC | ~1k price |\n|------|-----------|---------------|-----|------|-----------|-----------|\n| BGA7L1N6 (Infineon) | **0.77 mm\u00b2** (TSNP\u20116\u20112) | 728\u2013960 MHz (868/915 only) | 0.9 dB | 13.3 dB | 1.5\u20133.3 V / 4.4 mA | not confirmed |\n| BGB707L7ESD (Infineon) | 2.6 mm\u00b2 (TSLP\u20117\u20111) | ~0.4\u20134 GHz (433/868/915) | ~1.1 dB | ~15 dB | 1.8\u20134.0 V / 2.1\u201325 mA | ~$0.76 (LCSC, low qty) |\n| GRF2070 (Guerrilla RF) | 4.0 mm\u00b2 (DFN\u20118) | 0.01\u20131.7 GHz (all) | 0.35\u20130.4 dB | ~21 dB | 2.7\u20135.0 V / 20\u2013100 mA | not confirmed |\n| SKY67150\u2011396LF (Skyworks) | 4.0 mm\u00b2 (DFN\u20118) | 300\u20132200 MHz (all) | ~0.45 dB | ~19 dB | 3.0\u20135.0 V / ~15 mA | ~$3\u20134 |\n\n### Caveats\nThe ranking metric is footprint, so the BGA7L1N6 wins decisively at ~0.77 mm\u00b2 \u2014 but it tunes only 728\u2013960 MHz, so **if your design must also serve 433 MHz it is disqualified**, and the smallest all\u2011three\u2011band part becomes the BGB707L7ESD (2.6 mm\u00b2), with the GRF2070 winning on noise if area is less critical. Footprints are body dimensions from manufacturer package drawings (not land\u2011pattern area); the BGA7L1N6 is an older (2017) Infineon part \u2014 confirmed stocked but I could not pull a firm distributor 1k price, and you should verify lifecycle status before committing. Prices shown are single\u2011piece/low\u2011qty LCSC figures and will fall at 1k; treat them as indicative only.",
+    "mpns": [
+      "BGA7L1N6E6327",
+      "BGB707L7ESD E6327",
+      "GRF2070",
+      "SKY67150-396LF"
+    ],
+    "parts": [
+      {
+        "mpn": "BGA7L1N6E6327",
+        "manufacturer": "Infineon",
+        "role": "winner",
+        "headline": "0.77 mm^2 (TSNP-6-2, 0.7x1.1 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BGA7L1N6-DS-v03_01-EN.pdf?fileId=db3a304344e406b50144e46b396d02e6",
+        "note": "Smallest sub-GHz LNA by far; NF 0.9 dB, gain 13.3 dB, but 728-960 MHz only (no 433 MHz)."
+      },
+      {
+        "mpn": "BGB707L7ESD E6327",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "2.6 mm^2 (TSLP-7-1, 2.0x1.3 mm)",
+        "price_1k": "~$0.76 (LCSC, low qty)",
+        "datasheet_url": "https://www.infineon.com/cms/en/product/rf/low-noise-amplifier-lna-ics/multi-purpose-lnas/bgb707l7esd/",
+        "note": "Smallest part that covers all 433/868/915; wideband, current-adjustable, but NF ~1.1 dB."
+      },
+      {
+        "mpn": "GRF2070",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (DFN-8, 2.0x2.0 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/products/detail/sku/GRF2070",
+        "note": "4x the area but best NF (0.35-0.4 dB) and ~21 dB gain; covers 0.01-1.7 GHz."
+      },
+      {
+        "mpn": "SKY67150-396LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (DFN-8, 2.0x2.0 mm)",
+        "price_1k": "~$3-4",
+        "datasheet_url": "https://www.skyworksinc.com/products/amplifiers/sky67150-396lf",
+        "note": "Active, widely stocked; NF ~0.45 dB, ~19 dB gain, 300-2200 MHz."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-lna-cellular",
+    "name": "RF LNA \u2014 cellular sub-6 GHz (LTE/5G FR1)",
+    "markdown": "### Best in class right now\n**BGA7H1N6** \u2014 Infineon. **0.77 mm\u00b2 footprint** (0.7 \u00d7 1.1 mm PG\u2011TSNP\u20116\u20112 leadless); 2300\u20132690 MHz (LTE/5G n7/n38/n40/n41), 0.6 dB NF, 12.5 dB gain, IIP3 \u2248 +6 dBm, 1.5\u20133.3 V at ~4.8 mA. Availability: DigiKey (orderable MPN **BGA7H1N6E6327XTSA1**), ~12,000 in stock, ~$0.67 @1k, Active. **Why it wins:** At 0.77 mm\u00b2 it occupies roughly one\u2011fifth the board area of the ubiquitous 2\u00d72 mm (4 mm\u00b2) DFN LNAs while still delivering sub\u20110.7 dB NF on a core FR1 band \u2014 unbeatable when PCB area is the priority.\n\n### Shortlist (ranked by the metric)\n- **BGA7H1N6** (Infineon) \u2014 0.77 mm\u00b2 \u2014 winner; lowest NF in the tiny\u2011package family and lands on FR1 mid/high bands (n7/n40/n41).\n- **BGA7M1N6** (Infineon) \u2014 0.77 mm\u00b2 \u2014 same TSNP\u20116\u20112 footprint, tuned for 1805\u20132200 MHz (n1/n3/n2/n66); pick this for mid\u2011band instead of high\u2011band.\n- **BGA7L1N6** (Infineon) \u2014 0.77 mm\u00b2 \u2014 same footprint, 728\u2013960 MHz low bands (n5/n8/n12/n20); ~0.9 dB NF, the highest of the three.\n- **QPL9058** (Qorvo) \u2014 4.0 mm\u00b2 (2\u00d72 mm) \u2014 ~5\u00d7 the area, but a single part covers 0.5\u20136.0 GHz at 0.6 dB NF / 18 dB gain / +36 dBm OIP3; the choice if you need one LNA for all of FR1.\n- **SKY67151\u2011396LF** (Skyworks) \u2014 4.0 mm\u00b2 (2\u00d72 mm) \u2014 broadband 0.7\u20133.8 GHz at <0.5 dB NF and high gain; superb noise but loses badly on the footprint metric.\n\n### Comparison\n| Part | Footprint | Band | NF | Gain | IIP3 | Supply | ~1k price |\n|---|---|---|---|---|---|---|---|\n| BGA7H1N6 (Infineon) | 0.77 mm\u00b2 | 2.30\u20132.69 GHz | 0.6 dB | 12.5 dB | +6 dBm | 1.5\u20133.3 V, ~4.8 mA | ~$0.67 |\n| BGA7M1N6 (Infineon) | 0.77 mm\u00b2 | 1.805\u20132.20 GHz | 0.6 dB | 12.6 dB | +7 dBm | 1.5\u20133.6 V, ~4.4 mA | \u2014 |\n| BGA7L1N6 (Infineon) | 0.77 mm\u00b2 | 0.728\u20130.96 GHz | 0.9 dB | 13.3 dB | \u2014 | 1.5\u20133.3 V, ~4.4 mA | \u2014 |\n| QPL9058 (Qorvo) | 4.0 mm\u00b2 | 0.5\u20136.0 GHz | 0.6 dB | 18 dB | \u2014 (OIP3 +36) | 5 V, ~55 mA | \u2014 |\n| SKY67151\u2011396LF (Skyworks) | 4.0 mm\u00b2 | 0.7\u20133.8 GHz | <0.5 dB | ~19 dB | \u2014 | 3\u20135 V | \u2014 |\n\n### Caveats\nThe ranking metric is raw PCB area, and on that axis the Infineon TSNP\u20116\u20112 trio (0.77 mm\u00b2 body) wins decisively over the 2\u00d72 mm field \u2014 but they are *single\u2011band* SiGe LNAs, so covering all of FR1 takes one part per band group, whereas the larger QPL9058/SKY67151 cover the whole range in one device; weigh total area accordingly. The 0.6 dB NF figures are device datasheet values \u2014 in\u2011application NF (including input match and PCB loss) is typically ~0.9 dB. I confirmed price/stock only for BGA7H1N6 (DigiKey); the sibling parts are listed and active but I did not independently verify their 1k pricing, and Qorvo/Skyworks 1k prices were not confirmed.",
+    "mpns": [
+      "BGA7H1N6E6327XTSA1",
+      "BGA7M1N6E6327XTSA1",
+      "BGA7L1N6E6327XTSA1",
+      "QPL9058",
+      "SKY67151-396LF"
+    ],
+    "parts": [
+      {
+        "mpn": "BGA7H1N6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "winner",
+        "headline": "0.77 mm^2 (0.7 x 1.1 mm TSNP-6-2)",
+        "price_1k": "~$0.67",
+        "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BGA7H1N6-DS-v03_01-en.pdf?fileId=db3a304344e406b50144e45ad9af02ca",
+        "note": "Smallest footprint; 2.3-2.69 GHz FR1 (n7/n40/n41), 0.6 dB NF, but single-band"
+      },
+      {
+        "mpn": "BGA7M1N6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (0.7 x 1.1 mm TSNP-6-2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/part/BGA7M1N6",
+        "note": "Same tiny footprint, 1.805-2.20 GHz mid-band variant"
+      },
+      {
+        "mpn": "BGA7L1N6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (0.7 x 1.1 mm TSNP-6-2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/part/BGA7L1N6",
+        "note": "Same footprint, 728-960 MHz low-band; higher 0.9 dB NF"
+      },
+      {
+        "mpn": "QPL9058",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (2 x 2 mm DFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPL9058",
+        "note": "5x larger but one part covers 0.5-6.0 GHz at 0.6 dB NF / +36 dBm OIP3"
+      },
+      {
+        "mpn": "SKY67151-396LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (2 x 2 mm DFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/2FF978C8FD7B4069849021E12F665D2E.pdf",
+        "note": "Broadband 0.7-3.8 GHz, <0.5 dB NF; best noise but loses on footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-lna-5g6",
+    "name": "RF LNA \u2014 5\u20136 GHz (Wi-Fi 5/6/6E)",
+    "markdown": "### Best in class right now\n**BGA8U1BN6** \u2014 Infineon. **0.77 mm\u00b2 footprint** (PG-TSNP-6-2 leadless, 0.7 \u00d7 1.1 mm) \u2014 roughly 3\u00d7 smaller than any competing 5\u20136 GHz LNA. Covers 4.0\u20136.0 GHz (full Wi-Fi 5/6/6E band); NF \u2248 1.6 dB, gain \u2248 13.7 dB, OP1dB \u2248 18\u201322 dBm, on just 4.5 mA from a 1.6\u20133.1 V supply; integrated multi-state control (high-gain / bypass with ~7.5 dB insertion loss / off). SiGe (B7HF). Availability: active/in production at Infineon; orderable via Mouser/DigiKey (exact 1k price not independently confirmed). **Why it wins:** When PCB area is the priority, nothing else in this band comes close \u2014 the TSNP-6-2 case is about a third the area of the ubiquitous 1.5 \u00d7 1.5 mm DFN-6, and it still hits sub-2 dB NF at microamp-class current with bypass built in.\n\n### Shortlist (ranked by the metric)\n- **GRF2541** (Guerrilla RF) \u2014 2.25 mm\u00b2 (DFN-6, 1.5 \u00d7 1.5 mm) \u2014 ~3\u00d7 larger than the winner, but better NF (~1.0 dB) and higher gain (~16.4 dB) over 5.1\u20135.925 GHz, with bypass.\n- **GRF2543** (Guerrilla RF) \u2014 2.25 mm\u00b2 (DFN-6, 1.5 \u00d7 1.5 mm) \u2014 same footprint as GRF2541; wider 3.75\u20138.5 GHz tune, NF ~1.0 dB, gain ~14.4 dB; trades band breadth for a slightly lower gain.\n- **GRF2110** (Guerrilla RF) \u2014 2.25 mm\u00b2 (DFN-6, 1.5 \u00d7 1.5 mm) \u2014 best linearity here (OIP3 ~38 dBm, gain ~16.3 dB at 6 GHz, NF ~1.2 dB) over 5\u20138 GHz, but draws ~70 mA at 5 V \u2014 a power/area penalty vs the winner.\n- **QPL9547** (Qorvo) \u2014 4.0 mm\u00b2 (DFN, 2.0 \u00d7 2.0 mm) \u2014 largest of the group; ultra-low NF and very high OIP3 across 0.1\u20136 GHz, but NF/gain are specified strongest well below 5 GHz.\n\n### Comparison\n| Part | Footprint | NF (5\u20136 GHz) | Gain | OIP3 | Supply | ~1k price |\n|---|---|---|---|---|---|---|\n| **BGA8U1BN6** (Infineon) | **0.77 mm\u00b2** (TSNP-6-2) | ~1.6 dB | ~13.7 dB | n/s (OP1dB ~18\u201322 dBm) | 1.6\u20133.1 V, 4.5 mA | n/c |\n| GRF2541 (Guerrilla) | 2.25 mm\u00b2 (DFN-6) | ~1.0 dB | ~16.4 dB | \u2014 | 2.7\u20135 V, ~15 mA | n/c |\n| GRF2543 (Guerrilla) | 2.25 mm\u00b2 (DFN-6) | ~1.0 dB | ~14.4 dB | \u2014 | 2.7\u20135 V, ~15 mA | n/c |\n| GRF2110 (Guerrilla) | 2.25 mm\u00b2 (DFN-6) | ~1.2 dB | ~16.3 dB | ~38 dBm | 2.7\u20136 V, ~70 mA | n/c |\n| QPL9547 (Qorvo) | 4.0 mm\u00b2 (DFN) | ~0.3 dB* | ~19 dB | ~39 dBm | 5 V, 65 mA | n/c |\n\n\\*QPL9547 NF/gain figures are specified at 1.9 GHz; performance degrades toward the top of its 6 GHz range. n/c = not independently confirmed; n/s = not specified.\n\n### Caveats\nThe ranking is decided on package footprint, where the Infineon TSNP-6-2 (0.77 mm\u00b2) wins unambiguously over the 1.5 \u00d7 1.5 mm DFN-6 cluster (2.25 mm\u00b2) and the 2 \u00d7 2 mm Qorvo part; the three Guerrilla DFN-6 devices are an exact footprint tie and were ordered by NF/gain/linearity fit. The winner is the area-optimal choice but is *not* the noise-figure leader \u2014 if ~0.6 dB lower NF matters more than ~1.5 mm\u00b2 of board, GRF2541/GRF2543 are the better pick. I could not independently confirm live 1k pricing or stock levels on a distributor page (Mouser/DigiKey pages timed out or weren't machine-readable), and the BGA8U1BN6 NF/gain values are the manufacturer's typical numbers rather than guaranteed limits across the full 5\u20136 GHz span \u2014 verify against the datasheet for your exact channel.",
+    "mpns": [
+      "BGA8U1BN6",
+      "GRF2541",
+      "GRF2543",
+      "GRF2110",
+      "QPL9547"
+    ],
+    "parts": [
+      {
+        "mpn": "BGA8U1BN6",
+        "manufacturer": "Infineon",
+        "role": "winner",
+        "headline": "0.77 mm^2 (TSNP-6-2, 0.7x1.1 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bga8u1bn6-datasheet-en.pdf",
+        "note": "Smallest footprint by ~3x; NF ~1.6 dB, gain ~13.7 dB, 4.5 mA, integrated bypass; area-optimal not NF-optimal"
+      },
+      {
+        "mpn": "GRF2541",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (DFN-6, 1.5x1.5 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/products/DataSheet?sku=2541&file_name=GRF2541DS.pdf",
+        "note": "5.1-5.925 GHz, NF ~1.0 dB, gain ~16.4 dB with bypass; best NF but 3x the area"
+      },
+      {
+        "mpn": "GRF2543",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (DFN-6, 1.5x1.5 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/products/DataSheet?sku=2543&file_name=GRF2543DS.pdf",
+        "note": "Wide 3.75-8.5 GHz tune, NF ~1.0 dB, gain ~14.4 dB; footprint tie with GRF2541"
+      },
+      {
+        "mpn": "GRF2110",
+        "manufacturer": "Guerrilla RF",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (DFN-6, 1.5x1.5 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.guerrilla-rf.com/products/detail/sku/GRF2110",
+        "note": "5-8 GHz, OIP3 ~38 dBm, gain ~16.3 dB, NF ~1.2 dB; best linearity but ~70 mA"
+      },
+      {
+        "mpn": "QPL9547",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (DFN, 2.0x2.0 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPL9547",
+        "note": "0.1-6 GHz, very low NF/high OIP3 but specs strongest below 5 GHz; largest footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-filter-2g4",
+    "name": "RF Filter \u2014 2.4 GHz (Wi-Fi/BLE/Zigbee)",
+    "markdown": "### Best in class right now\n**LFB152G45CB2D320** \u2014 Murata. **0402 case, 1.0 \u00d7 0.5 mm \u2248 0.50 mm\u00b2** (LTCC multilayer); insertion loss 1.5 dB max in-band, passband 2400\u20132500 MHz (50 MHz BW, 50 \u03a9), rejection 34 dB min @ 4.8\u20135.0 GHz and 27 dB min @ 7.2\u20137.5 GHz (but only ~13 dB @ 824\u2013915 MHz and 2\u20133.5 dB across 1.7\u20132.1 GHz cellular). Availability: in production, ~27k stock at DigiKey and stock at LCSC, ~$0.09 @ 1k. **Why it wins:** it occupies the smallest footprint available for a real 2.4 GHz BPF (0.50 mm\u00b2, an 0402), and on that footprint tie it beats the equally-sized Johanson 0402 on the next metric \u2014 1.5 dB insertion loss vs 2.5 dB \u2014 while adding much stronger harmonic/5 GHz rejection.\n\n### Shortlist (ranked by the metric)\n- **LFB152G45CB2D320** (Murata) \u2014 0.50 mm\u00b2 (0402) \u2014 winner; lowest IL at the smallest footprint, but weak low-band/cellular rejection.\n- **2450BP07A0100001T** (Johanson Technology) \u2014 0.50 mm\u00b2 (0402) \u2014 ties on footprint; loses the tie-break on IL (2.5 dB) but gives more balanced 25 dB rejection across the 0.8\u20131.9 GHz cellular bands; 0.5 W, ~$0.17 @ 1k.\n- **885128** (Qorvo) \u2014 0.99 mm\u00b2 (1.1\u00d70.9 mm BAW) \u2014 best IL (1.3 dB) and steep LTE-coexistence rejection with +38 dBm handling, but ~2\u00d7 the area **and EOL (announced Apr 2026, LTB Feb 2027 \u2192 use QPQ5230)**.\n- **2450BP08C0100002T** (Johanson Technology) \u2014 0.99 mm\u00b2 (0403) \u2014 AEC-Q200 automotive grade, low IL / high rejection per datasheet (exact dB not independently confirmed); larger than the 0402.\n- **LFB182G45SG9A272** (Murata) \u2014 1.28 mm\u00b2 (0603) \u2014 relaxed-tolerance, 1.8 dB IL; easier to assemble but biggest footprint here.\n\n### Comparison\n| Part | Footprint | Type | Insertion loss | Key rejection | Power | ~1k price |\n|------|-----------|------|----------------|---------------|-------|-----------|\n| LFB152G45CB2D320 (Murata) | 0.50 mm\u00b2 (0402) | LTCC | 1.5 dB max | 34 dB @5 GHz; weak @1.7\u20132.1 GHz | \u2014 | ~$0.09 |\n| 2450BP07A0100001T (Johanson) | 0.50 mm\u00b2 (0402) | LTCC | 2.5 dB | 25 dB @0.8\u20131.9 & 4.8\u20135 GHz | 0.5 W | ~$0.17 |\n| 885128 (Qorvo) | 0.99 mm\u00b2 | BAW | 1.3 dB | High LTE B7/B40/B41 (EOL) | +38 dBm | n/a (EOL) |\n| 2450BP08C0100002T (Johanson) | 0.99 mm\u00b2 (0403) | LTCC | low* | high* (AEC-Q200) | \u2014 | \u2014 |\n| LFB182G45SG9A272 (Murata) | 1.28 mm\u00b2 (0603) | LTCC | 1.8 dB | \u2014 | \u2014 | \u2014 |\n\n\\* Datasheet claims \"low IL / high rejection\"; exact dB not independently verified.\n\n### Caveats\nThe two 0402 leaders tie exactly on the primary metric (0.50 mm\u00b2), so the winner is decided on insertion loss \u2014 but note the choice is a rejection tradeoff: the Murata wins IL and 5 GHz/harmonic rejection while the Johanson is far better in the 0.8\u20131.9 GHz cellular bands, so coexistence-sensitive designs may prefer the Johanson despite the call here. Qorvo's 885128 is the IL/selectivity champion but is end-of-life and roughly double the area, so it's excluded from the top spot; its successor QPQ5230 wasn't verified for footprint. Insertion-loss for the Johanson 0403 and the Murata 0603, and exact 1k pricing for several parts, could not be independently confirmed from primary distributor pages and should be checked against current datasheets before committing.",
+    "mpns": [
+      "LFB152G45CB2D320",
+      "2450BP07A0100001T",
+      "885128",
+      "2450BP08C0100002T",
+      "LFB182G45SG9A272"
+    ],
+    "parts": [
+      {
+        "mpn": "LFB152G45CB2D320",
+        "manufacturer": "Murata",
+        "role": "winner",
+        "headline": "0.50 mm^2 (0402)",
+        "price_1k": "~$0.09",
+        "datasheet_url": "https://www.murata.com/products/productdata/8799747538974/LFB152G45CB2D320.pdf",
+        "note": "Smallest footprint (0402) with lowest IL (1.5 dB) wins the tie; weak low-band cellular rejection."
+      },
+      {
+        "mpn": "2450BP07A0100001T",
+        "manufacturer": "Johanson Technology",
+        "role": "shortlist",
+        "headline": "0.50 mm^2 (0402)",
+        "price_1k": "~$0.17",
+        "datasheet_url": "https://www.johansontechnology.com/docs/4766/BandPassFilter-2450BP07A0100001T.pdf",
+        "note": "Ties footprint; IL 2.5 dB but balanced 25 dB rejection across 0.8-1.9 GHz; 0.5 W."
+      },
+      {
+        "mpn": "885128",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "0.99 mm^2 BAW",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/885128",
+        "note": "Best IL (1.3 dB) and LTE-coexistence rejection, but EOL (LTB Feb 2027) and ~2x area; successor QPQ5230."
+      },
+      {
+        "mpn": "2450BP08C0100002T",
+        "manufacturer": "Johanson Technology",
+        "role": "shortlist",
+        "headline": "0.99 mm^2 (0403)",
+        "price_1k": "",
+        "datasheet_url": "https://www.johansontechnology.com/docs/1701/2450BP08C0100002T_qpzUWXS.pdf",
+        "note": "AEC-Q200 automotive grade; low IL/high rejection per datasheet (dB unverified)."
+      },
+      {
+        "mpn": "LFB182G45SG9A272",
+        "manufacturer": "Murata",
+        "role": "shortlist",
+        "headline": "1.28 mm^2 (0603)",
+        "price_1k": "",
+        "datasheet_url": "https://www.murata.com/en-us/products/productdetail?partno=LFB182G45SG9A272",
+        "note": "Larger 0603, 1.8 dB IL; easiest to assemble but biggest footprint shortlisted."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-filter-subghz",
+    "name": "RF Filter \u2014 sub-GHz ISM (433/868/915 MHz)",
+    "markdown": "### Best in class right now\n**AFS14A26-915.00-T3** \u2014 Abracon. **1.4 \u00d7 1.1 \u00d7 0.7 mm (\u22481.54 mm\u00b2)**; SAW band-pass, fc 915 MHz, passband 902\u2013928 MHz (26 MHz BW), insertion loss 2.5 dB typ / 3.1 dB max, stopband rejection 40\u201353 dB (\u224842 dB at 820\u2013846 and 990\u20131010 MHz, 50 dB typ below 702 MHz), +10 dBm max input, 50 \u03a9 single-ended (no matching network). Availability: in production and stocked at DigiKey, Mouser, Arrow, Newark and LCSC; ~$0.82 each at LCSC (low qty). **Why it wins:** it ties the absolute smallest in-production sub-GHz package (the 1411 footprint) while being the most clearly orderable, multi-distributor part with a full, public spec table \u2014 and its rejection is stronger than the comparably sized alternatives.\n\n### Shortlist (ranked by the metric)\n- **AFS14A26-915.00-T3** (Abracon) \u2014 **1.54 mm\u00b2** (1.4 \u00d7 1.1 mm) \u2014 winner; best-documented and most widely stocked of the 1411-class parts, IL 2.5 dB typ.\n- **SF14-0925M5UUP1** (Kyocera AVX) \u2014 **1.54 mm\u00b2** (1.4 \u00d7 1.1 mm) \u2014 footprint tie; 925 MHz / Band-8-centric tuning, vendor cites high Band-8 attenuation but full IL/rejection numbers are only in the spec-sheet image, so harder to verify than Abracon.\n- **856327** (Qorvo) \u2014 **3.0 mm\u00b2** (2.0 \u00d7 1.5 mm) \u2014 915 MHz ISM, IL 2.3 dB, 26 MHz BW; **discontinued (EOL Feb 2019)** \u2014 do not design in, listed only as historical reference.\n- **AFS868.0W01-TS3** (Abracon) \u2014 **14.44 mm\u00b2** (3.8 \u00d7 3.8 mm) \u2014 the realistic 868 MHz EU option; far larger footprint, narrower 8 MHz BW, IL \u22644.5 dB. Included because no 868 MHz part exists at the 1411 size.\n\n### Comparison\n| Part | Footprint | Type | Band / fc | Insertion loss | Rejection | Power | ~1k price |\n|------|-----------|------|-----------|----------------|-----------|-------|-----------|\n| AFS14A26-915.00-T3 (Abracon) | **1.54 mm\u00b2** | SAW | 915 MHz (902\u2013928) | 2.5 dB typ / 3.1 max | 40\u201353 dB | +10 dBm | ~$0.80* |\n| SF14-0925M5UUP1 (Kyocera) | 1.54 mm\u00b2 | SAW | 925 MHz (Band 8) | \"low\" (unverified) | high B8 atten. (unverified) | n/v | n/v |\n| 856327 (Qorvo) \u2014 *EOL* | 3.0 mm\u00b2 | SAW | 915 MHz (902\u2013928) | 2.3 dB | high (n/v) | n/v | \u2014 |\n| AFS868.0W01-TS3 (Abracon) | 14.44 mm\u00b2 | SAW | 868 MHz (864\u2013872) | \u22644.5 dB | 35\u201345 dB | 0 dBm | n/v |\n\n\\*Distributor low-qty pricing (~$0.82 at LCSC); a true 1k break was not independently confirmed.\n\n### Caveats\nThe two smallest parts (Abracon AFS14A26 and Kyocera SF14-0925) are a genuine footprint tie at 1.4 \u00d7 1.1 mm, and I gave the win to Abracon purely on verifiability and stocking \u2014 Kyocera's exact IL and rejection live in a datasheet image I could not parse, so its numbers are unconfirmed. The Qorvo 856327 is the only other true 915 MHz ISM SAW I found near this size, but it has been EOL since 2019 and should not be designed in; no 868 MHz part exists at the 1411 size, so 868-band designs jump to \u22483.8 \u00d7 3.8 mm. The Abracon 915 MHz datasheet is dated 2013 \u2014 the part remains listed as active at multiple distributors, but confirm lifecycle status with the distributor before committing to volume.",
+    "mpns": [
+      "AFS14A26-915.00-T3",
+      "SF14-0925M5UUP1",
+      "856327",
+      "AFS868.0W01-TS3"
+    ],
+    "parts": [
+      {
+        "mpn": "AFS14A26-915.00-T3",
+        "manufacturer": "Abracon",
+        "role": "winner",
+        "headline": "1.54 mm^2 (1.4 x 1.1 mm)",
+        "price_1k": "~$0.80",
+        "datasheet_url": "https://abracon.com/Filters/SAW%20FILTERS/AFS14A26-915.00-T3.pdf",
+        "note": "Smallest in-production sub-GHz SAW (1411 pkg), 915 MHz, IL 2.5 dB typ, 40-53 dB rejection; widely stocked"
+      },
+      {
+        "mpn": "SF14-0925M5UUP1",
+        "manufacturer": "Kyocera AVX",
+        "role": "shortlist",
+        "headline": "1.54 mm^2 (1.4 x 1.1 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://ele.kyocera.com/en/technical/saw_925/",
+        "note": "Footprint tie at 1411; 925 MHz/Band-8 tuning but IL and rejection figures unverified"
+      },
+      {
+        "mpn": "856327",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "3.0 mm^2 (2.0 x 1.5 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/856327",
+        "note": "915 MHz ISM, IL 2.3 dB, but DISCONTINUED (EOL 2019) - reference only, do not design in"
+      },
+      {
+        "mpn": "AFS868.0W01-TS3",
+        "manufacturer": "Abracon",
+        "role": "shortlist",
+        "headline": "14.44 mm^2 (3.8 x 3.8 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://abracon.com/Filters/SAW%20FILTERS/AFS868.0W01-TS3.pdf",
+        "note": "Practical 868 MHz EU option; much larger, 8 MHz BW, IL <=4.5 dB - no 1411-size 868 part exists"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-filter-cellular",
+    "name": "RF Filter \u2014 cellular sub-6 GHz (LTE/5G FR1)",
+    "markdown": "### Best in class right now\n**SAFFW2G14AA0E0A** \u2014 Murata. **0.63 mm\u00b2 footprint (0.9 \u00d7 0.7 \u00d7 0.55 mm)**; SAW Rx band-pass for LTE Band 1 (~2110\u20132170 MHz), unbalanced 50 \u03a9, in volume production. Availability: orderable through Arrow and JLCPCB/LCSC (the SAFFW family is stocked across bands); ~1k price not confirmed at time of writing. **Why it wins:** the SAFFW series is Murata's (and the industry's) smallest discrete cellular SAW filter at 0.9 \u00d7 0.7 mm \u2014 ~37 % less PCB area than the 1.1 \u00d7 0.9 mm parts every competitor still tops out at, while keeping conventional-grade insertion-loss/rejection across the 700 MHz\u20132.6 GHz LTE/FR1 bands.\n\n### Shortlist (ranked by the metric)\n- **SAFFW2G14AA0E0A** (Murata) \u2014 **0.63 mm\u00b2 (0.9 \u00d7 0.7 mm)** \u2014 winner; smallest orderable cellular SAW, full LTE band coverage in one footprint.\n- **SAFFB1G84FL0F0AR1X** (Murata) \u2014 **0.99 mm\u00b2 (1.1 \u00d7 0.9 mm)** \u2014 Band 3 SAW; previous-generation Murata footprint, more broadly stocked but ~57 % larger.\n- **FAR-F6KA-2G1400-D4DW-Z** (Taiyo Yuden) \u2014 **1.40 mm\u00b2 (1.40 \u00d7 1.00 mm)** \u2014 Band 1 SAW, IL 1.9 dB, very cheap, but marked *Not For New Designs* (NRND) and larger.\n- **QPQ3501** (Qorvo) \u2014 **3.20 mm\u00b2 (2.0 \u00d7 1.6 mm)** \u2014 BAW band-pass for n78; far bigger and aimed at base-station/small-cell power & rejection, not handset area savings.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Pkg (mm) | Type | Band | Insertion loss | ~1k price |\n|---|---|---|---|---|---|---|\n| SAFFW2G14AA0E0A | **0.63** | 0.9 \u00d7 0.7 | SAW | B1 Rx | ~1.5\u20132.5 dB (datasheet) | n/c |\n| SAFFB1G84FL0F0AR1X | 0.99 | 1.1 \u00d7 0.9 | SAW | B3 | ~1.5\u20132.5 dB (datasheet) | n/c |\n| FAR-F6KA-2G1400-D4DW-Z | 1.40 | 1.40 \u00d7 1.00 | SAW | B1 | 1.9 dB | ~$0.28 |\n| QPQ3501 | 3.20 | 2.0 \u00d7 1.6 | BAW | n78 | low (BAW, base-station) | n/c |\n\n### Caveats\nMurata's SAFFW datasheet PDFs returned server errors during research, so the 0.63 mm\u00b2 footprint and band assignment are confirmed (Murata product data + the 2019 \"world's smallest SAW filter\" announcement and distributor listings) but the exact per-MPN insertion-loss and rejection figures are not independently verified here \u2014 the ~1.5\u20132.5 dB range is typical for compact Rx SAW filters in these bands, not a quoted spec. TDK's TFSB thin-film band-pass filter is physically smaller (1.0 \u00d7 0.5 mm) but is an IPD part for 2.4/5 GHz WLAN/BT, not a narrow cellular SAW/BAW filter, so it is out of category; the Taiyo Yuden F6KA part is included only as a verified data point and is NRND. BAW (Qorvo) is listed for completeness \u2014 it wins on power/rejection at higher FR1 bands but is the wrong tool when PCB area is the priority.",
+    "mpns": [
+      "SAFFW2G14AA0E0A",
+      "SAFFB1G84FL0F0AR1X",
+      "FAR-F6KA-2G1400-D4DW-Z",
+      "QPQ3501"
+    ],
+    "parts": [
+      {
+        "mpn": "SAFFW2G14AA0E0A",
+        "manufacturer": "Murata",
+        "role": "winner",
+        "headline": "0.63 mm^2 (0.9 x 0.7 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.murata.com/products/productdata/8805798739998/DS-SAFFW2G14AA0E0A.pdf",
+        "note": "Smallest orderable cellular SAW filter; LTE B1 Rx, full 700MHz-2.6GHz band coverage in one tiny footprint"
+      },
+      {
+        "mpn": "SAFFB1G84FL0F0AR1X",
+        "manufacturer": "Murata",
+        "role": "shortlist",
+        "headline": "0.99 mm^2 (1.1 x 0.9 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.murata.com/en-us/products/productdetail?partno=SAFFB1G84FL0F0A",
+        "note": "Prev-gen Murata footprint, Band 3, widely stocked but ~57% larger than SAFFW"
+      },
+      {
+        "mpn": "FAR-F6KA-2G1400-D4DW-Z",
+        "manufacturer": "Taiyo Yuden",
+        "role": "shortlist",
+        "headline": "1.40 mm^2 (1.40 x 1.00 mm)",
+        "price_1k": "~$0.28",
+        "datasheet_url": "https://www.yuden.co.jp/ut/product/category/filter/",
+        "note": "Band 1 SAW, IL 1.9 dB, cheap \u2014 but NRND (Not For New Designs) and larger"
+      },
+      {
+        "mpn": "QPQ3501",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "3.20 mm^2 (2.0 x 1.6 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPQ3501",
+        "note": "BAW band-pass for n78; high power/rejection for base stations, not handset area savings"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-filter-5g6",
+    "name": "RF Filter \u2014 5\u20136 GHz (Wi-Fi 5/6/6E)",
+    "markdown": "### Best in class right now\n**6100BP14A1955001T** \u2014 Johanson Technology. **1.28 mm\u00b2 footprint (EIA 0603, 1.6 \u00d7 0.8 mm, 0.65 mm max height)**; LTCC ceramic band-pass, single wideband passband 5170\u20137125 MHz covering the full Wi-Fi 5/6/6E UNII 1\u20138 range, insertion loss ~0.9 dB, rejects the 2.4 GHz and sub-5 GHz/cellular bands below and >7.5 GHz above. Availability: DigiKey, Active, ~2,120 in stock, **~$0.37 @1k** (17-week factory lead time). **Why it wins:** it is the smallest part that actually covers both the 5 GHz *and* 6 GHz Wi-Fi bands in one passband with sub-1 dB loss \u2014 smaller acoustic/LC parts exist but only reach the 5 GHz UNII band, so on the \"smallest footprint that does the whole job\" metric this is the leader.\n\n### Shortlist (ranked by the metric)\n- **LFB155G50CB1B948** (Murata) \u2014 **0.50 mm\u00b2 (0402, 1.0 \u00d7 0.5 mm)** \u2014 physically the smallest, IL 1.1 dB max, but passband is only ~5150\u20135850 MHz (Wi-Fi 5/6 5 GHz band); **does not cover the 6 GHz/6E band**, so it can't do the full-category job.\n- **6100BP14A1955001T** (Johanson) \u2014 **1.28 mm\u00b2 (0603)** \u2014 the winner; only sub-1 dB part covering the entire 5\u20137.125 GHz span.\n- **5550BP14E0800001T** (Johanson) \u2014 **1.28 mm\u00b2 (0603)** \u2014 same footprint, lowest loss of the group at 0.6 dB max, but passband 5150\u20135950 MHz only (no 6E 6 GHz coverage).\n- **QPQ5601** (Qorvo) \u2014 **~2.21 mm\u00b2 (1.3 \u00d7 1.7 mm laminate)** \u2014 largest here and 6 GHz-only (UNII 5\u20138, 5945\u20137125 MHz), but it's true BAW with steep skirts, high near-in rejection of UNII 1\u20133 and 28 dBm power handling \u2014 the pick when rejection/power beats area.\n\n### Comparison\n| Part | Footprint | Type | Passband (MHz) | Insertion loss | Rejection / power | ~1k price |\n|------|-----------|------|----------------|----------------|-------------------|-----------|\n| 6100BP14A1955001T (winner) | 1.28 mm\u00b2 (0603) | LTCC LC | 5170\u20137125 (5/6/6E) | ~0.9 dB | Rejects 2.4 GHz & >7.5 GHz; power n/c | ~$0.37 |\n| LFB155G50CB1B948 | 0.50 mm\u00b2 (0402) | LTCC LC | ~5150\u20135850 (5 GHz only) | 1.1 dB max | 9.5 dB @4 GHz, 4.5 dB @7.5 GHz; 500 mW | ~$0.30 (est.) |\n| 5550BP14E0800001T | 1.28 mm\u00b2 (0603) | LTCC LC | 5150\u20135950 (5 GHz only) | 0.6 dB max | rejects 2.4 GHz; power n/c | ~$0.35 (est.) |\n| QPQ5601 | 2.21 mm\u00b2 (1.3\u00d71.7) | BAW | 5945\u20137125 (6E only) | low (n/c) | high near-in UNII1\u20133; 28 dBm | ~$1.70 |\n\n### Caveats\n\"Smallest footprint that covers the full 5 *and* 6 GHz band\" drove the winner pick: the Murata 0402 (0.50 mm\u00b2) and Johanson 5550 (0.6 dB) are physically smaller or lower-loss but only pass the 5 GHz UNII band, so they're disqualified from full Wi-Fi 6E duty and listed as the better choice if you only need 5 GHz. The Johanson parts are wideband LC filters (they pass the whole 5\u20137 GHz band rather than separating 5 from 6 GHz), so use a Qorvo BAW (e.g. QPQ5601/QPQ5500) where steep 5/6 GHz coexistence rejection or high power is the real requirement. Insertion-loss figures are datasheet typ/max; exact 1k prices for the Murata and 5550 parts and power-handling for the Johanson parts were not independently confirmed at a distributor and should be checked before design-in.",
+    "mpns": [
+      "6100BP14A1955001T",
+      "LFB155G50CB1B948",
+      "5550BP14E0800001T",
+      "QPQ5601"
+    ],
+    "parts": [
+      {
+        "mpn": "6100BP14A1955001T",
+        "manufacturer": "Johanson Technology",
+        "role": "winner",
+        "headline": "1.28 mm^2 (0603) covering full 5-7.125 GHz",
+        "price_1k": "~$0.37",
+        "datasheet_url": "https://www.johansontechnology.com/products/integrated-passives/band-pass-filters/6100bp14a1955001t/",
+        "note": "Smallest part covering both 5 & 6 GHz Wi-Fi 5/6/6E in one passband at ~0.9 dB IL"
+      },
+      {
+        "mpn": "LFB155G50CB1B948",
+        "manufacturer": "Murata",
+        "role": "shortlist",
+        "headline": "0.50 mm^2 (0402)",
+        "price_1k": "",
+        "datasheet_url": "https://www.murata.com/en-global/products/productdetail?partno=LFB155G50CB1B948",
+        "note": "Physically smallest but 5 GHz band only (~5150-5850 MHz); no 6E coverage"
+      },
+      {
+        "mpn": "5550BP14E0800001T",
+        "manufacturer": "Johanson Technology",
+        "role": "shortlist",
+        "headline": "1.28 mm^2 (0603)",
+        "price_1k": "",
+        "datasheet_url": "https://www.johansontechnology.com/products/integrated-passives/band-pass-filters/",
+        "note": "Lowest loss (0.6 dB max) but passband 5150-5950 MHz, no 6 GHz/6E"
+      },
+      {
+        "mpn": "QPQ5601",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "2.21 mm^2 (1.3x1.7 mm)",
+        "price_1k": "~$1.70",
+        "datasheet_url": "https://www.qorvo.com/products/p/QPQ5601",
+        "note": "Largest/6E-only BAW but steep skirts, high near-in rejection, 28 dBm power"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-switch-2g4",
+    "name": "RF Switch \u2014 2.4 GHz (Wi-Fi/BLE/Zigbee)",
+    "markdown": "### Best in class right now\n**RF1630** \u2014 Qorvo. **0.77 mm\u00b2 footprint** (1.1 \u00d7 0.7 \u00d7 0.55 mm, 6\u2011bump WLCSP); SPDT, 100\u20136000 MHz, insertion loss 0.18\u20130.54 dB and isolation 42\u219222 dB across band, GPIO control, integrated DC blocking. Availability: orderable via Qorvo/RFMW, lifecycle \"Production\"; ~$0.26 at 1k (RFMW listed 0 in stock at time of check). **Why it wins:** No other in\u2011production 2.4 GHz\u2011capable switch we found packs an SPDT into a smaller PCB area, and it does so while keeping sub\u20110.5 dB insertion loss through the ISM band.\n\n### Shortlist (ranked by the metric)\n- **RF1630** (Qorvo) \u2014 **0.77 mm\u00b2** \u2014 smallest footprint; SPDT only and isolation falls toward ~22 dB at the top of its range, so it's a TX/RX or antenna\u2011select part, not a high\u2011isolation SP3T.\n- **SKY13585-679LF** (Skyworks) \u2014 **1.00 mm\u00b2** (1.0 \u00d7 1.0 mm) \u2014 purpose\u2011built 1\u20136 GHz SPDT for WLAN; slightly larger and higher loss (0.95 dB max) than the RF1630.\n- **SKY13586-678LF** (Skyworks) \u2014 **1.21 mm\u00b2** (1.1 \u00d7 1.1 mm) \u2014 native 2.4\u20132.5 GHz **SP3T** (extra throw) with 35 dB isolation; bigger, but the better pick if you need three ports / antenna diversity.\n- **SKY13575-639LF** (Skyworks) \u2014 **2.56 mm\u00b2** (1.6 \u00d7 1.6 mm) \u2014 dual\u2011band matched **SP4T** Wi\u2011Fi switch; largest here, justified only when you need four throws and internal matching.\n\n### Comparison\n\n| Part | Footprint | Config | Insertion loss @2.4 GHz | Isolation @2.4 GHz | Freq range | ~1k price |\n|------|-----------|--------|-------------------------|--------------------|------------|-----------|\n| RF1630 | **0.77 mm\u00b2** | SPDT | ~0.2\u20130.5 dB | ~22\u201325 dB (band edge) | 0.1\u20136 GHz | ~$0.26 |\n| SKY13585-679LF | 1.00 mm\u00b2 | SPDT | 0.95 dB max | 20 dB min / 38 typ | 1\u20136 GHz | ~$0.40 |\n| SKY13586-678LF | 1.21 mm\u00b2 | SP3T | 0.75 dB typ | 35 dB typ | 2.4\u20132.5 GHz | ~$0.50 |\n| SKY13575-639LF | 2.56 mm\u00b2 | SP4T | 0.6 dB typ | high (matched) | 0.1\u20136 GHz | ~$0.80 |\n\n### Caveats\nThe RF1630 is marketed for cellular (824\u20132170 MHz spec band) but its silicon operates to 6 GHz, so it covers 2.4\u20132.5 GHz; its band\u2011edge insertion loss/isolation at 2.4 GHz are interpolated from the datasheet curves rather than a discrete 2.4 GHz line item, and one distributor showed 0 stock despite \"Production\" status \u2014 verify lead time before committing. If you need a quoted\u2011at\u20112.4 GHz spec or more than two throws, the Skyworks SKY13585/13586 are the safer \"native\" 2.4 GHz parts at a modest area penalty. The ~1k prices for the Skyworks parts are approximate (distributor quotes ranged widely by source) and should be confirmed at order quantity.",
+    "mpns": [
+      "RF1630",
+      "SKY13585-679LF",
+      "SKY13586-678LF",
+      "SKY13575-639LF"
+    ],
+    "parts": [
+      {
+        "mpn": "RF1630",
+        "manufacturer": "Qorvo",
+        "role": "winner",
+        "headline": "0.77 mm^2 (1.1 x 0.7 mm WLCSP)",
+        "price_1k": "~$0.26",
+        "datasheet_url": "https://www.qorvo.com/products/p/RF1630",
+        "note": "Smallest footprint; SPDT, 0.1-6 GHz, IL <0.5 dB, but isolation drops to ~22 dB at band edge"
+      },
+      {
+        "mpn": "SKY13585-679LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "1.00 mm^2 (1.0 x 1.0 mm MLPD)",
+        "price_1k": "~$0.40",
+        "datasheet_url": "https://www.skyworksinc.com/en/Products/switches/SKY13585-679LF",
+        "note": "Native 1-6 GHz SPDT for WLAN; IL 0.95 dB max, isolation 38 dB typ"
+      },
+      {
+        "mpn": "SKY13586-678LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "1.21 mm^2 (1.1 x 1.1 mm MLP)",
+        "price_1k": "~$0.50",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/SkyWorks/Documents/Products/2401-2500/SKY13586-678LF_203452G.pdf",
+        "note": "Native 2.4-2.5 GHz SP3T; IL 0.75 dB, isolation 35 dB - pick for 3-throw antenna diversity"
+      },
+      {
+        "mpn": "SKY13575-639LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "2.56 mm^2 (1.6 x 1.6 mm QFN)",
+        "price_1k": "~$0.80",
+        "datasheet_url": "https://www.skyworksinc.com/-/media/skyworks/documents/products/2201-2300/sky13575_639lf_203270d.pdf",
+        "note": "Dual-band matched SP4T; largest here, only if you need 4 throws + internal matching"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-switch-subghz",
+    "name": "RF Switch \u2014 sub-GHz ISM (433/868/915 MHz)",
+    "markdown": "### Best in class right now\n**BGS12P2L6E6327XTSA1** \u2014 Infineon. **0.77 mm\u00b2 footprint** (0.7 \u00d7 1.1 mm, leadless TSLP-6, 0.31 mm high); SPDT, 0.05\u20136 GHz (covers 433/868/915 MHz), insertion loss \u22480.25 dB and isolation \u224845 dB at 1 GHz (\u22640.74 dB IL worst-case across band), power handling up to ~37 dBm. Availability: DigiKey ~224,000 in stock, ~$0.29 @ 1k; also Farnell/Rutronik, active/in-production. **Why it wins:** Among parts that actually reach down to 433 MHz, the BGS12-series TSLP/TSNP package is the smallest orderable footprint on the market (0.77 mm\u00b2), and it still delivers low-loss, high-isolation, +37 dBm-capable performance through the sub-GHz ISM bands \u2014 ideal where PCB area is the priority.\n\n### Shortlist (ranked by the metric)\n- **BGS12P2L6E6327XTSA1** (Infineon) \u2014 **0.77 mm\u00b2** \u2014 winner; best power handling (~37 dBm) of the 0.77 mm\u00b2 family with ~0.25 dB IL / ~45 dB isolation at 1 GHz.\n- **BGS12WN6E6327XTSA1** (Infineon) \u2014 **0.77 mm\u00b2** (TSNP-6) \u2014 same footprint, widest band (0.05\u20139 GHz) and marginally lower IL (~0.46 dB at 5.9 GHz), but lower power handling/isolation than the P2L6; a footprint tie, chosen behind it only on power.\n- **BGS12SN6E6327XTSA1** (Infineon) \u2014 **0.77 mm\u00b2** (TSNP-6) \u2014 same footprint, 0.1\u20136 GHz, ~30 dBm max; WLAN/BT-oriented sibling, edged out only on power handling.\n- **PE42424** (pSemi/Murata) \u2014 **2.25 mm\u00b2** (1.5 \u00d7 1.5 mm DFN) \u2014 ~3\u00d7 the area, but buys higher isolation (47 dB typ) and +41 dBm P1dB; pick when sub-GHz isolation/linearity matters more than size.\n- **PE42422** (pSemi/Murata) \u2014 **4.0 mm\u00b2** (2 \u00d7 2 mm QFN) \u2014 largest here, but best small-signal specs (IL ~0.23 dB, isolation ~68 dB, 5 MHz\u20136 GHz); a linearity/loss play, not an area play.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Config | Band | Insertion loss | Isolation | P1dB / power | ~1k price |\n|---|---|---|---|---|---|---|---|\n| BGS12P2L6 (Infineon) | **0.77** (0.7\u00d71.1) | SPDT | 0.05\u20136 GHz | ~0.25 dB @1 GHz | ~45 dB @1 GHz | ~37 dBm | ~$0.29 |\n| BGS12WN6 (Infineon) | 0.77 (0.7\u00d71.1) | SPDT | 0.05\u20139 GHz | ~0.46 dB @5.9 GHz | ~26 dB @5.9 GHz | lower | ~$0.30\u20130.50 |\n| BGS12SN6 (Infineon) | 0.77 (0.7\u00d71.1) | SPDT | 0.1\u20136 GHz | low | high | ~30 dBm | ~$0.30\u20130.50 |\n| PE42424 (pSemi) | 2.25 (1.5\u00d71.5) | SPDT | 0.1\u20138.5 GHz | ~0.8 dB | ~47 dB | +41 dBm | n/a |\n| PE42422 (pSemi) | 4.0 (2\u00d72) | SPDT | 0.005\u20136 GHz | ~0.23 dB | ~68 dB | +37 dBm | n/a |\n\n### Caveats\nThe three Infineon BGS12 variants are an exact footprint tie at 0.77 mm\u00b2 (0.7 \u00d7 1.1 mm), so the winner was decided on the secondary specs \u2014 the P2L6 has the best stated power handling (~37 dBm) and strong sub-GHz IL/isolation; if your TX power is low and you want the widest band, the WN6 is an equivalent-size alternative. Sub-GHz IL/isolation figures for the P2L6 (~0.25 dB / ~45 dB at 1 GHz) come from a parametric/datasheet summary rather than a 433/868 MHz line item, and the WN6/SN6 1k prices are estimated (only the P2L6's DigiKey price was directly confirmed). Note that some \"1 mm\u00b2-class\" parts (e.g., Skyworks SKY13585-679LF, 1.0 mm\u00b2) were excluded because their bands start at ~1 GHz and do not actually cover the sub-GHz ISM bands.",
+    "mpns": [
+      "BGS12P2L6E6327XTSA1",
+      "BGS12WN6E6327XTSA1",
+      "BGS12SN6E6327XTSA1",
+      "PE42424",
+      "PE42422"
+    ],
+    "parts": [
+      {
+        "mpn": "BGS12P2L6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "winner",
+        "headline": "0.77 mm^2 (0.7x1.1 mm TSLP-6)",
+        "price_1k": "~$0.29",
+        "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BGS12P2L6-DataSheet-v02_01-EN.pdf?fileId=5546d4626cb27db2016d4487d53603ce",
+        "note": "Smallest orderable SPDT that reaches 433 MHz; 0.05-6 GHz, ~0.25 dB IL / ~45 dB iso @1 GHz, ~37 dBm, 224k in stock at DigiKey"
+      },
+      {
+        "mpn": "BGS12WN6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (0.7x1.1 mm TSNP-6)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bgs12wn6-datasheet-en.pdf?fileId=5546d4626b2d8e69016b89d2b3334727",
+        "note": "Footprint tie; widest band 0.05-9 GHz, ~0.46 dB IL @5.9 GHz, lower power than P2L6"
+      },
+      {
+        "mpn": "BGS12SN6E6327XTSA1",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (0.7x1.1 mm TSNP-6)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BGS12SN6-DS-v02_03-EN.pdf?fileId=db3a30433f1b26e8013f2db58bc03856",
+        "note": "Footprint tie; 0.1-6 GHz, ~30 dBm, WLAN/BT-oriented sibling"
+      },
+      {
+        "mpn": "PE42424",
+        "manufacturer": "pSemi (Murata)",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (1.5x1.5 mm DFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.psemi.com/pdf/datasheets/pe42424ds.pdf",
+        "note": "~3x area but higher isolation (47 dB) and +41 dBm P1dB; 0.1-8.5 GHz"
+      },
+      {
+        "mpn": "PE42422",
+        "manufacturer": "pSemi (Murata)",
+        "role": "shortlist",
+        "headline": "4.0 mm^2 (2x2 mm QFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.psemi.com/pdf/datasheets/pe42422ds.pdf",
+        "note": "Largest here but best IL ~0.23 dB / isolation ~68 dB; 5 MHz-6 GHz"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-switch-cellular",
+    "name": "RF Switch \u2014 cellular sub-6 GHz (LTE/5G FR1)",
+    "markdown": "### Best in class right now\n**RF1630** \u2014 Qorvo. **0.77 mm\u00b2 footprint** (1.1 \u00d7 0.7 mm, 6\u2011bump WLCSP, 0.55 mm tall); SPDT, 0.1\u20136 GHz, insertion loss 0.18\u20130.54 dB, isolation up to 42 dB, ~0.6 mA control current. Availability: Qorvo/RFMW, in production (lifecycle \"Standard\"), ~$0.26 @ 1k (RFMW currently shows 0 in stock \u2014 orderable, check lead time). **Why it wins:** It sits at the practical floor for an SPDT cellular switch footprint and, among the parts tied at 0.77 mm\u00b2, posts the lowest insertion loss and highest isolation \u2014 the exact tiebreak the metric calls for \u2014 at the lowest price.\n\n### Shortlist (ranked by the metric)\n- **RF1630** (Qorvo) \u2014 0.77 mm\u00b2 \u2014 winner; lowest IL/highest isolation at the floor footprint, but it's a diversity/antenna part with no published P1dB, so not for high-power TX.\n- **BGS12SN6** (Infineon) \u2014 0.77 mm\u00b2 (TSNP\u20116\u20112, 0.7 \u00d7 1.1 mm) \u2014 essentially the same footprint with IL 0.25 dB / isolation 40 dB **plus 30 dBm power handling**; the better pick if the switch must carry TX power.\n- **BGS12P2L6** (Infineon) \u2014 0.77 mm\u00b2 \u2014 high\u2011power variant (Pmax ~37 dBm, IIP3 ~74 dBm) for TRx duty; pays for it with higher IL (~0.51 dB @5.9 GHz) and lower isolation (~27 dB).\n- **BGS12WN6** (Infineon) \u2014 0.77 mm\u00b2 \u2014 broadest band (0.05\u20139 GHz) with fast switching; overkill above FR1 and slightly higher loss, but same footprint.\n\n### Comparison\n\n| Part | Footprint | Config | Freq | Insertion loss | Isolation | Power (P1dB/Pmax) | ~1k price |\n|------|-----------|--------|------|----------------|-----------|-------------------|-----------|\n| RF1630 (Qorvo) | 0.77 mm\u00b2 | SPDT | 0.1\u20136 GHz | 0.18\u20130.54 dB | up to 42 dB | not specified | ~$0.26 |\n| BGS12SN6 (Infineon) | 0.77 mm\u00b2 | SPDT | 0.1\u20136 GHz | 0.25 dB @1G | 40 dB @1G | 30 dBm | \u2014 |\n| BGS12P2L6 (Infineon) | 0.77 mm\u00b2 | SPDT | 0.05\u20136 GHz | 0.51 dB @5.9G | 27 dB | ~37 dBm | \u2014 |\n| BGS12WN6 (Infineon) | 0.77 mm\u00b2 | SPDT | 0.05\u20139 GHz | ~0.3 dB | ~30 dB | ~33 dBm | \u2014 |\n\n### Caveats\nThe four parts are a genuine tie on the ranking metric \u2014 all land at 0.77 mm\u00b2 (Qorvo's 1.1 \u00d7 0.7 mm WLCSP and Infineon's TSNP\u20116\u20112 are the same area), so the winner is decided purely on the IL/isolation tiebreak, where RF1630 edges ahead; if your design carries TX power, BGS12SN6 is the more honest \"best in class\" at the identical footprint. I confirmed RF1630's price (~$0.26/1k) and production status via RFMW but could not pull firm 1k pricing for the Infineon parts, and BGS12WN6's IL/isolation figures are approximate pending the datasheet. I did not find any production SPDT cellular switch with a footprint below ~0.77 mm\u00b2 \u2014 that appears to be the current 6\u2011terminal WLCSP floor.",
+    "mpns": [
+      "RF1630",
+      "BGS12SN6",
+      "BGS12P2L6",
+      "BGS12WN6"
+    ],
+    "parts": [
+      {
+        "mpn": "RF1630",
+        "manufacturer": "Qorvo",
+        "role": "winner",
+        "headline": "0.77 mm^2 (1.1 x 0.7 mm WLCSP)",
+        "price_1k": "~$0.26",
+        "datasheet_url": "https://www.qorvo.com/products/p/RF1630",
+        "note": "Smallest-footprint SPDT with lowest IL (0.18-0.54 dB) and highest isolation (42 dB); diversity/antenna part, no TX power spec"
+      },
+      {
+        "mpn": "BGS12SN6",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (TSNP-6-2, 0.7 x 1.1 mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/cms/en/product/rf/rf-switches-spxt-dpxt/bgs12sn6/",
+        "note": "Same footprint, IL 0.25 dB / iso 40 dB plus 30 dBm power handling; best pick if it must carry TX"
+      },
+      {
+        "mpn": "BGS12P2L6",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (TSNP-6-2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/cms/en/product/rf/rf-switches-spxt-dpxt/bgs12p2l6/",
+        "note": "High-power TRx variant (~37 dBm, IIP3 74 dBm) at higher IL 0.51 dB / iso 27 dB"
+      },
+      {
+        "mpn": "BGS12WN6",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "0.77 mm^2 (TSNP-6-2)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/dgdl/Infineon-BGS12WN6-DataSheet-v02_08-EN.pdf?fileId=5546d4626b2d8e69016b89d2b3334727",
+        "note": "Broadband 0.05-9 GHz with fast switching at same footprint; overkill above FR1"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-switch-5g6",
+    "name": "RF Switch \u2014 5\u20136 GHz (Wi-Fi 5/6/6E)",
+    "markdown": "### Best in class right now\n**RF1630** \u2014 Qorvo. **0.77 mm\u00b2 footprint** (1.1 \u00d7 0.7 \u00d7 0.55 mm, 6\u2011bump WLCSP); SPDT, 100 MHz\u20136.0 GHz, insertion loss 0.18\u20130.54 dB and isolation ~42 dB falling to ~22 dB at the 6 GHz top end, GPIO\u2011controlled. Availability: in production; listed at RFMW (~$0.26/1k, currently 0 stock there), also stocked through Qorvo's distribution. **Why it wins:** at 0.77 mm\u00b2 it is the smallest true signal\u2011path SPDT that is still fully specified to 6 GHz, with sub\u20110.55 dB insertion loss across the 5\u20136 GHz band \u2014 nothing else here matches that area while covering Wi\u2011Fi 6E.\n\n### Shortlist (ranked by the metric)\n- **RF1630** (Qorvo) \u2014 **0.77 mm\u00b2** \u2014 smallest footprint; the tradeoff is isolation dropping to ~22 dB near 6 GHz and no published P1dB.\n- **SKY13585\u2011679LF** (Skyworks) \u2014 **1.0 mm\u00b2** (1.0 \u00d7 1.0 mm MLPD) \u2014 WLAN/BT/Zigbee\u2011targeted SPDT, 1\u20136 GHz, ~0.4\u20130.5 dB IL; slightly larger but purpose\u2011built for Wi\u2011Fi T/R.\n- **BGSA12UGL8** (Infineon) \u2014 **1.21 mm\u00b2** (1.1 \u00d7 1.1 mm WLCSP) \u2014 to 6 GHz, very low R_ON/C_OFF; note it is an antenna *aperture/tuning* SPDT, not a 50 \u03a9 through\u2011path T/R switch.\n- **PE42424** (pSemi/Murata) \u2014 **2.25 mm\u00b2** (1.5 \u00d7 1.5 mm DFN) \u2014 to 8.5 GHz, 47 dB isolation, +41 dBm P1dB; much bigger, but by far the best isolation and power handling for a WLAN front end.\n- **RFSW8009** (Qorvo) \u2014 **2.79 mm\u00b2** (1.5 \u00d7 1.86 mm laminate) \u2014 0.5\u20136 GHz GaAs high\u2011power SPDT; largest here, chosen only when high linearity/power outranks area.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Config | Band | Insertion loss | Isolation | P1dB | ~1k price |\n|---|---|---|---|---|---|---|---|\n| RF1630 (Qorvo) | **0.77** | SPDT | 0.1\u20136.0 GHz | 0.18\u20130.54 dB | ~42\u219222 dB | N/A | ~$0.26 |\n| SKY13585\u2011679LF (Skyworks) | 1.0 | SPDT | 1\u20136 GHz | ~0.4\u20130.5 dB (0.95 max) | 20\u201338 dB | \u2014 | \u2014 |\n| BGSA12UGL8 (Infineon) | 1.21 | SPDT (aperture) | \u22646.0 GHz | low (R_ON 0.59 \u03a9) | \u2014 | 40 V RF | \u2014 |\n| PE42424 (pSemi) | 2.25 | SPDT | 0.1\u20138.5 GHz | 0.8 dB | 47 dB | +41 dBm | \u2014 |\n| RFSW8009 (Qorvo) | 2.79 | SPDT | 0.5\u20136 GHz | low | high | high | \u2014 |\n\n### Caveats\nFootprint is the explicit priority, so the RF1630 wins despite modest ~22 dB isolation at 6 GHz and no published P1dB \u2014 if your design needs strong isolation or power handling, the larger PE42424 is the better engineering choice. The RF1630 and SKY13585 are characterized broadly for cellular/WLAN respectively rather than guaranteed only over 5\u20136 GHz; I could not parse the RF1630 datasheet PDF directly or pin firm 1k pricing for the SKY13585/PE42424, and the BGSA12UGL8 is an antenna\u2011tuning switch whose role differs from a through\u2011path T/R switch. RFMW showed the RF1630 in production but at zero stock, so confirm current lead time before committing.",
+    "mpns": [
+      "RF1630",
+      "SKY13585-679LF",
+      "BGSA12UGL8",
+      "PE42424",
+      "RFSW8009"
+    ],
+    "parts": [
+      {
+        "mpn": "RF1630",
+        "manufacturer": "Qorvo",
+        "role": "winner",
+        "headline": "0.77 mm^2 (1.1 x 0.7 mm WLCSP)",
+        "price_1k": "~$0.26",
+        "datasheet_url": "https://www.qorvo.com/products/d/da009833",
+        "note": "Smallest 6 GHz-rated SPDT; IL <0.55 dB to 6 GHz but isolation drops to ~22 dB at band top"
+      },
+      {
+        "mpn": "SKY13585-679LF",
+        "manufacturer": "Skyworks",
+        "role": "shortlist",
+        "headline": "1.0 mm^2 (1.0 x 1.0 mm MLPD)",
+        "price_1k": "",
+        "datasheet_url": "https://www.skyworksinc.com/en/Products/switches/SKY13585-679LF",
+        "note": "WLAN/BT/Zigbee SPDT 1-6 GHz, ~0.4-0.5 dB IL; Wi-Fi purpose-built, slightly larger"
+      },
+      {
+        "mpn": "BGSA12UGL8",
+        "manufacturer": "Infineon",
+        "role": "shortlist",
+        "headline": "1.21 mm^2 (1.1 x 1.1 mm WLCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.infineon.com/cms/en/product/rf-wireless-control/antenna-centric-devices/bgsa12ugl8/",
+        "note": "To 6 GHz, very low Ron/Coff, but antenna aperture-tuning SPDT not a 50-ohm T/R path switch"
+      },
+      {
+        "mpn": "PE42424",
+        "manufacturer": "pSemi (Murata)",
+        "role": "shortlist",
+        "headline": "2.25 mm^2 (1.5 x 1.5 mm DFN)",
+        "price_1k": "",
+        "datasheet_url": "https://psemi.com/pdf/datasheets/pe42424ds.pdf",
+        "note": "To 8.5 GHz, 47 dB isolation, +41 dBm P1dB; larger but best isolation/power for WLAN FE"
+      },
+      {
+        "mpn": "RFSW8009",
+        "manufacturer": "Qorvo",
+        "role": "shortlist",
+        "headline": "2.79 mm^2 (1.5 x 1.86 mm laminate)",
+        "price_1k": "",
+        "datasheet_url": "https://www.qorvo.com/products/p/RFSW8009",
+        "note": "0.5-6 GHz GaAs high-power SPDT; largest, pick when linearity/power outranks area"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "rf-lna-400mhz",
+    "name": "RF LNA \u2014 400 MHz, low-power (Icc < 6 mA)",
+    "markdown": "### Best in class right now\n**MAX2634AXT+T** \u2014 Analog Devices (Maxim). SC70-6, ~4.4 mm\u00b2 (2.0 \u00d7 2.2 mm) with on-chip 315/433 MHz matching, so total footprint is essentially the IC plus 2\u20133 decoupling/DC-block 0402s; **NF 1.25 dB**, gain 15.5 dB, **Icc 2.5 mA typ (4 mA max)**, Vcc 2.2\u20135.5 V. Optimized for the 315 MHz and 433.92 MHz ISM bands, which bracket the 400 MHz target. Availability: in production and orderable at Mouser, DigiKey, LCSC and Richardson RFPD; LCSC lists \u2248 $1.46 ea (low qty). **Why it wins:** it pairs the lowest qualifying noise figure with the smallest realizable footprint \u2014 its internal input/output match means there is almost no external matching network to add, unlike the wideband MAX2640, and it draws the least current of any qualifying part.\n\n### Shortlist (ranked by the metric)\n1. **MAX2634AXT+T** (Analog/Maxim) \u2014 SC70-6 ~4.4 mm\u00b2, NF 1.25 dB @ 2.5 mA \u2014 purpose-built for 315/433 MHz with internal matching; smallest total footprint and lowest current. *(winner)*\n2. **MAX2640EUT+T** (Analog/Maxim) \u2014 SOT23-6 ~4.6 mm\u00b2 body **plus an external L-C match**, NF \u2248 1.3 dB at 315 MHz (16 dB gain) @ 3.5 mA \u2014 broadband (300\u20132500 MHz) and proven at 315 MHz, but the added input/output matching network enlarges the total footprint and it draws ~1 mA more.\n3. **MBC13720T1** (NXP) \u2014 SOT-363 ~2.5 mm\u00b2, NF 1.38 dB @ 5 mA, 400 MHz\u20132.4 GHz \u2014 best raw footprint and a true 400 MHz part, but **NXP lists it as \"no longer manufactured\"** (NRND/obsolete), so it is excluded from the win on lifecycle grounds.\n\n### Comparison\n\n| Part | Footprint (LNA + match) | NF @ ~400 MHz | Icc (on) | Gain | Vcc | Freq coverage | ~1k price |\n|------|------------------------|---------------|----------|------|-----|---------------|-----------|\n| **MAX2634AXT+T** | SC70-6 ~4.4 mm\u00b2, internal match | 1.25 dB | 2.5 mA (4 max) | 15.5 dB | 2.2\u20135.5 V | 315 / 433.92 MHz | \u2248$1.46 (LCSC, low qty) |\n| MAX2640EUT+T | SOT23-6 ~4.6 mm\u00b2 + ext. L-C | ~1.3 dB (@315) | 3.5 mA | 15.1\u201316 dB | 2.7\u20135.5 V | 300\u20132500 MHz | not confirmed |\n| MBC13720T1 | SOT-363 ~2.5 mm\u00b2 + ext. match | 1.38 dB | 5 mA | ~17 dB | 2.5\u20133.0 V | 400 MHz\u20132.4 GHz | NRND/obsolete |\n\n### Caveats\nNeither winner specifies noise figure exactly at 400 MHz: the MAX2634 is characterized at 315 MHz and 433.92 MHz (1.25 dB), and the MAX2640's quoted ~1.3 dB is at 315 MHz \u2014 both bracket 400 MHz so the interpolated value is reliable, but the precise 400 MHz figure and the MAX2634's IIP3 were not independently confirmed. I could not read the MAX2634's typical-operating-circuit BOM directly (analog.com PDFs timed out), so the \"minimal matching\" claim rests on its RKE-targeted internal matching; verify the exact application-circuit components against the datasheet. Low-current LNAs from Guerrilla RF (GRF2100/2374, \u22656\u20138 mA), Skyworks and Qorvo were excluded for failing the hard <6 mA limit, and the MBC13720 was excluded as no longer manufactured.",
+    "mpns": [
+      "MAX2634AXT+T",
+      "MAX2640EUT+T",
+      "MBC13720T1"
+    ],
+    "parts": [
+      {
+        "mpn": "MAX2634AXT+T",
+        "manufacturer": "Analog Devices (Maxim)",
+        "role": "winner",
+        "headline": "SC70-6 ~4.4 mm^2, NF 1.25 dB",
+        "price_1k": "",
+        "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/max2634.pdf",
+        "note": "Purpose-built 315/433 MHz LNA, 2.5 mA, internal matching = smallest total footprint and lowest current."
+      },
+      {
+        "mpn": "MAX2640EUT+T",
+        "manufacturer": "Analog Devices (Maxim)",
+        "role": "shortlist",
+        "headline": "SOT23-6 ~4.6 mm^2 + external L-C match, NF ~1.3 dB @315 MHz",
+        "price_1k": "",
+        "datasheet_url": "https://www.analog.com/media/en/technical-documentation/data-sheets/max2640-max2641.pdf",
+        "note": "Broadband 300-2500 MHz, 3.5 mA; external match enlarges footprint vs winner."
+      },
+      {
+        "mpn": "MBC13720T1",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "SOT-363 ~2.5 mm^2, NF 1.38 dB",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/MBC13720.pdf",
+        "note": "True 400 MHz-2.4 GHz part at 5 mA with best raw footprint, but NXP lists it no longer manufactured (NRND)."
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "flash-spi-nor-128mb",
+    "name": "Miniature 128 Mbit SPI NOR Flash",
+    "markdown": "### Best in class right now\n**MX25U12843G** \u2014 Macronix. **16-ball WLCSP** (0.30 mm balls, 0.40 mm Z-height) \u2014 the smallest *package class* offered for a 128 Mbit SPI NOR, smaller in ball count and area than the 21-/24-ball WLCSPs from Winbond and Renesas and far below any SOP/WSON/USON. 1.65\u20132.0 V, Quad SPI / QPI, 133 MHz, \u201340 to +85 \u00b0C. Availability: Active part, orderable at DigiKey (P/N MX25U12843GBBI00), ~$3.56 @ 1k, though stock is currently constrained (0 on hand at DigiKey at time of writing). **Why it wins:** a 16-ball wafer-level chip-scale package is die-sized \u2014 the theoretical floor for PCB area \u2014 and is unambiguously smaller than the 9.0 mm\u00b2 FO-USON8 and 9.94 mm\u00b2 21-ball WLCSP parts below it.\n\n### Shortlist (ranked by the metric)\n- **MX25U12843G** (Macronix) \u2014 16-ball WLCSP, 1.8 V \u2014 smallest package class; widest distribution of the chip-scale parts, but 1.8 V only and tight supply.\n- **GD25LE128E (WLCSP 4\u00d74 ball option)** (GigaDevice) \u2014 16-ball WLCSP, 1.8 V, 120 MHz \u2014 same chip-scale class as the winner, modern small die; exact body dimension not independently confirmed and the WLCSP SKU is less widely stocked than the molded variants.\n- **W25Q128JW** (Winbond) \u2014 21-ball WLCSP, 1.8 V, 133 MHz \u2014 slightly larger ball array than the 16-ball parts; very well supported and second-sourced, the safest supply.\n- **AT25QL128A** (Renesas/Dialog) \u2014 21-ball WLCSP, **3.02 \u00d7 3.29 mm = 9.94 mm\u00b2** (confirmed), 1.7\u20132.0 V, 133 MHz \u2014 a hard, verified footprint number, but the largest of the WLCSPs here.\n- **GD25LE128EXH** (GigaDevice) \u2014 **FO-USON8 3.0 \u00d7 3.0 mm = 9.0 mm\u00b2** (confirmed), 1.8 V, 120 MHz \u2014 the smallest *molded/leaded* part and the smallest footprint I could pin to a primary number; easier to hand-assemble than a WLCSP, but bigger than the chip-scale winners.\n\n### Comparison\n\n| Part | Footprint | Package | Interface | Max clock | Voltage | Temp | ~1k price |\n|---|---|---|---|---|---|---|---|\n| MX25U12843G | 16-ball WLCSP (smallest class; mm\u00b2 not verified) | WLCSP, 0.30 mm ball | Quad SPI / QPI | 133 MHz | 1.65\u20132.0 V | \u201340/+85 \u00b0C | ~$3.56 |\n| GD25LE128E (WLCSP) | 16-ball WLCSP (mm\u00b2 not verified) | WLCSP 4\u00d74 | Quad SPI / QPI | 120 MHz | 1.65\u20132.0 V | \u201340/+85 \u00b0C | n/v |\n| W25Q128JW | 21-ball WLCSP (mm\u00b2 not verified) | WLCSP | Quad SPI / QPI | 133 MHz | 1.7\u20131.95 V | \u201340/+85 \u00b0C | n/v |\n| AT25QL128A | **9.94 mm\u00b2** (3.02\u00d73.29) | 21-ball WLCSP | Quad SPI / QPI | 133 MHz | 1.7\u20132.0 V | \u201340/+85 \u00b0C | n/v |\n| GD25LE128EXH | **9.0 mm\u00b2** (3.0\u00d73.0) | FO-USON8 | Quad SPI / QPI | 120 MHz | 1.65\u20132.0 V | \u201340/+85 \u00b0C | n/v |\n\n### Caveats\nThe exact WLCSP body dimensions for the three smallest candidates (Macronix MX25U12843G, GigaDevice GD25LE128E, Winbond W25Q128JW) are published only in package-outline drawings inside datasheet PDFs that my tooling could not render, so I ranked them by package *class* (16-ball < 21-ball < 24-ball WLCSP < molded) rather than a verified mm\u00b2 \u2014 the two hard footprint numbers I could confirm are the 9.94 mm\u00b2 21-ball WLCSP (AT25QL128A) and the 9.0 mm\u00b2 FO-USON8 (GD25LE128EXH). All five are current, Quad-capable 1.8 V parts; the winner is \"Active\" but supply-constrained (DigiKey showed 0 stock), so for a production design the Winbond 21-ball WLCSP is the lower-risk second source at a small area penalty. If absolute minimum area is non-negotiable, confirm the 16-ball WLCSP body size against the manufacturer's package drawing before committing, since I could not independently verify it.",
+    "mpns": [
+      "MX25U12843GBBI00",
+      "GD25LE128E (WLCSP)",
+      "W25Q128JWxIQ (WLCSP)",
+      "AT25QL128A-UUE-T",
+      "GD25LE128EXHIGR"
+    ],
+    "parts": [
+      {
+        "mpn": "MX25U12843GBBI00",
+        "manufacturer": "Macronix",
+        "role": "winner",
+        "headline": "16-ball WLCSP (smallest package class for 128Mb; mm^2 not independently verified)",
+        "price_1k": "~$3.56",
+        "datasheet_url": "https://www.mxic.com.tw/Lists/Datasheet/Attachments/9156/MX25U12843G,%201.8V,%20128Mb,%20v1.5.pdf",
+        "note": "Smallest package class (16-ball chip-scale), 1.8V Quad/QPI 133MHz; Active but supply-constrained"
+      },
+      {
+        "mpn": "GD25LE128E (WLCSP)",
+        "manufacturer": "GigaDevice",
+        "role": "shortlist",
+        "headline": "16-ball WLCSP 4x4 (mm^2 not verified)",
+        "price_1k": "",
+        "datasheet_url": "https://www.gigadevice.com/product/flash/spi-nor-flash/gd25le128e",
+        "note": "Same chip-scale class as winner, 1.8V 120MHz; WLCSP SKU less widely stocked"
+      },
+      {
+        "mpn": "W25Q128JWxIQ (WLCSP)",
+        "manufacturer": "Winbond",
+        "role": "shortlist",
+        "headline": "21-ball WLCSP (mm^2 not verified)",
+        "price_1k": "",
+        "datasheet_url": "https://www.winbond.com/resource-files/W25Q128JW_RevG_07292021%20Plus.pdf",
+        "note": "Slightly larger 21-ball array; best supply / safest second source"
+      },
+      {
+        "mpn": "AT25QL128A-UUE-T",
+        "manufacturer": "Renesas (Dialog)",
+        "role": "shortlist",
+        "headline": "9.94 mm^2 (3.02 x 3.29, 21-ball WLCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.renesas.com/en/products/at25ql128a",
+        "note": "Hard verified footprint but largest WLCSP here; 1.7-2.0V Quad/QPI 133MHz"
+      },
+      {
+        "mpn": "GD25LE128EXHIGR",
+        "manufacturer": "GigaDevice",
+        "role": "shortlist",
+        "headline": "9.0 mm^2 (3.0 x 3.0 FO-USON8)",
+        "price_1k": "",
+        "datasheet_url": "https://www.gigadevice.com/product/flash/spi-nor-flash/gd25le128e",
+        "note": "Smallest footprint confirmable to a number; molded so easier to assemble than WLCSP, but larger than chip-scale winners"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "flash-128mb-any",
+    "name": "Miniature 128 Mbit Flash (any type)",
+    "markdown": "### Best in class right now\n**GD25LE128EXH** \u2014 GigaDevice. **9.0 mm\u00b2 (3.0 \u00d7 3.0 mm, FO\u2011USON8, 0.4 mm thick)**; 128 Mbit SPI NOR (quad/QPI, 133 MHz), 1.65\u20132.0 V, industrial \u221240 to +85/+105/+125 \u00b0C grades. Availability: in mass production; stocked through Mouser/Symmetry/Ersa (GD25LE128E***xx*GR family). ~1k price not independently confirmed. **Why it wins:** It's the smallest 128 Mbit footprint I could confirm from primary sources \u2014 GigaDevice explicitly markets the fan\u2011out USON8 as the industry's smallest 128 Mb SPI NOR, and it actually beats the only WLCSP whose body size I could verify (Renesas AT25QL128A 21\u2011WLCSP at 9.93 mm\u00b2).\n\n### Shortlist (ranked by the metric)\n- **GD25LE128E (WLCSP, 4\u20114 ball array)** (GigaDevice) \u2014 die\u2011size WLCSP, body **<9 mm\u00b2 (est., unconfirmed)** \u2014 same die as the winner in a true chip\u2011scale package; almost certainly smaller than the FO\u2011USON8, but the exact body dimensions aren't published in any table I could parse.\n- **MX25U12832F (8\u2011WLCSP)** (Macronix) \u2014 die\u2011size WLCSP, **unconfirmed mm\u00b2** \u2014 1.8 V 128 Mb NOR offered in an 8\u2011ball WLCSP; likely sub\u20119 mm\u00b2, but body size unverified and the part was showing out\u2011of\u2011stock at LCSC.\n- **W25Q128JW (21\u2011ball WLCSP)** (Winbond) \u2014 die\u2011size WLCSP, **unconfirmed mm\u00b2** \u2014 1.8 V variant; 21\u2011ball WLCSP is the smallest Winbond option, dimensions not parsed from the datasheet.\n- **GD25LE128EXH (FO\u2011USON8)** (GigaDevice) \u2014 **9.0 mm\u00b2 (verified)** \u2014 the winner; smallest footprint with a confirmed number.\n- **AT25QL128A (21\u2011WLCSP)** (Renesas/Adesto) \u2014 **9.93 mm\u00b2 (3.02 \u00d7 3.29 mm, verified)** \u2014 wide\u2011Vcc 1.7\u20133.6 V WLCSP, but its published body size is actually *larger* than the GD FO\u2011USON8, so WLCSP isn't automatically the smaller choice here.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Package | Type / I/F | Vcc | Temp | ~1k price |\n|------|-----------------|---------|------------|-----|------|-----------|\n| **GD25LE128EXH** | **9.0 (verified)** | FO\u2011USON8 3.0\u00d73.0 | SPI NOR (QPI) | 1.65\u20132.0 V | \u221240\u2026+125 \u00b0C | n/v |\n| GD25LE128E WLCSP | <9 (est., unconf.) | WLCSP 4\u20114 array | SPI NOR (QPI) | 1.65\u20132.0 V | \u221240\u2026+125 \u00b0C | n/v |\n| MX25U12832F | unconf. | 8\u2011WLCSP | SPI NOR | 1.65\u20132.0 V | \u221240\u2026+85 \u00b0C | n/v |\n| W25Q128JW | unconf. | 21\u2011ball WLCSP | SPI NOR | 1.7\u20131.95 V | \u221240\u2026+85 \u00b0C | n/v |\n| AT25QL128A | 9.93 (verified) | 21\u2011WLCSP 3.02\u00d73.29 | SPI NOR | 1.7\u20133.6 V | \u221240\u2026+85 \u00b0C | n/v |\n\n### Caveats\nThe honest ranking is constrained by sourcing: WLCSP body dimensions for the GigaDevice, Macronix and Winbond parts live in datasheet package\u2011outline drawings I could not extract from a primary source, so I ranked by what I could verify and flagged the rest as unconfirmed \u2014 the GD25LE128E and Macronix WLCSP variants are very likely smaller than the 9.0 mm\u00b2 FO\u2011USON8 winner but I won't claim a number I didn't see. I did not find a 128 Mbit SLC NAND in a smaller standard footprint than these NOR parts, and bare Known\u2011Good\u2011Die (offered by all four vendors) is the true area floor but isn't a packaged/orderable footprint in the usual sense. I could not independently confirm 1k pricing for any part, so those cells are left blank rather than guessed.",
+    "mpns": [
+      "GD25LE128EXHIGR",
+      "GD25LE128E (WLCSP 4-4 ball array)",
+      "MX25U12832FZ2I",
+      "W25Q128JWxxIM",
+      "AT25QL128A-USHB-T"
+    ],
+    "parts": [
+      {
+        "mpn": "GD25LE128EXHIGR",
+        "manufacturer": "GigaDevice",
+        "role": "winner",
+        "headline": "9.0 mm^2 (3.0x3.0 mm FO-USON8)",
+        "price_1k": "",
+        "datasheet_url": "https://www.gigadevice.com/product/flash/spi-nor-flash/gd25le128e",
+        "note": "Smallest 128Mb footprint verifiable from primary sources; vendor-marketed industry-smallest 128Mb SPI NOR"
+      },
+      {
+        "mpn": "GD25LE128E (WLCSP 4-4 ball array)",
+        "manufacturer": "GigaDevice",
+        "role": "shortlist",
+        "headline": "<9 mm^2 (WLCSP, body size unconfirmed)",
+        "price_1k": "",
+        "datasheet_url": "https://www.gigadevice.com/product/flash/spi-nor-flash/gd25le128e",
+        "note": "Same die as winner in true chip-scale package; likely smaller but exact mm^2 not published in a parseable table"
+      },
+      {
+        "mpn": "MX25U12832FZ2I",
+        "manufacturer": "Macronix",
+        "role": "shortlist",
+        "headline": "8-WLCSP, mm^2 unconfirmed",
+        "price_1k": "",
+        "datasheet_url": "https://www.macronix.com/Lists/Datasheet/Attachments/8404/MX25U12832F,%201.8V,%20128Mb,%20v1.0.pdf",
+        "note": "1.8V 128Mb NOR in 8-ball WLCSP; likely sub-9 mm^2 but body size unverified, was out of stock at LCSC"
+      },
+      {
+        "mpn": "W25Q128JWxxIM",
+        "manufacturer": "Winbond",
+        "role": "shortlist",
+        "headline": "21-ball WLCSP, mm^2 unconfirmed",
+        "price_1k": "",
+        "datasheet_url": "https://www.winbond.com/resource-files/W25Q128JW_RevG_07292021%20Plus.pdf",
+        "note": "1.8V variant; smallest Winbond option but WLCSP dimensions not extracted from datasheet"
+      },
+      {
+        "mpn": "AT25QL128A-USHB-T",
+        "manufacturer": "Renesas (Adesto)",
+        "role": "shortlist",
+        "headline": "9.93 mm^2 (3.02x3.29 mm 21-WLCSP)",
+        "price_1k": "",
+        "datasheet_url": "https://www.renesas.com/en/products/at25ql128a",
+        "note": "Wide 1.7-3.6V WLCSP, but published body size is larger than the GD FO-USON8 winner"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "fpga-pcie",
+    "name": "Smallest FPGA with hardened PCIe",
+    "markdown": "### Best in class right now\n**LFD2NX-28-7MG121C** \u2014 Lattice Semiconductor (Certus-NX). **36 mm\u00b2 (6 \u00d7 6 mm, 121-ball csfBGA, 0.5 mm pitch)** \u2014 the smallest FPGA package that bonds out a *hardened* PCIe controller. Hardened PCIe **Gen2 x1** (SERDES to 5 Gbps), ~28K logic cells, on-chip EBR/LRAM (~2.6 Mb class), 18\u00d718 DSP, ~1.0/1.2 V core. Availability: **In stock at DigiKey (479 pcs), $39.55/100** as tray; ~$30 est. at 1k. **Why it wins:** among FPGAs with a *built-in* PCIe endpoint/root block (not soft IP), no other part reaches a 6 \u00d7 6 mm footprint \u2014 the next hardened-PCIe option (CertusPro-NX at 9 \u00d7 9 mm) is more than 2\u00d7 the area.\n\n### Shortlist (ranked by the metric)\n- **LFD2NX-28-7MG121C** (Lattice, Certus-NX) \u2014 **36 mm\u00b2 (6\u00d76 mm)** \u2014 winner; PCIe Gen2 x1 only, modest ~28K LC.\n- **LFCPNX-50** (Lattice, CertusPro-NX) \u2014 **~81 mm\u00b2 (9\u00d79 mm, smallest family pkg)** \u2014 steps up to hardened PCIe **Gen3** and 10G SERDES, but ~2\u00d7 the footprint; PCIe bonding in the very smallest package needs confirmation (see Caveats).\n- **LFE5UM5G-25F-8MG285C** (Lattice, ECP5-5G) \u2014 **100 mm\u00b2 (10\u00d710 mm, 285 csfBGA)** \u2014 mature/low-cost, hardened PCIe Gen1/Gen2 x1, 2\u00d7 5G SERDES; larger and older node.\n- **MPF100T-FCSG325** (Microchip, PolarFire) \u2014 **121 mm\u00b2 (11\u00d711 mm, FCSG325)** \u2014 much more capable: hardened PCIe **Gen2 x4**, flash-based, but biggest of the small-package group.\n- **Ti375C529** (Efinix, Titanium) \u2014 **BGA529, ~19\u00d719 mm (~360 mm\u00b2)** \u2014 most capable by far (hardened PCIe **Gen4 x4** + RISC-V), but far larger; here only as the \"if you need real PCIe bandwidth\" reference.\n\n### Comparison\n| Part | Footprint (mm\u00b2) | Package | Hardened PCIe | SERDES | Logic (LC/LUT) | ~1k price |\n|---|---|---|---|---|---|---|\n| LFD2NX-28-7MG121C | **36** | 6\u00d76 121-csfBGA | Gen2 x1 | to 5 Gbps | ~28K | ~$30 (est.) |\n| LFCPNX-50 | ~81 | 9\u00d79 (smallest) | Gen3 x1 | to 10 Gbps | ~50K | \u2014 |\n| LFE5UM5G-25F | 100 | 10\u00d710 285-csfBGA | Gen1/2 x1 | 2\u00d7 5 Gbps | ~25K | ~$15 (est.) |\n| MPF100T-FCSG325 | 121 | 11\u00d711 FCSG325 | Gen2 x4 | 4\u00d7 5+ Gbps | ~109K | \u2014 |\n| Ti375C529 | ~360 | 19\u00d719 BGA529 | Gen4 x4 | to 16 Gbps | ~370K | \u2014 |\n\n### Caveats\nPackage areas are computed from nominal body dimensions (footprint = length \u00d7 width), not solder-land area; the ranking is unaffected. The Certus-NX hardened PCIe Gen2 lane is confirmed present in the 6\u00d76 mm 121-csfBGA for the LFD2NX-28/-40 SKUs (the -9/-17 lack the PCIe hard IP), and the winner is in stock at DigiKey. I could not independently confirm that CertusPro-NX bonds its PCIe SERDES in the \"9\u00d79 mm\" package cited by Lattice's marketing \u2014 the readily orderable CertusPro-NX PCIe part is the larger BG484 \u2014 so its shortlist rank is provisional; likewise, 1k pricing for all but the winner is estimated, not quoted.",
+    "mpns": [
+      "LFD2NX-28-7MG121C",
+      "LFCPNX-50",
+      "LFE5UM5G-25F-8MG285C",
+      "MPF100T-FCSG325",
+      "Ti375C529"
+    ],
+    "parts": [
+      {
+        "mpn": "LFD2NX-28-7MG121C",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "winner",
+        "headline": "36 mm^2 (6x6mm 121-csfBGA)",
+        "price_1k": "~$30",
+        "datasheet_url": "https://www.latticesemi.com/Products/FPGAandCPLD/Certus-NX",
+        "note": "Smallest package with a hardened PCIe (Gen2 x1) block; in stock at DigiKey"
+      },
+      {
+        "mpn": "LFCPNX-50",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "~81 mm^2 (9x9mm)",
+        "price_1k": "",
+        "datasheet_url": "https://www.latticesemi.com/-/media/LatticeSemi/Documents/DataSheets/Certus/FPGA-DS-02086-2-5-CertusPro-NX-Family.ashx?document_id=53126",
+        "note": "Hardened PCIe Gen3 + 10G SERDES but ~2x footprint; smallest-pkg PCIe bonding unconfirmed"
+      },
+      {
+        "mpn": "LFE5UM5G-25F-8MG285C",
+        "manufacturer": "Lattice Semiconductor",
+        "role": "shortlist",
+        "headline": "100 mm^2 (10x10mm 285-csfBGA)",
+        "price_1k": "~$15",
+        "datasheet_url": "https://www.latticesemi.com/Products/FPGAandCPLD/ECP5",
+        "note": "Mature low-cost; hardened PCIe Gen1/2 x1, 2x 5G SERDES"
+      },
+      {
+        "mpn": "MPF100T-FCSG325",
+        "manufacturer": "Microchip Technology",
+        "role": "shortlist",
+        "headline": "121 mm^2 (11x11mm FCSG325)",
+        "price_1k": "",
+        "datasheet_url": "https://ww1.microchip.com/downloads/aemDocuments/documents/FPGA/ProductDocuments/ProductBrief/PolarFire-FPGA-Product-Overview-60001657.pdf",
+        "note": "Hardened PCIe Gen2 x4, flash-based; larger but far more capable"
+      },
+      {
+        "mpn": "Ti375C529",
+        "manufacturer": "Efinix",
+        "role": "shortlist",
+        "headline": "~360 mm^2 (19x19mm BGA529)",
+        "price_1k": "",
+        "datasheet_url": "https://www.efinixinc.com/docs/titanium375-ds-v2.0.pdf",
+        "note": "Hardened PCIe Gen4 x4 + RISC-V; most capable but largest footprint"
+      }
+    ],
+    "error": null
+  },
+  {
+    "slug": "pcie-phy",
+    "name": "Smallest PCIe PHY",
+    "markdown": "### Best in class right now\n**PI3EQX5801** \u2014 Diodes Incorporated (redriver / signal conditioner). **16 mm\u00b2 (4.0 \u00d7 4.0 mm, 20\u2011TQFN)**; 1\u2011lane (2\u2011channel) PCIe 2.0 linear ReDriver, up to 5.0 Gbps, 3.3 V or 1.5 V supply, equalization + de\u2011emphasis. Availability: orderable at DigiKey/Mouser, **ACTIVE**; \u2248$4.2 at distributor low\u2011qty (1k price not independently confirmed, likely lower). **Why it wins:** among genuinely *active, orderable* PCIe signal\u2011conditioning ICs it sits at the smallest footprint tier (16 mm\u00b2) while using the fewest pins (20) for a full single lane. It ties TI's SN65LVPE501 on area \u2014 see caveats.\n\nNote on the two groups: **true discrete PIPE PHYs (group a) exist but are all obsolete** \u2014 no current-production part terminates the PCIe PHY layer for an external soft\u2011MAC. The only real parts (TI XIO1100, NXP PX1011B) are PCIe Gen1 and end\u2011of\u2011life. So the practical \"smallest PCIe PHY\" you can actually buy today is a **redriver** (group b), which is what the winner and most of the shortlist are.\n\n### Shortlist (ranked by the metric)\n1. **PI3EQX5801** (Diodes) \u2014 **16 mm\u00b2** (4\u00d74, 20\u2011TQFN) \u2014 *redriver*, PCIe 2.0/5 Gbps; winner, but old generation (Gen2 only).\n2. **SN65LVPE501** (Texas Instruments) \u2014 **16 mm\u00b2** (4\u00d74, 24\u2011VQFN) \u2014 *redriver*, PCIe Gen1/2/5 Gbps, ACTIVE. Co\u2011leader on footprint; the RGET variant showed out\u2011of\u2011stock/no 1k price on TI at check time.\n3. **DS160PR410** (Texas Instruments) \u2014 **24 mm\u00b2** (4\u00d76, 40\u2011WQFN) \u2014 *redriver*, the smallest **modern PCIe Gen4 (16 Gbps)** part here, but 4\u2011channel (2 lanes), so larger footprint per part.\n4. **NXP PX1011B** (NXP) \u2014 **81 mm\u00b2** (9\u00d79, LFBGA\u201181) \u2014 *true PIPE PHY* (8\u2011bit PXPIPE), PCIe Gen1 2.5 Gbps \u2014 **NO LONGER MANUFACTURED**; listed only to represent group (a).\n5. **XIO1100** (Texas Instruments) \u2014 MicroStar BGA\u2011100 (size not independently confirmed) \u2014 *true PIPE PHY* (16\u2011bit TI\u2011PIPE), PCIe Gen1 \u2014 **OBSOLETE**.\n\n### Comparison\n\n| Part | Footprint (mm\u00b2) | Type | PCIe gen / lanes | Host interface | Supply | Status | ~1k price |\n|---|---|---|---|---|---|---|---|\n| **PI3EQX5801** | **16** (4\u00d74, 20\u2011TQFN) | Redriver | 2.0 / 1 lane, 5 Gbps | \u2014 (inline) | 3.3 V / 1.5 V | Active | ~$4 (low\u2011qty)* |\n| SN65LVPE501 | 16 (4\u00d74, 24\u2011VQFN) | Redriver | 1/2, 1 lane, 5 Gbps | \u2014 (inline) | 3.3 V | Active | not shown* |\n| DS160PR410 | 24 (4\u00d76, 40\u2011WQFN) | Redriver | 4.0 / 4\u2011ch, 16 Gbps | \u2014 (inline) | 3.3 V | Active | not shown |\n| NXP PX1011B | 81 (9\u00d79, LFBGA\u201181) | True PIPE PHY | 1.x / 1 lane, 2.5 Gbps | 8\u2011bit PXPIPE | \u2014 | Obsolete | EOL |\n| XIO1100 | BGA\u2011100 (unconf.) | True PIPE PHY | 1.1 / 1 lane, 2.5 Gbps | 16\u2011bit TI\u2011PIPE | \u2014 | Obsolete | ~$7 (hist.) |\n\n\\* Pricing not fully confirmable at 1k: the observed PI3EQX5801 figure (~$4.2) is distributor low\u2011quantity; TI's SN65LVPE501RGET showed no 1k price and out\u2011of\u2011stock at check time.\n\n### Caveats\nThe two smallest active redrivers (PI3EQX5801 and SN65LVPE501) are a genuine **tie at 16 mm\u00b2 / 4\u00d74 mm**; I designated the Diodes part winner only on orderability and lower pin count, not a real size advantage. I excluded the Diodes **PI2DBS32212** (2.5\u00d72.5 mm X1QFN, ~6.25 mm\u00b2) despite being smaller because it is a **passive 2:1 mux/switch, not a signal\u2011conditioning redriver/PHY** \u2014 it doesn't do the job this category asks for. True discrete PIPE PHYs (group a) are all end\u2011of\u2011life Gen1 parts, so if you need a buyable single\u2011lane PCIe front\u2011end today, a Gen2 redriver like the winner or a modern Gen4 redriver (DS160PR410) is the only realistic path; exact 1k pricing above could not be independently verified for several parts.",
+    "mpns": [
+      "PI3EQX5801ZDEX",
+      "SN65LVPE501RGET",
+      "DS160PR410RNQR",
+      "PX1011B-EL1/G",
+      "XIO1100ZGB"
+    ],
+    "parts": [
+      {
+        "mpn": "PI3EQX5801ZDEX",
+        "manufacturer": "Diodes Incorporated",
+        "role": "winner",
+        "headline": "16 mm^2 (4.0x4.0 mm, 20-TQFN)",
+        "price_1k": "~$4 (low-qty)",
+        "datasheet_url": "https://www.diodes.com/datasheet/download/PI3EQX5801.pdf",
+        "note": "Smallest active/orderable PCIe redriver tier; PCIe 2.0 1-lane 5Gbps, but old generation"
+      },
+      {
+        "mpn": "SN65LVPE501RGET",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "16 mm^2 (4.0x4.0 mm, 24-VQFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/sn65lvpe501.pdf",
+        "note": "Ties winner on footprint; PCIe Gen1/2 5Gbps redriver, active but variant showed out of stock"
+      },
+      {
+        "mpn": "DS160PR410RNQR",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "24 mm^2 (4.0x6.0 mm, 40-WQFN)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/ds/symlink/ds160pr410.pdf",
+        "note": "Smallest MODERN Gen4 (16Gbps) redriver here, but 4-channel so larger footprint"
+      },
+      {
+        "mpn": "PX1011B-EL1/G",
+        "manufacturer": "NXP",
+        "role": "shortlist",
+        "headline": "81 mm^2 (9x9 mm, LFBGA-81)",
+        "price_1k": "",
+        "datasheet_url": "https://www.nxp.com/docs/en/data-sheet/PX1011B.pdf",
+        "note": "True PIPE PHY (8-bit PXPIPE), PCIe Gen1; NO LONGER MANUFACTURED"
+      },
+      {
+        "mpn": "XIO1100ZGB",
+        "manufacturer": "Texas Instruments",
+        "role": "shortlist",
+        "headline": "MicroStar BGA-100 (size unconfirmed)",
+        "price_1k": "",
+        "datasheet_url": "https://www.ti.com/lit/gpn/xio1100",
+        "note": "True PIPE PHY (16-bit TI-PIPE), PCIe Gen1; OBSOLETE"
+      }
+    ],
+    "error": null
+  }
+]

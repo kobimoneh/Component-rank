@@ -1,0 +1,656 @@
+# =============================================================================
+# Spec lexicon — component-report `key_parameters` -> typed specifications
+# =============================================================================
+# The `key_parameters:` lists in component-report/config.yaml are research hints
+# written for a language model, not a schema. "Vin / Vout range, PSRR" is three
+# specifications in one string; "Package footprint (mm²)" is a value this app
+# derives rather than stores.
+#
+# This file is the deterministic, reviewable, offline translation between the two.
+# Matching is on a normalized key: lowercased, punctuation and whitespace
+# collapsed. Anything not matched here is imported as an untyped `text` spec and
+# flagged `unmapped` so it shows up in the category editor's "needs typing" list.
+# Nothing is ever guessed.
+#
+# You can edit this file. New entries take effect on the next import or sync.
+#
+#   virtual: "@ic_area"   -> a derived field; creates no stored spec
+#   type: scalar|range    -> dimensioned numeric (needs `dimension`)
+#   type: number          -> plain numeric (counts, prices)
+#   type: bool|enum|text  -> non-numeric
+#   better: lower|higher|none  -> comparison semantics; `none` is never coloured
+# =============================================================================
+version: 1
+
+entries:
+  # --- Physical / size ------------------------------------------------------
+  - match: "Package footprint (mm²)"
+    emits: [{ virtual: "@ic_area" }]
+
+  - match: "Package footprint"
+    emits: [{ virtual: "@ic_area" }]
+
+  - match: "Package / module footprint"
+    emits: [{ virtual: "@ic_area" }]
+
+  - match: "IC package size"
+    emits: [{ virtual: "@ic_area" }]
+
+  - match: "Package footprint (mm²) and type"
+    emits:
+      - { virtual: "@ic_area" }
+      - key: package_type
+        name: Package type
+        type: text
+        better: none
+        table: true
+        ai: "The package family for this exact ordering part number, e.g. WLCSP, DFN, QFN, LGA."
+
+  - match: "Package footprint and type"
+    emits:
+      - { virtual: "@ic_area" }
+      - { key: package_type, name: Package type, type: text, better: none, table: true }
+
+  - match: "Package footprint (mm²) and package type"
+    emits:
+      - { virtual: "@ic_area" }
+      - { key: package_type, name: Package type, type: text, better: none, table: true }
+
+  - match: "Package footprint (mm²) and ball/pin count"
+    emits:
+      - { virtual: "@ic_area" }
+      - key: pin_count
+        name: Pins / balls
+        type: number
+        better: none
+        table: true
+        ai: "Total ball or pin count for this package variant."
+
+  - match: "Footprint and pin count options"
+    emits:
+      - { virtual: "@ic_area" }
+      - { key: pin_count, name: Pins / balls, type: number, better: none, table: true }
+
+  - match: "Total solution footprint"
+    emits: [{ virtual: "@gross_area" }]
+
+  - match: "Solution footprint (IC or module)"
+    emits: [{ virtual: "@gross_area" }]
+
+  - match: "Total footprint (LNA + matching components)"
+    emits: [{ virtual: "@gross_area" }]
+
+  - match: "Package footprint and total BOM/external part count"
+    emits:
+      - { virtual: "@ic_area" }
+      - { virtual: "@external_count" }
+
+  - match: "Number of external components (matching/antenna)"
+    emits: [{ virtual: "@external_count" }]
+
+  - match: "Pitch (mm)"
+    emits:
+      - key: pitch
+        name: Pitch
+        type: scalar
+        dimension: length
+        unit: mm
+        better: lower
+        table: true
+        ai: "Contact pitch in mm."
+
+  - match: "Mated/stack height"
+    emits:
+      - key: stack_height
+        name: Mated height
+        type: scalar
+        dimension: length
+        unit: mm
+        better: lower
+        table: true
+
+  # --- Power / regulators ---------------------------------------------------
+  - match: "Quiescent current (Iq)"
+    emits:
+      - key: iq
+        name: Quiescent current
+        type: scalar
+        dimension: current
+        unit: µA
+        better: lower
+        table: true
+        ai: "Quiescent (ground) current at no load, typical. Give the typical value unless only max is stated."
+
+  - match: "Quiescent current / light-load efficiency"
+    emits:
+      - { key: iq, name: Quiescent current, type: scalar, dimension: current, unit: µA, better: lower, table: true }
+      - key: light_load_efficiency
+        name: Light-load efficiency
+        type: scalar
+        dimension: ratio
+        unit: "%"
+        better: higher
+        table: false
+
+  - match: "Light-load efficiency / Iq"
+    emits:
+      - { key: iq, name: Quiescent current, type: scalar, dimension: current, unit: µA, better: lower, table: true }
+      - { key: light_load_efficiency, name: Light-load efficiency, type: scalar, dimension: ratio, unit: "%", better: higher, table: false }
+
+  - match: "Dropout voltage"
+    emits:
+      - key: dropout
+        name: Dropout
+        type: scalar
+        dimension: voltage
+        unit: mV
+        better: lower
+        table: true
+        ai: "Dropout voltage at the maximum rated output current."
+
+  - match: "Vin / Vout range, PSRR"
+    emits:
+      - key: vin_range
+        name: Vin
+        type: range
+        dimension: voltage
+        unit: V
+        better: none
+        table: true
+        ai: "Input voltage operating range, min to max."
+      - key: vout_range
+        name: Vout
+        type: range
+        dimension: voltage
+        unit: V
+        better: none
+        table: true
+        ai: "Output voltage, or the adjustable output range."
+      - key: psrr
+        name: PSRR
+        type: scalar
+        dimension: ratio_log
+        unit: dB
+        better: higher
+        table: false
+        ai: "Power supply rejection ratio; state the frequency it was measured at in the evidence."
+
+  - match: "Vin range"
+    emits: [{ key: vin_range, name: Vin, type: range, dimension: voltage, unit: V, better: none, table: true }]
+
+  - match: "Max input voltage rating"
+    emits:
+      - key: vin_max
+        name: Vin max
+        type: scalar
+        dimension: voltage
+        unit: V
+        better: higher
+        table: true
+
+  - match: "Max output current"
+    emits:
+      - key: iout_max
+        name: Iout max
+        type: scalar
+        dimension: current
+        unit: mA
+        better: higher
+        table: true
+
+  - match: "Max continuous current"
+    emits:
+      - key: iout_max
+        name: Max continuous current
+        type: scalar
+        dimension: current
+        unit: mA
+        better: higher
+        table: true
+
+  - match: "Current rating per contact"
+    emits:
+      - key: current_per_contact
+        name: Current / contact
+        type: scalar
+        dimension: current
+        unit: A
+        better: higher
+        table: true
+
+  - match: "On-resistance (Ron)"
+    emits:
+      - key: ron
+        name: Ron
+        type: scalar
+        dimension: resistance
+        unit: mΩ
+        better: lower
+        table: true
+
+  - match: "Switching frequency"
+    emits:
+      - key: fsw
+        name: Switching frequency
+        type: scalar
+        dimension: frequency
+        unit: MHz
+        better: none
+        table: true
+
+  - match: "Integrated vs external inductor"
+    emits:
+      - key: inductor_integration
+        name: Inductor
+        type: enum
+        enumValues: [Integrated, External, Unknown]
+        better: none
+        table: true
+        ai: "Whether the power inductor is inside the package (integrated / module) or must be placed externally."
+
+  - match: "Features (slew control, reverse blocking, mux/priority)"
+    emits:
+      - key: switch_features
+        name: Features
+        type: text
+        better: none
+        table: false
+        ai: "Notable features: slew-rate control, reverse-current blocking, priority mux, quick output discharge."
+
+  # --- Generic supply / power ----------------------------------------------
+  - match: "Supply voltage"
+    emits: [{ key: vsupply, name: Supply, type: range, dimension: voltage, unit: V, better: none, table: true }]
+
+  - match: "Supply voltage / current"
+    emits:
+      - { key: vsupply, name: Supply, type: range, dimension: voltage, unit: V, better: none, table: true }
+      - { key: isupply, name: Supply current, type: scalar, dimension: current, unit: mA, better: lower, table: true }
+
+  - match: "Supply voltage / power"
+    emits:
+      - { key: vsupply, name: Supply, type: range, dimension: voltage, unit: V, better: none, table: true }
+      - { key: power, name: Power, type: scalar, dimension: power, unit: mW, better: lower, table: false }
+
+  - match: "Supply / power"
+    emits:
+      - { key: vsupply, name: Supply, type: range, dimension: voltage, unit: V, better: none, table: true }
+      - { key: power, name: Power, type: scalar, dimension: power, unit: mW, better: lower, table: false }
+
+  - match: "Supply voltage (1.8 V / 3.3 V)"
+    emits: [{ key: vsupply, name: Supply, type: range, dimension: voltage, unit: V, better: none, table: true }]
+
+  - match: "Power consumption"
+    emits: [{ key: power, name: Power, type: scalar, dimension: power, unit: mW, better: lower, table: true }]
+
+  - match: "Power"
+    emits: [{ key: power, name: Power, type: scalar, dimension: power, unit: mW, better: lower, table: true }]
+
+  - match: "Power / thermal"
+    emits:
+      - { key: power, name: Power, type: scalar, dimension: power, unit: mW, better: lower, table: true }
+      - { key: thermal_notes, name: Thermal, type: text, better: none, table: false }
+
+  - match: "Ranging power consumption"
+    emits: [{ key: ranging_power, name: Ranging power, type: scalar, dimension: power, unit: mW, better: lower, table: true }]
+
+  - match: "Sleep current"
+    emits: [{ key: sleep_current, name: Sleep current, type: scalar, dimension: current, unit: µA, better: lower, table: true }]
+
+  - match: "TX/RX current"
+    emits:
+      - { key: tx_current, name: TX current, type: scalar, dimension: current, unit: mA, better: lower, table: true }
+      - { key: rx_current, name: RX current, type: scalar, dimension: current, unit: mA, better: lower, table: true }
+
+  - match: "Temperature grade"
+    emits:
+      - key: temp_range
+        name: Temp range
+        type: range
+        dimension: temperature
+        unit: °C
+        better: none
+        table: false
+        ai: "Operating ambient temperature range."
+
+  - match: "Unit price at 1k"
+    emits:
+      - key: price_1k
+        name: Price @1k
+        type: number
+        unitLabel: USD
+        better: lower
+        table: true
+        ai: "Unit price at 1000-piece quantity, in USD. Only if the source states it."
+
+  # --- RF -------------------------------------------------------------------
+  - match: "Gain"
+    emits: [{ key: gain, name: Gain, type: scalar, dimension: ratio_log, unit: dB, better: higher, table: true }]
+
+  - match: "Insertion loss"
+    emits: [{ key: insertion_loss, name: Insertion loss, type: scalar, dimension: ratio_log, unit: dB, better: lower, table: true }]
+
+  - match: "Isolation"
+    emits: [{ key: isolation, name: Isolation, type: scalar, dimension: ratio_log, unit: dB, better: higher, table: true }]
+
+  - match: "Out-of-band rejection"
+    emits: [{ key: rejection, name: Rejection, type: scalar, dimension: ratio_log, unit: dB, better: higher, table: true }]
+
+  - match: "Noise figure (NF)"
+    emits: [{ key: noise_figure, name: NF, type: scalar, dimension: ratio_log, unit: dB, better: lower, table: true }]
+
+  - match: "Noise figure at ~400 MHz"
+    emits:
+      - key: noise_figure
+        name: NF
+        type: scalar
+        dimension: ratio_log
+        unit: dB
+        better: lower
+        table: true
+        ai: "Noise figure at approximately 400 MHz specifically, not the part's best-case NF at another frequency."
+
+  - match: "IIP3 / linearity"
+    emits: [{ key: iip3, name: IIP3, type: scalar, dimension: power_log, unit: dBm, better: higher, table: true }]
+
+  - match: "Output power (P1dB / Psat)"
+    emits:
+      - { key: p1db, name: P1dB, type: scalar, dimension: power_log, unit: dBm, better: higher, table: true }
+      - { key: psat, name: Psat, type: scalar, dimension: power_log, unit: dBm, better: higher, table: false }
+
+  - match: "P1dB / power handling"
+    emits: [{ key: p1db, name: P1dB, type: scalar, dimension: power_log, unit: dBm, better: higher, table: true }]
+
+  - match: "Power handling"
+    emits: [{ key: power_handling, name: Power handling, type: scalar, dimension: power_log, unit: dBm, better: higher, table: true }]
+
+  - match: "PAE / efficiency"
+    emits: [{ key: pae, name: PAE, type: scalar, dimension: ratio, unit: "%", better: higher, table: true }]
+
+  - match: "Band coverage"
+    emits:
+      - key: band_coverage
+        name: Band coverage
+        type: range
+        dimension: frequency
+        unit: MHz
+        better: none
+        table: true
+        ai: "Frequency range the part is specified over, min to max."
+
+  - match: "Passband edges"
+    emits:
+      - key: passband
+        name: Passband
+        type: range
+        dimension: frequency
+        unit: MHz
+        better: none
+        table: true
+
+  - match: "Type (SAW / BAW)"
+    emits:
+      - key: filter_technology
+        name: Technology
+        type: enum
+        enumValues: [SAW, BAW, LTCC, Ceramic, Other]
+        better: none
+        table: true
+
+  - match: "Configuration (SPDT/SP3T/...)"
+    emits:
+      - key: switch_config
+        name: Configuration
+        type: text
+        better: none
+        table: true
+        ai: "Throw configuration, e.g. SPDT, SP3T, DPDT."
+
+  - match: "RX sensitivity"
+    emits:
+      - key: rx_sensitivity
+        name: RX sensitivity
+        type: scalar
+        dimension: power_log
+        unit: dBm
+        better: lower
+        table: true
+        ai: "Receive sensitivity in dBm. More negative is better; state the PHY and data rate in the evidence."
+
+  # --- Wireless protocol ----------------------------------------------------
+  - match: "BLE version / coded PHY support"
+    emits:
+      - { key: ble_version, name: BLE, type: text, better: none, table: true }
+      - { key: coded_phy, name: Coded PHY, type: bool, better: none, table: false }
+
+  - match: "BLE features (5.4, Channel Sounding, coded PHY)"
+    emits:
+      - { key: ble_version, name: BLE, type: text, better: none, table: true }
+      - { key: channel_sounding, name: Channel Sounding, type: bool, better: none, table: false }
+      - { key: coded_phy, name: Coded PHY, type: bool, better: none, table: false }
+
+  - match: "Integrated DC-DC / matching / balun"
+    emits:
+      - { key: integrated_dcdc, name: DC-DC, type: bool, better: none, table: true }
+      - { key: integrated_balun, name: Balun, type: bool, better: none, table: true }
+      - { key: integrated_matching, name: RF matching, type: bool, better: none, table: false }
+
+  - match: "2-layer PCB feasibility"
+    emits:
+      - key: two_layer_feasible
+        name: 2-layer OK
+        type: bool
+        better: none
+        table: true
+        ai: "Only true if the reference design or hardware guide explicitly supports a 2-layer board."
+
+  - match: "Wi-Fi standard (4/6/6E) and bands"
+    emits:
+      - { key: wifi_standard, name: Wi-Fi, type: text, better: none, table: true }
+      - { key: wifi_bands, name: Bands, type: text, better: none, table: true }
+
+  - match: "Host interface (SPI/SDIO)"
+    emits: [{ key: host_interface, name: Host interface, type: text, better: none, table: true }]
+
+  - match: "Host-side interface (PIPE, if a true PHY)"
+    emits: [{ key: host_interface, name: Host interface, type: text, better: none, table: true }]
+
+  - match: "Integrated security / stack"
+    emits: [{ key: security_stack, name: Security / stack, type: text, better: none, table: false }]
+
+  - match: "Channels (IEEE 802.15.4z)"
+    emits: [{ key: uwb_channels, name: Channels, type: text, better: none, table: true }]
+
+  - match: "PHY data rates"
+    emits: [{ key: phy_data_rate, name: PHY rate, type: scalar, dimension: data_rate, unit: Mbit/s, better: higher, table: true }]
+
+  - match: "AoA support"
+    emits: [{ key: aoa, name: AoA, type: bool, better: none, table: true }]
+
+  - match: "Connectivity"
+    emits: [{ key: connectivity, name: Connectivity, type: text, better: none, table: true }]
+
+  # --- MCU ------------------------------------------------------------------
+  - match: "Core and max clock"
+    emits:
+      - { key: core, name: Core, type: text, better: none, table: true }
+      - { key: max_clock, name: Clock, type: scalar, dimension: frequency, unit: MHz, better: higher, table: true }
+
+  - match: "Core and clock"
+    emits:
+      - { key: core, name: Core, type: text, better: none, table: true }
+      - { key: max_clock, name: Clock, type: scalar, dimension: frequency, unit: MHz, better: higher, table: true }
+
+  - match: "Core, clock, DSP/FPU"
+    emits:
+      - { key: core, name: Core, type: text, better: none, table: true }
+      - { key: max_clock, name: Clock, type: scalar, dimension: frequency, unit: MHz, better: higher, table: true }
+      - { key: fpu, name: FPU, type: bool, better: none, table: false }
+
+  - match: "Max clock frequency"
+    emits: [{ key: max_clock, name: Clock, type: scalar, dimension: frequency, unit: MHz, better: higher, table: true }]
+
+  - match: "Flash / RAM"
+    emits:
+      - { key: flash, name: Flash, type: scalar, dimension: data_size, unit: KiB, better: higher, table: true }
+      - { key: ram, name: RAM, type: scalar, dimension: data_size, unit: KiB, better: higher, table: true }
+
+  - match: "GPIO count"
+    emits: [{ key: gpio_count, name: GPIO, type: number, better: higher, table: true }]
+
+  - match: "Peripheral set"
+    emits: [{ key: peripherals, name: Peripherals, type: text, better: none, table: false }]
+
+  - match: "Security (TrustZone, secure boot)"
+    emits:
+      - { key: trustzone, name: TrustZone, type: bool, better: none, table: false }
+      - { key: secure_boot, name: Secure boot, type: bool, better: none, table: false }
+
+  - match: "Confirmed upstream Zephyr SoC/board support"
+    emits:
+      - key: zephyr_support
+        name: Zephyr
+        type: bool
+        better: none
+        table: true
+        ai: "Only true with a confirmed upstream Zephyr SoC or board entry. Theoretical portability is false."
+
+  # --- Memory ---------------------------------------------------------------
+  - match: "Interface (SPI / Dual / Quad / Octal SPI)"
+    emits:
+      - key: memory_interface
+        name: Interface
+        type: enum
+        enumValues: [SPI, Dual SPI, Quad SPI, Octal SPI, xSPI, Parallel, Other]
+        better: none
+        table: true
+
+  - match: "Interface"
+    emits: [{ key: memory_interface, name: Interface, type: text, better: none, table: true }]
+
+  - match: "Flash type (NOR / NAND / other)"
+    emits:
+      - key: memory_technology
+        name: Technology
+        type: enum
+        enumValues: [SPI NOR, Parallel NOR, SLC NAND, EEPROM, SRAM, PSRAM, FRAM, MRAM, eMMC, UFS, Other]
+        better: none
+        table: true
+
+  - match: "Memory interfaces"
+    emits: [{ key: memory_interfaces, name: Memory interfaces, type: text, better: none, table: true }]
+
+  # --- FPGA -----------------------------------------------------------------
+  - match: "Logic element / LUT count"
+    emits: [{ key: logic_elements, name: LEs / LUTs, type: number, better: higher, table: true }]
+
+  - match: "On-chip RAM"
+    emits: [{ key: onchip_ram, name: On-chip RAM, type: scalar, dimension: data_size, unit: KiB, better: higher, table: true }]
+
+  - match: "On-chip RAM / DSP"
+    emits:
+      - { key: onchip_ram, name: On-chip RAM, type: scalar, dimension: data_size, unit: KiB, better: higher, table: true }
+      - { key: dsp_blocks, name: DSP blocks, type: number, better: higher, table: true }
+
+  - match: "DSP blocks, on-chip RAM"
+    emits:
+      - { key: dsp_blocks, name: DSP blocks, type: number, better: higher, table: true }
+      - { key: onchip_ram, name: On-chip RAM, type: scalar, dimension: data_size, unit: KiB, better: higher, table: true }
+
+  - match: "DSP, transceivers, hardened blocks"
+    emits:
+      - { key: dsp_blocks, name: DSP blocks, type: number, better: higher, table: true }
+      - { key: transceiver_count, name: Transceivers, type: number, better: higher, table: true }
+      - { key: hardened_blocks, name: Hardened blocks, type: text, better: none, table: false }
+
+  - match: "I/O count"
+    emits: [{ key: io_count, name: I/O, type: number, better: higher, table: true }]
+
+  - match: "Non-volatile (instant-on) vs SRAM config"
+    emits:
+      - key: config_memory
+        name: Config
+        type: enum
+        enumValues: [Non-volatile, SRAM, Both, Unknown]
+        better: none
+        table: true
+
+  - match: "High-speed I/O (MIPI, LVDS)"
+    emits: [{ key: highspeed_io, name: High-speed I/O, type: text, better: none, table: true }]
+
+  - match: "Number of transceivers (SerDes) and max rate"
+    emits:
+      - { key: transceiver_count, name: Transceivers, type: number, better: higher, table: true }
+      - { key: serdes_rate, name: SerDes rate, type: scalar, dimension: data_rate, unit: Gbit/s, better: higher, table: true }
+
+  # --- PCIe -----------------------------------------------------------------
+  - match: "PCIe generation and lane count (e.g. Gen2 x1, Gen3 x4)"
+    emits:
+      - { key: pcie_gen, name: PCIe gen, type: text, better: none, table: true }
+      - { key: pcie_lanes, name: Lanes, type: number, better: higher, table: true }
+
+  - match: "PCIe generation and lane count"
+    emits:
+      - { key: pcie_gen, name: PCIe gen, type: text, better: none, table: true }
+      - { key: pcie_lanes, name: Lanes, type: number, better: higher, table: true }
+
+  - match: "Type (true PIPE PHY vs redriver vs retimer)"
+    emits:
+      - key: pcie_phy_type
+        name: Type
+        type: enum
+        enumValues: [PIPE PHY, Redriver, Retimer, Unknown]
+        better: none
+        table: true
+
+  # --- Connectors -----------------------------------------------------------
+  - match: "Ruggedness / retention"
+    emits: [{ key: retention, name: Retention, type: text, better: none, table: false }]
+
+  # --- Hard constraints (these arrive as YAML dicts, see importer) -----------
+  - match: "Supply / on current (HARD: must be < 6 mA)"
+    emits:
+      - key: isupply
+        name: On current
+        type: scalar
+        dimension: current
+        unit: mA
+        better: lower
+        table: true
+        ai: "Total supply current with the device enabled and amplifying."
+    requirement:
+      field: isupply
+      op: "<"
+      value: 6
+      unit: mA
+      note: "Hard constraint from component-report: on current must be under 6 mA."
+
+  - match: "Frequency coverage (HARD: must include ~400 MHz)"
+    emits:
+      - key: band_coverage
+        name: Band coverage
+        type: range
+        dimension: frequency
+        unit: MHz
+        better: none
+        table: true
+    requirement:
+      field: band_coverage
+      op: covers
+      value: 400
+      unit: MHz
+      note: "Hard constraint from component-report: coverage must include ~400 MHz."
+
+  - match: "HARD constraint: PCIe controller must be hardened (not soft IP)"
+    emits:
+      - key: hardened_pcie
+        name: Hardened PCIe
+        type: bool
+        better: none
+        table: true
+        ai: "True only for a built-in hardened PCIe controller. Soft PCIe IP is false."
+    requirement:
+      field: hardened_pcie
+      op: "="
+      value: 1
+      unit: ""
+      note: "Hard constraint from component-report: PCIe controller must be hardened, not soft IP."

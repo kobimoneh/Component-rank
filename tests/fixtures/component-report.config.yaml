@@ -1,0 +1,1033 @@
+
+# =============================================================================
+# Component Newsletter — configuration
+# =============================================================================
+# This is the ONE file you edit to control what the tool tracks.
+#
+# Each category has a `metric:` — the single most important thing to rank by.
+# Leave `best_in_class:` empty to run DISCOVERY mode: the tool finds and ranks
+# the current best-in-class for that metric. Once you paste the winners into
+# `best_in_class:`, the category switches to "what's new since last time" mode.
+#
+# Run with:   python run.py            (uses your Claude subscription by default)
+# Reports land in ./reports/YYYY-MM.md
+# =============================================================================
+
+settings:
+  # How the research runs:
+  #   cli – drive the Claude Code CLI (`claude -p`); uses your Claude Pro/Max
+  #         subscription and its built-in web search. No API key/credits needed.
+  #   api – call the Anthropic API directly (needs ANTHROPIC_API_KEY + credits).
+  backend: cli
+  model: claude-opus-4-8
+  effort: high
+  lookback_days: 35          # only used in "what's new" mode
+
+  # API backend only (search/fetch caps):
+  max_searches_per_category: 12
+  max_fetches_per_category: 8
+
+  # CLI backend only:
+  claude_bin: /home/user/.local/bin/claude   # absolute path so cron finds it
+  timeout_seconds: 900       # per-category wall-clock limit
+
+distributors:
+  - Mouser
+  - DigiKey
+  - Arrow
+  - Newark / Farnell
+  - LCSC
+  - RS Components
+
+# Default manufacturer list (each category can override with its own list).
+manufacturers:
+  - STMicroelectronics
+  - Texas Instruments
+  - Analog Devices
+  - NXP
+  - Microchip
+  - Renesas
+  - Infineon
+  - Nordic Semiconductor
+
+# -----------------------------------------------------------------------------
+# Categories.  metric = the one thing to rank by.  best_in_class: [] => discover.
+# -----------------------------------------------------------------------------
+categories:
+  - name: "Very small LDO regulator"
+    slug: tiny-ldo
+    description: >
+      Low-dropout linear regulators where PCB area is the priority — the
+      physically smallest usable LDOs (tiny WLCSP/DFN/SOT packages).
+    metric: "Smallest package footprint (mm²); then lowest quiescent current (Iq)"
+    best_in_class:
+      - "TPS7A0233PYCHR"
+      - "NCP163AMX330TBG"
+      - "ADP162ACBZ-3.3-R7"
+      - "RP155Z004B-E2-F"
+    key_parameters:
+      - Package footprint (mm²) and type
+      - Quiescent current (Iq)
+      - Max output current
+      - Dropout voltage
+      - Vin / Vout range, PSRR
+    manufacturers:
+      - Texas Instruments
+      - Analog Devices
+      - Torex
+      - Nisshinbo / NJR
+      - Diodes Incorporated
+      - STMicroelectronics
+      - Microchip
+      - Richtek
+
+  - name: "Small buck converter, 5V → 3.3V"
+    slug: buck-5v-3v3
+    description: >
+      Step-down DC-DC converters for a 5V input rail to 3.3V, optimized for the
+      smallest total solution size (including inductor and caps).
+    metric: "Smallest total solution footprint (IC + inductor + caps) for 5V→3.3V"
+    best_in_class:
+      - "MAXM38643AEMB+"
+      - "TPS82740BSIPR"
+      - "MPM3810GQB-Z"
+      - "TPS82130SILR"
+    key_parameters:
+      - Total solution footprint
+      - IC package size
+      - Integrated vs external inductor
+      - Max output current
+      - Quiescent current / light-load efficiency
+      - Switching frequency
+    manufacturers:
+      - Texas Instruments
+      - Analog Devices
+      - STMicroelectronics
+      - Monolithic Power Systems (MPS)
+      - Richtek
+      - Diodes Incorporated
+
+  - name: "Small buck converter, 12V → 3.3V"
+    slug: buck-12v-3v3
+    description: >
+      Step-down DC-DC converters rated for a 12V (or wider) input rail to 3.3V,
+      optimized for the smallest total solution size. Must tolerate >=16V Vin.
+    metric: "Smallest total solution footprint for 12V→3.3V (Vin rating >=16V)"
+    best_in_class:
+      - "TPSM265R1V3SILR"
+      - "LMZM23601V3SILR"
+      - "MPM3506AGQV-Z"
+      - "TPSM63606RDLR"
+      - "MPM3550EGRE"
+    key_parameters:
+      - Total solution footprint
+      - Max input voltage rating
+      - IC package size
+      - Integrated vs external inductor
+      - Max output current
+      - Light-load efficiency / Iq
+    manufacturers:
+      - Texas Instruments
+      - Analog Devices
+      - Monolithic Power Systems (MPS)
+      - STMicroelectronics
+      - Infineon
+      - Richtek
+
+  - name: "Miniature load switch / power mux"
+    slug: mini-load-switch
+    description: >
+      The physically smallest load switches and power multiplexers (power
+      path selectors), with adequate on-resistance and current rating.
+    metric: "Smallest package footprint; then low Ron at adequate current rating"
+    best_in_class:
+      - "TPS22914BYFPR"
+      - "TPS22916BYFPR"
+      - "TPS22908YZTR"
+      - "AP22913"
+      - "TPS2117DRLR"
+    key_parameters:
+      - Package footprint and type
+      - On-resistance (Ron)
+      - Max continuous current
+      - Vin range
+      - Features (slew control, reverse blocking, mux/priority)
+    manufacturers:
+      - Texas Instruments
+      - Analog Devices
+      - Diodes Incorporated
+      - Nexperia
+      - onsemi
+      - Toshiba
+
+  - name: "BLE radio transceiver"
+    slug: ble-transceiver
+    description: >
+      Standalone Bluetooth Low Energy radio / connectivity ICs (radio or
+      network co-processor with the host MCU separate), as opposed to full
+      BLE SoCs.
+    metric: "Smallest / most integrated standalone BLE radio; RX sensitivity and TX/RX current as tiebreak"
+    best_in_class:
+      - "EM9305BH209CS23B"
+      - "DA14531-00000OG2"
+      - "BLUENRG-234N"
+      - "BLUENRG-232N"
+    key_parameters:
+      - Package footprint
+      - RX sensitivity
+      - TX/RX current
+      - Number of external components (matching/antenna)
+      - BLE version / coded PHY support
+    manufacturers:
+      - Texas Instruments
+      - Nordic Semiconductor
+      - Renesas
+      - Telink
+      - STMicroelectronics
+
+  - name: "Wi-Fi transceiver"
+    slug: wifi-transceiver
+    description: >
+      Wi-Fi connectivity ICs and the smallest Wi-Fi modules for embedded host
+      MCUs (network co-processor style), not application-processor SoCs.
+    metric: "Smallest Wi-Fi solution (IC or module) for embedded use; power and throughput as tiebreak"
+    best_in_class:
+      - "CYW43439KUBGT"
+      - "QCC730"
+      - "IW416"
+      - "WF200"
+      - "CC3300"
+    key_parameters:
+      - Solution footprint (IC or module)
+      - Wi-Fi standard (4/6/6E) and bands
+      - Host interface (SPI/SDIO)
+      - Power consumption
+      - Integrated security / stack
+    manufacturers:
+      - Espressif
+      - Texas Instruments
+      - Infineon (Cypress)
+      - NXP
+      - Silicon Labs
+      - Renesas
+      - Realtek
+
+  - name: "UWB transceiver"
+    slug: uwb-transceiver
+    description: >
+      Ultra-wideband transceivers for ranging / secure distance measurement,
+      smallest footprint and lowest power.
+    metric: "Smallest UWB transceiver footprint; then ranging power and accuracy"
+    best_in_class:
+      - "QM33110W"
+      - "QM33120W"
+      - "DW3110"
+      - "SR040"
+      - "SR150"
+    key_parameters:
+      - Package / module footprint
+      - Channels (IEEE 802.15.4z)
+      - Ranging power consumption
+      - PHY data rates
+      - AoA support
+    manufacturers:
+      - Qorvo
+      - NXP
+      - Murata
+      - STMicroelectronics
+
+  - name: "Smallest MCU (any)"
+    slug: smallest-mcu
+    description: >
+      The physically smallest microcontrollers available — chip-scale-package
+      parts where board area dominates the decision.
+    metric: "Smallest physical footprint (mm²) of any usable MCU"
+    best_in_class:
+      - "MSPM0C1104S8YCJR"
+      - "ATTINY20-UUR"
+      - "STM32C011D6Y6TR"
+      - "MKL03Z32CAF4R"
+    key_parameters:
+      - Package footprint (mm²) and ball/pin count
+      - Core and max clock
+      - Flash / RAM
+      - GPIO count
+      - Peripheral set
+    manufacturers:
+      - Texas Instruments
+      - STMicroelectronics
+      - Microchip
+      - NXP
+      - Renesas
+      - Nordic Semiconductor
+      - Holtek
+
+  - name: "Smallest Zephyr-supported MCU"
+    slug: smallest-zephyr-mcu
+    description: >
+      The smallest MCU that has official, upstream Zephyr RTOS board/SoC
+      support (not just theoretically portable).
+    metric: "Smallest footprint among MCUs with upstream Zephyr support"
+    best_in_class:
+      - "STM32C011D6Y6TR"
+      - "STM32G031Y8Y6TR"
+      - "STM32L011E4Y6TR"
+      - "nRF52805-CAAA-R"
+    key_parameters:
+      - Package footprint (mm²)
+      - Confirmed upstream Zephyr SoC/board support
+      - Core and clock
+      - Flash / RAM
+      - Connectivity
+    manufacturers:
+      - Nordic Semiconductor
+      - NXP
+      - STMicroelectronics
+      - Texas Instruments
+      - Renesas
+      - Silicon Labs
+      - Ambiq
+      - Infineon
+
+  - name: "Smallest easy-to-layout BLE MCU"
+    slug: ble-mcu-easy-layout
+    description: >
+      The smallest BLE system-on-chip that is genuinely easy to lay out: minimal
+      external components, integrated DC-DC and RF matching, and feasible on a
+      simple 2-layer board (ideally with an integrated or single-cap antenna path).
+    metric: "Smallest BLE SoC that is easy to lay out (fewest externals, 2-layer friendly)"
+    best_in_class:
+      - "DA14531-00000OG2"
+      - "CC2340R5 (YBG WCSP)"
+      - "EFR32BG27C320F768IJ39"
+      - "nRF52805-CAAB"
+      - "BlueNRG-355AC"
+    key_parameters:
+      - Package footprint and total BOM/external part count
+      - Integrated DC-DC / matching / balun
+      - 2-layer PCB feasibility
+      - Flash / RAM
+      - Sleep current
+    manufacturers:
+      - Nordic Semiconductor
+      - Texas Instruments
+      - Renesas
+      - Telink
+      - STMicroelectronics
+
+  - name: "Smallest high-performance BLE MCU"
+    slug: ble-mcu-strong
+    description: >
+      The smallest BLE SoC that still delivers strong compute — high clock,
+      large flash/RAM, Cortex-M33-class core, TrustZone — for demanding firmware.
+    metric: "Smallest BLE SoC footprint given strong compute (high MHz, large RAM/flash)"
+    best_in_class:
+      - "NRF54L15-CAAA-R"
+      - "EFR32BG27C320F768GJ39"
+      - "EFR32BG29B220F1024CJ45"
+      - "STM32WBA52CGU6"
+    key_parameters:
+      - Package footprint (mm²)
+      - Core, clock, DSP/FPU
+      - Flash / RAM
+      - Security (TrustZone, secure boot)
+      - BLE features (5.4, Channel Sounding, coded PHY)
+    manufacturers:
+      - Nordic Semiconductor
+      - STMicroelectronics
+      - NXP
+      - Silicon Labs
+      - Ambiq
+
+  - name: "Smallest low-capacity (weak) FPGA"
+    slug: fpga-weak
+    description: >
+      The smallest physical package among low-capacity FPGAs (roughly up to a
+      few thousand logic elements) — glue logic / level-shifting / small state
+      machines.
+    metric: "Smallest package among low-capacity FPGAs (<~5K logic elements)"
+    best_in_class:
+      - "ICE40UL1K-SWG16ITR1K"
+      - "ICE40UL640-SWG16ITR50"
+      - "GW1NZ-LV1QN48C6/I5"
+      - "ICE40UP5K-UWG30ITR50"
+      - "ICE40LP1K-CM36"
+    key_parameters:
+      - Package footprint (mm²)
+      - Logic element / LUT count
+      - On-chip RAM
+      - I/O count
+      - Non-volatile (instant-on) vs SRAM config
+    manufacturers:
+      - Lattice Semiconductor
+      - Gowin
+      - Efinix
+      - Microchip
+      - AMD (Xilinx)
+      - Altera
+
+  - name: "Smallest mid-capacity FPGA"
+    slug: fpga-medium
+    description: >
+      The smallest physical package among mid-capacity FPGAs (roughly tens of
+      thousands of logic elements), e.g. for sensor bridging, MIPI, modest DSP.
+    metric: "Smallest package among mid-capacity FPGAs (~10K–100K logic elements)"
+    best_in_class:
+      - "TI60V64I3"
+      - "LIFCL-17-8UWG72C"
+      - "T20W80I4"
+      - "GW5AT-15"
+    key_parameters:
+      - Package footprint (mm²)
+      - Logic element / LUT count
+      - DSP blocks, on-chip RAM
+      - High-speed I/O (MIPI, LVDS)
+      - Power
+    manufacturers:
+      - Lattice Semiconductor
+      - Gowin
+      - Efinix
+      - Microchip
+      - AMD (Xilinx)
+      - Altera
+
+  - name: "Smallest high-capacity (strong) FPGA"
+    slug: fpga-strong
+    description: >
+      The smallest physical package among high-capacity / high-performance
+      FPGAs (hundreds of thousands of logic elements and up, transceivers, etc.).
+    metric: "Smallest package among high-capacity, high-performance FPGAs"
+    best_in_class:
+      - "XCAU15P-1UBVA368E"
+      - "Ti180J361C3"
+      - "Ti375N484C3"
+      - "LAV-AT-E70-1CBG484I"
+      - "XCAU25P-1SFVB784I"
+    key_parameters:
+      - Package footprint (mm²)
+      - Logic element / LUT count
+      - DSP, transceivers, hardened blocks
+      - Memory interfaces
+      - Power / thermal
+    manufacturers:
+      - AMD (Xilinx)
+      - Altera
+      - Lattice Semiconductor
+      - Efinix
+      - Microchip
+
+  - name: "Ultra-small board-to-board / board-to-cable connectors"
+    slug: tiny-connectors
+    description: >
+      The smallest board-to-board (B2B) and board-to-cable (B2C) connectors —
+      finest pitch, smallest footprint, lowest stack/mated height.
+    metric: "Smallest footprint / finest pitch / lowest stack height (B2B and B2C)"
+    best_in_class:
+      - "20622-016E-02"
+      - "AXF5K0412A"
+      - "5046182012"
+      - "NOVASTACK 35-HDN"
+      - "BM23FR0.6-6DS-0.35V"
+    key_parameters:
+      - Pitch (mm)
+      - Mated/stack height
+      - Footprint and pin count options
+      - Current rating per contact
+      - Ruggedness / retention
+    manufacturers:
+      - Hirose
+      - Molex
+      - JAE
+      - Panasonic
+      - TE Connectivity
+      - Amphenol
+      - Kyocera (AVX)
+      - I-PEX
+
+  - name: "RF PA — 2.4 GHz (Wi-Fi/BLE/Zigbee)"
+    slug: rf-pa-2g4
+    description: >
+      Transmit power amplifiers for the 2.4–2.5 GHz ISM band (Wi-Fi, BLE, Zigbee, Thread), where PCB area is the priority.
+    metric: "Smallest package footprint; then output power (P1dB/Psat) and PAE (band: 2.4 GHz (Wi-Fi/BLE/Zigbee))"
+    best_in_class:
+      - "SKY66409-11"
+      - "PE562212"
+      - "SKY66405-11"
+      - "SKY66114-11"
+      - "nRF21540"
+    key_parameters:
+      - Package footprint (mm²)
+      - Output power (P1dB / Psat)
+      - Gain
+      - PAE / efficiency
+      - Supply voltage
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF PA — sub-GHz ISM (433/868/915 MHz)"
+    slug: rf-pa-subghz
+    description: >
+      Transmit power amplifiers for sub-GHz ISM bands (433 / 868 / 915 MHz; LoRa, proprietary, 802.15.4g), where PCB area is the priority.
+    metric: "Smallest package footprint; then output power (P1dB/Psat) and PAE (band: sub-GHz ISM (433/868/915 MHz))"
+    best_in_class:
+      - "QPA9510"
+      - "GRF5510"
+      - "GRF5507"
+      - "SKY66423-11"
+    key_parameters:
+      - Package footprint (mm²)
+      - Output power (P1dB / Psat)
+      - Gain
+      - PAE / efficiency
+      - Supply voltage
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF PA — cellular sub-6 GHz (LTE/5G FR1)"
+    slug: rf-pa-cellular
+    description: >
+      Transmit power amplifiers for cellular bands below 6 GHz (LTE / 5G NR FR1), where PCB area is the priority.
+    metric: "Smallest package footprint; then output power (P1dB/Psat) and PAE (band: cellular sub-6 GHz (LTE/5G FR1))"
+    best_in_class:
+      - "GRF5112"
+      - "GRF5510"
+      - "GRF5517"
+      - "GRF5518"
+    key_parameters:
+      - Package footprint (mm²)
+      - Output power (P1dB / Psat)
+      - Gain
+      - PAE / efficiency
+      - Supply voltage
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF PA — 5–6 GHz (Wi-Fi 5/6/6E)"
+    slug: rf-pa-5g6
+    description: >
+      Transmit power amplifiers for the 5 GHz and 6 GHz Wi-Fi bands (Wi-Fi 5/6/6E), where PCB area is the priority.
+    metric: "Smallest package footprint; then output power (P1dB/Psat) and PAE (band: 5–6 GHz (Wi-Fi 5/6/6E))"
+    best_in_class:
+      - "GRF5458"
+      - "SKY85408-11"
+      - "RFPA5542"
+      - "QPA0506"
+    key_parameters:
+      - Package footprint (mm²)
+      - Output power (P1dB / Psat)
+      - Gain
+      - PAE / efficiency
+      - Supply voltage
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF LNA — 2.4 GHz (Wi-Fi/BLE/Zigbee)"
+    slug: rf-lna-2g4
+    description: >
+      Receive low-noise amplifiers for the 2.4–2.5 GHz ISM band (Wi-Fi, BLE, Zigbee, Thread), where PCB area is the priority.
+    metric: "Smallest package footprint; then noise figure and gain (band: 2.4 GHz (Wi-Fi/BLE/Zigbee))"
+    best_in_class:
+      - "GRF2133"
+      - "SKY65405-21"
+      - "BGU7224"
+      - "BGB741L7ESD"
+      - "QPL9547"
+    key_parameters:
+      - Package footprint (mm²)
+      - Noise figure (NF)
+      - Gain
+      - IIP3 / linearity
+      - Supply voltage / current
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF LNA — sub-GHz ISM (433/868/915 MHz)"
+    slug: rf-lna-subghz
+    description: >
+      Receive low-noise amplifiers for sub-GHz ISM bands (433 / 868 / 915 MHz; LoRa, proprietary, 802.15.4g), where PCB area is the priority.
+    metric: "Smallest package footprint; then noise figure and gain (band: sub-GHz ISM (433/868/915 MHz))"
+    best_in_class:
+      - "BGA7L1N6E6327"
+      - "BGB707L7ESD E6327"
+      - "GRF2070"
+      - "SKY67150-396LF"
+    key_parameters:
+      - Package footprint (mm²)
+      - Noise figure (NF)
+      - Gain
+      - IIP3 / linearity
+      - Supply voltage / current
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF LNA — cellular sub-6 GHz (LTE/5G FR1)"
+    slug: rf-lna-cellular
+    description: >
+      Receive low-noise amplifiers for cellular bands below 6 GHz (LTE / 5G NR FR1), where PCB area is the priority.
+    metric: "Smallest package footprint; then noise figure and gain (band: cellular sub-6 GHz (LTE/5G FR1))"
+    best_in_class:
+      - "BGA7H1N6E6327XTSA1"
+      - "BGA7M1N6E6327XTSA1"
+      - "BGA7L1N6E6327XTSA1"
+      - "QPL9058"
+      - "SKY67151-396LF"
+    key_parameters:
+      - Package footprint (mm²)
+      - Noise figure (NF)
+      - Gain
+      - IIP3 / linearity
+      - Supply voltage / current
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF LNA — 5–6 GHz (Wi-Fi 5/6/6E)"
+    slug: rf-lna-5g6
+    description: >
+      Receive low-noise amplifiers for the 5 GHz and 6 GHz Wi-Fi bands (Wi-Fi 5/6/6E), where PCB area is the priority.
+    metric: "Smallest package footprint; then noise figure and gain (band: 5–6 GHz (Wi-Fi 5/6/6E))"
+    best_in_class:
+      - "BGA8U1BN6"
+      - "GRF2541"
+      - "GRF2543"
+      - "GRF2110"
+      - "QPL9547"
+    key_parameters:
+      - Package footprint (mm²)
+      - Noise figure (NF)
+      - Gain
+      - IIP3 / linearity
+      - Supply voltage / current
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - NXP
+      - Infineon
+      - Guerrilla RF
+      - pSemi (Murata)
+      - MACOM
+
+  - name: "RF Filter — 2.4 GHz (Wi-Fi/BLE/Zigbee)"
+    slug: rf-filter-2g4
+    description: >
+      Band-pass / band-reject SAW or BAW filters for the 2.4–2.5 GHz ISM band (Wi-Fi, BLE, Zigbee, Thread), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and rejection (band: 2.4 GHz (Wi-Fi/BLE/Zigbee))"
+    best_in_class:
+      - "LFB152G45CB2D320"
+      - "2450BP07A0100001T"
+      - "2450BP08C0100002T"
+      - "LFB182G45SG9A272"
+    key_parameters:
+      - Package footprint (mm²)
+      - Type (SAW / BAW)
+      - Insertion loss
+      - Out-of-band rejection
+      - Passband edges
+      - Power handling
+    manufacturers:
+      - Murata
+      - Qorvo
+      - Skyworks
+      - TDK
+      - Taiyo Yuden
+      - Kyocera (AVX)
+      - Abracon
+      - Johanson Technology
+
+  - name: "RF Filter — sub-GHz ISM (433/868/915 MHz)"
+    slug: rf-filter-subghz
+    description: >
+      Band-pass / band-reject SAW or BAW filters for sub-GHz ISM bands (433 / 868 / 915 MHz; LoRa, proprietary, 802.15.4g), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and rejection (band: sub-GHz ISM (433/868/915 MHz))"
+    best_in_class:
+      - "AFS14A26-915.00-T3"
+      - "SF14-0925M5UUP1"
+      - "AFS868.0W01-TS3"
+    key_parameters:
+      - Package footprint (mm²)
+      - Type (SAW / BAW)
+      - Insertion loss
+      - Out-of-band rejection
+      - Passband edges
+      - Power handling
+    manufacturers:
+      - Murata
+      - Qorvo
+      - Skyworks
+      - TDK
+      - Taiyo Yuden
+      - Kyocera (AVX)
+      - Abracon
+      - Johanson Technology
+
+  - name: "RF Filter — cellular sub-6 GHz (LTE/5G FR1)"
+    slug: rf-filter-cellular
+    description: >
+      Band-pass / band-reject SAW or BAW filters for cellular bands below 6 GHz (LTE / 5G NR FR1), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and rejection (band: cellular sub-6 GHz (LTE/5G FR1))"
+    best_in_class:
+      - "SAFFW2G14AA0E0A"
+      - "SAFFB1G84FL0F0AR1X"
+      - "FAR-F6KA-2G1400-D4DW-Z"
+      - "QPQ3501"
+    key_parameters:
+      - Package footprint (mm²)
+      - Type (SAW / BAW)
+      - Insertion loss
+      - Out-of-band rejection
+      - Passband edges
+      - Power handling
+    manufacturers:
+      - Murata
+      - Qorvo
+      - Skyworks
+      - TDK
+      - Taiyo Yuden
+      - Kyocera (AVX)
+      - Abracon
+      - Johanson Technology
+
+  - name: "RF Filter — 5–6 GHz (Wi-Fi 5/6/6E)"
+    slug: rf-filter-5g6
+    description: >
+      Band-pass / band-reject SAW or BAW filters for the 5 GHz and 6 GHz Wi-Fi bands (Wi-Fi 5/6/6E), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and rejection (band: 5–6 GHz (Wi-Fi 5/6/6E))"
+    best_in_class:
+      - "6100BP14A1955001T"
+      - "LFB155G50CB1B948"
+      - "5550BP14E0800001T"
+      - "QPQ5601"
+    key_parameters:
+      - Package footprint (mm²)
+      - Type (SAW / BAW)
+      - Insertion loss
+      - Out-of-band rejection
+      - Passband edges
+      - Power handling
+    manufacturers:
+      - Murata
+      - Qorvo
+      - Skyworks
+      - TDK
+      - Taiyo Yuden
+      - Kyocera (AVX)
+      - Abracon
+      - Johanson Technology
+
+  - name: "RF Switch — 2.4 GHz (Wi-Fi/BLE/Zigbee)"
+    slug: rf-switch-2g4
+    description: >
+      RF switches (SPDT / SP3T / antenna / TX-RX) for the 2.4–2.5 GHz ISM band (Wi-Fi, BLE, Zigbee, Thread), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and isolation (band: 2.4 GHz (Wi-Fi/BLE/Zigbee))"
+    best_in_class:
+      - "RF1630"
+      - "SKY13585-679LF"
+      - "SKY13586-678LF"
+      - "SKY13575-639LF"
+    key_parameters:
+      - Package footprint (mm²)
+      - Configuration (SPDT/SP3T/...)
+      - Insertion loss
+      - Isolation
+      - P1dB / power handling
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - pSemi (Murata)
+      - NXP
+      - Infineon
+      - MACOM
+      - onsemi
+
+  - name: "RF Switch — sub-GHz ISM (433/868/915 MHz)"
+    slug: rf-switch-subghz
+    description: >
+      RF switches (SPDT / SP3T / antenna / TX-RX) for sub-GHz ISM bands (433 / 868 / 915 MHz; LoRa, proprietary, 802.15.4g), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and isolation (band: sub-GHz ISM (433/868/915 MHz))"
+    best_in_class:
+      - "BGS12P2L6E6327XTSA1"
+      - "BGS12WN6E6327XTSA1"
+      - "BGS12SN6E6327XTSA1"
+      - "PE42424"
+      - "PE42422"
+    key_parameters:
+      - Package footprint (mm²)
+      - Configuration (SPDT/SP3T/...)
+      - Insertion loss
+      - Isolation
+      - P1dB / power handling
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - pSemi (Murata)
+      - NXP
+      - Infineon
+      - MACOM
+      - onsemi
+
+  - name: "RF Switch — cellular sub-6 GHz (LTE/5G FR1)"
+    slug: rf-switch-cellular
+    description: >
+      RF switches (SPDT / SP3T / antenna / TX-RX) for cellular bands below 6 GHz (LTE / 5G NR FR1), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and isolation (band: cellular sub-6 GHz (LTE/5G FR1))"
+    best_in_class:
+      - "RF1630"
+      - "BGS12SN6"
+      - "BGS12P2L6"
+      - "BGS12WN6"
+    key_parameters:
+      - Package footprint (mm²)
+      - Configuration (SPDT/SP3T/...)
+      - Insertion loss
+      - Isolation
+      - P1dB / power handling
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - pSemi (Murata)
+      - NXP
+      - Infineon
+      - MACOM
+      - onsemi
+
+  - name: "RF Switch — 5–6 GHz (Wi-Fi 5/6/6E)"
+    slug: rf-switch-5g6
+    description: >
+      RF switches (SPDT / SP3T / antenna / TX-RX) for the 5 GHz and 6 GHz Wi-Fi bands (Wi-Fi 5/6/6E), where PCB area is the priority.
+    metric: "Smallest package footprint; then insertion loss and isolation (band: 5–6 GHz (Wi-Fi 5/6/6E))"
+    best_in_class:
+      - "RF1630"
+      - "SKY13585-679LF"
+      - "BGSA12UGL8"
+      - "PE42424"
+      - "RFSW8009"
+    key_parameters:
+      - Package footprint (mm²)
+      - Configuration (SPDT/SP3T/...)
+      - Insertion loss
+      - Isolation
+      - P1dB / power handling
+      - Band coverage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - pSemi (Murata)
+      - NXP
+      - Infineon
+      - MACOM
+      - onsemi
+
+  - name: "RF LNA — 400 MHz, low-power (Icc < 6 mA)"
+    slug: rf-lna-400mhz
+    description: >
+      Low-noise amplifiers that cover ~400 MHz (e.g. 380-470 MHz UHF / 433 MHz
+      ISM) with total supply (on) current under 6 mA. HARD constraints: must
+      operate with good gain/match at 400 MHz AND draw < 6 mA. Disqualify any
+      part that cannot do both. Rank the qualifying parts by noise figure and
+      total footprint (LNA plus its matching components).
+    metric: "Among LNAs that cover 400 MHz with on-current < 6 mA: lowest noise figure at the smallest total footprint"
+    key_parameters:
+      - Supply / on current (HARD: must be < 6 mA)
+      - Noise figure at ~400 MHz
+      - Total footprint (LNA + matching components)
+      - Gain
+      - IIP3 / linearity
+      - Frequency coverage (HARD: must include ~400 MHz)
+      - Supply voltage
+    manufacturers:
+      - Qorvo
+      - Skyworks
+      - Analog Devices
+      - Guerrilla RF
+      - Infineon
+      - NXP
+      - MACOM
+      - pSemi (Murata)
+      - NJR (Nisshinbo)
+
+  - name: "Miniature 128 Mbit SPI NOR Flash"
+    slug: flash-spi-nor-128mb
+    description: >
+      The physically smallest 128 Mbit (16 MByte) SPI NOR flash memory ICs,
+      where PCB area is the priority. Standard SPI / Dual / Quad / Octal SPI
+      NOR parts only.
+    metric: "Smallest package footprint (mm²) for a 128 Mbit SPI NOR flash"
+    key_parameters:
+      - Package footprint (mm²) and type
+      - Interface (SPI / Dual / Quad / Octal SPI)
+      - Max clock frequency
+      - Supply voltage (1.8 V / 3.3 V)
+      - Temperature grade
+      - Unit price at 1k
+    manufacturers:
+      - Winbond
+      - Macronix
+      - GigaDevice
+      - Micron
+      - ISSI
+      - Infineon (Cypress)
+      - Puya
+      - Microchip
+
+  - name: "Miniature 128 Mbit Flash (any type)"
+    slug: flash-128mb-any
+    description: >
+      The physically smallest 128 Mbit (16 MByte) non-volatile flash memory of
+      ANY type or interface (SPI NOR, SLC NAND, parallel NOR, etc.). The only
+      thing that matters is smallest footprint at 128 Mbit density.
+    metric: "Smallest package footprint (mm²) for any 128 Mbit flash, regardless of type/interface"
+    key_parameters:
+      - Package footprint (mm²) and type
+      - Flash type (NOR / NAND / other)
+      - Interface
+      - Supply voltage
+      - Temperature grade
+      - Unit price at 1k
+    manufacturers:
+      - Winbond
+      - Macronix
+      - GigaDevice
+      - Micron
+      - Kioxia
+      - ISSI
+      - Puya
+      - Microchip
+
+  - name: "Smallest FPGA with hardened PCIe"
+    slug: fpga-pcie
+    description: >
+      The physically smallest FPGA that includes a HARDENED PCIe block (a
+      built-in PCIe endpoint/root-complex controller + the required SerDes), not
+      just soft-core PCIe. Package footprint is the priority.
+    metric: "Smallest package footprint (mm²) among FPGAs with a hardened PCIe controller"
+    key_parameters:
+      - Package footprint (mm²) and package type
+      - PCIe generation and lane count (e.g. Gen2 x1, Gen3 x4)
+      - HARD constraint: PCIe controller must be hardened (not soft IP)
+      - Logic element / LUT count
+      - Number of transceivers (SerDes) and max rate
+      - On-chip RAM / DSP
+      - Supply / power
+    manufacturers:
+      - Lattice Semiconductor
+      - Efinix
+      - Microchip
+      - AMD (Xilinx)
+      - Altera
+      - Gowin
+
+  - name: "Smallest PCIe PHY"
+    slug: pcie-phy
+    description: >
+      The physically smallest PCIe physical-layer ICs. Report TWO groups if both
+      exist: (a) true discrete PIPE-interface PCIe PHYs (terminate the PHY layer
+      for an external MAC, e.g. an FPGA soft PCIe controller) - these are rare;
+      and (b) PCIe redriver / retimer signal-conditioning ICs (the common, tiny
+      "PHY" parts). Clearly label which type each part is.
+    metric: "Smallest package footprint (mm²) for a PCIe PHY; separate true PIPE PHYs from redrivers/retimers"
+    key_parameters:
+      - Package footprint (mm²) and type
+      - Type (true PIPE PHY vs redriver vs retimer)
+      - PCIe generation and lane count
+      - Host-side interface (PIPE, if a true PHY)
+      - Supply voltage / power
+      - Unit price at 1k
+    manufacturers:
+      - Texas Instruments
+      - Diodes Incorporated
+      - Parade Technologies
+      - Astera Labs
+      - Renesas (IDT)
+      - Microchip
+      - Broadcom
+      - Pericom / Diodes
+
+# -----------------------------------------------------------------------------
+# Email delivery (optional, OFF by default). SMTP password goes in .env as
+# SMTP_PASSWORD, never here. For Gmail use a 16-char App Password.
+#
+# These addresses are placeholders because this file is tracked in a public
+# repo. Put your real address in locally; to stop git from offering the change
+# for commit, run:  git update-index --skip-worktree config.yaml
+# -----------------------------------------------------------------------------
+email:
+  enabled: false
+  to: ["you@example.com"]
+  sender: "you@example.com"
+  username: "you@example.com"
+  smtp_host: smtp.gmail.com
+  smtp_port: 587
+  use_tls: true
+
+# Which datasheets to download into the month's datasheets/ folder:
+#   winners – best-in-class part of each category
+#   all     – every featured part (winner + shortlist)
+#   none    – download none (the PDF still lists download links)
+datasheets:
+  attach: all
+  max_attachments: 200
+  max_total_mb: 400
