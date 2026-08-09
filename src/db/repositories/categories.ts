@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import type { SqlDriver } from '../driver.js'
 import type { Category, SpecDefinition } from '../../domain/categories/model.js'
 import { removedSpecKeys } from './spec-defs.js'
+import { deletedFamilySlugs, normalizeName } from './taxonomy.js'
 
 /**
  * Category persistence and non-destructive sync with component-report.
@@ -19,6 +20,8 @@ export interface SyncReport {
   readonly unchanged: readonly string[]
   /** Present locally but absent from the incoming config. Never deleted. */
   readonly orphaned: readonly string[]
+  /** Upstream still lists these, but you deleted them here. Left deleted. */
+  readonly skippedDeleted: readonly string[]
   readonly specsCreated: number
   readonly specsUpdated: number
   /** `slug.key` of spec definitions preserved because they were edited here. */
@@ -29,6 +32,10 @@ export interface SyncReport {
 export function categoryHash(c: Category): string {
   const canonical = JSON.stringify({
     name: c.name,
+    // The grouping is part of the definition. Leaving it out meant a category
+    // that upstream had simply moved to another heading hashed as unchanged, so
+    // the move never arrived — found by the section tests.
+    group: c.group,
     description: c.description,
     metric: c.ranking.metricProse,
     specs: [...c.specs].map((s) => [s.key, s.name, s.type, s.dimension ?? '', s.unit ?? '', s.better]).sort(),
@@ -57,6 +64,22 @@ interface CategoryRow {
   source: string
   source_hash: string | null
   locally_modified: number
+  section_pinned: number
+}
+
+/**
+ * The section a newly imported family should land under, creating it if this is
+ * the first family to claim that heading. Upstream `group_name` decides where a
+ * family goes only until you move it — see migration 005.
+ */
+function sectionForGroup(db: SqlDriver, group: string, at: string): number {
+  const norm = normalizeName(group)
+  const found = db.prepare('SELECT id FROM section WHERE name_norm = ?').get<{ id: number }>(norm)
+  if (found) return found.id
+  const max = db.prepare('SELECT COALESCE(MAX(sort_order), 0) AS n FROM section').get<{ n: number }>()!.n
+  return db
+    .prepare('INSERT INTO section (name, name_norm, sort_order, created_at) VALUES (?,?,?,?)')
+    .run(group, norm, max + 10, at).lastInsertRowid
 }
 
 interface SpecRow {
@@ -161,15 +184,23 @@ export function syncCategories(
   const updated: string[] = []
   const keptLocal: string[] = []
   const unchanged: string[] = []
+  const skippedDeleted: string[] = []
   const specReport = { created: 0, updated: 0, keptLocal: [] as string[] }
 
   db.transaction(() => {
     const existing = db
-      .prepare('SELECT id, slug, source, source_hash, locally_modified FROM category')
+      .prepare('SELECT id, slug, source, source_hash, locally_modified, section_pinned FROM category')
       .all<CategoryRow>()
     const bySlug = new Map(existing.map((r) => [r.slug, r]))
+    // A family you deleted stays deleted. Re-creating it here would be the same
+    // silent undo that category_removed_spec prevents for parameters.
+    const deleted = deletedFamilySlugs(db)
 
     categories.forEach((c, index) => {
+      if (deleted.has(c.slug)) {
+        skippedDeleted.push(c.slug)
+        return
+      }
       const hash = categoryHash(c)
       const row = bySlug.get(c.slug)
 
@@ -178,12 +209,13 @@ export function syncCategories(
           .prepare(`
             INSERT INTO category (slug, name, group_name, description, metric_prose,
                                   ranking_unresolved, sort_order, source, source_hash,
-                                  locally_modified, created_at, updated_at)
-            VALUES (?,?,?,?,?,?,?,'imported',?,0,?,?)
+                                  locally_modified, created_at, updated_at, section_id)
+            VALUES (?,?,?,?,?,?,?,'imported',?,0,?,?,?)
           `)
           .run(
             c.slug, c.name, c.group, c.description, c.ranking.metricProse,
             c.ranking.unresolved ? 1 : 0, index, hash, now, now,
+            sectionForGroup(db, c.group, now),
           )
         writeChildren(db, res.lastInsertRowid, c)
         writeSpecs(db, res.lastInsertRowid, c.specs, specReport, c.slug)
@@ -202,13 +234,18 @@ export function syncCategories(
         return
       }
 
+      // Placement follows upstream until you move the family yourself, after
+      // which section_pinned keeps it where you put it while everything else
+      // about the family still syncs.
+      const sectionId = row.section_pinned === 1 ? null : sectionForGroup(db, c.group, now)
       db.prepare(`
         UPDATE category SET name=?, group_name=?, description=?, metric_prose=?,
-                            ranking_unresolved=?, sort_order=?, source_hash=?, updated_at=?
+                            ranking_unresolved=?, sort_order=?, source_hash=?, updated_at=?,
+                            section_id = COALESCE(?, section_id)
         WHERE id = ?
       `).run(
         c.name, c.group, c.description, c.ranking.metricProse,
-        c.ranking.unresolved ? 1 : 0, index, hash, now, row.id,
+        c.ranking.unresolved ? 1 : 0, index, hash, now, sectionId, row.id,
       )
       writeChildren(db, row.id, c)
       writeSpecs(db, row.id, c.specs, specReport, c.slug)
@@ -224,7 +261,7 @@ export function syncCategories(
     .filter((slug) => !incoming.has(slug))
 
   return {
-    created, updated, keptLocal, unchanged, orphaned,
+    created, updated, keptLocal, unchanged, orphaned, skippedDeleted,
     specsCreated: specReport.created,
     specsUpdated: specReport.updated,
     specsKeptLocal: specReport.keptLocal,
@@ -247,17 +284,34 @@ export interface CategoryListItem {
   readonly id: number
   readonly slug: string
   readonly name: string
+  /** Section heading. Empty string for a family that sits under no section. */
   readonly group: string
+  readonly sectionId: number | null
+  readonly sectionOrder: number
+  readonly local: boolean
   readonly componentCount: number
 }
 
+/**
+ * The rail, in display order.
+ *
+ * Order comes from `section.sort_order`, which you can change — it used to be a
+ * constant array in the renderer, so a section you created had nowhere to go.
+ * A family under no section sorts last and is shown as "Ungrouped".
+ */
 export function listCategories(db: SqlDriver): CategoryListItem[] {
   return db
     .prepare(`
-      SELECT c.id, c.slug, c.name, c.group_name AS "group",
+      SELECT c.id, c.slug, c.name,
+             COALESCE(s.name, '') AS "group",
+             c.section_id AS sectionId,
+             COALESCE(s.sort_order, 100000) AS sectionOrder,
+             (c.source = 'local') AS local,
              (SELECT COUNT(*) FROM component_category cc WHERE cc.category_id = c.id) AS componentCount
       FROM category c
-      ORDER BY c.group_name, c.sort_order, c.name
+      LEFT JOIN section s ON s.id = c.section_id
+      ORDER BY sectionOrder, s.name, c.sort_order, c.name
     `)
-    .all<CategoryListItem>()
+    .all<Omit<CategoryListItem, 'local'> & { local: number }>()
+    .map((r) => ({ ...r, local: r.local === 1 }))
 }

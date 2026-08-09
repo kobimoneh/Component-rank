@@ -76,7 +76,7 @@ export function Drawer({ component: c, open, onClose, onChanged }: Props): JSX.E
                 </div>
               </div>
               <div className="drawer-sub">
-                {c.categoryName ?? 'Uncategorised'}
+                {c.categoryName ?? 'No family'}
                 {c.package.name ? ` · ${c.package.name}` : ''}
                 {c.package.dimensionsText !== 'Unknown' ? ` · ${c.package.dimensionsText}` : ''}
                 {c.package.basis ? ` (${c.package.basis})` : ''}
@@ -142,7 +142,7 @@ export function Drawer({ component: c, open, onClose, onChanged }: Props): JSX.E
 
               <SolutionSection component={c} onChanged={onChanged} />
 
-              <Section title="Category specifications" badge={String(c.specs.length)}>
+              <Section title="Family specifications" badge={String(c.specs.length)}>
                 {c.specs.length > 0 ? (
                   <dl className="specs">
                     {c.specs.map((sp) => (

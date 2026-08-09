@@ -139,6 +139,70 @@ function createWindow(): BrowserWindow {
           window.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }))
           return true
         })()`,
+        familymenu: `(() => {
+          const item = document.querySelectorAll('nav.sidebar .nav-item')[1]
+          const r = item.getBoundingClientRect()
+          item.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true, cancelable: true, clientX: r.right - 20, clientY: r.top + 8,
+          }))
+          return true
+        })()`,
+        sectionmenu: `(() => {
+          const head = document.querySelectorAll('nav.sidebar .nav-group')[1]
+          const r = head.getBoundingClientRect()
+          head.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true, cancelable: true, clientX: r.left + 60, clientY: r.top + 8,
+          }))
+          return true
+        })()`,
+        rowmenu: `(() => {
+          const row = document.querySelector('table.grid tbody tr:nth-child(2)')
+          const r = row.getBoundingClientRect()
+          row.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true, cancelable: true, clientX: r.left + 260, clientY: r.top + 10,
+          }))
+          return true
+        })()`,
+        movedo: `(() => {
+          // The whole move, end to end: right-click a part, choose the family,
+          // confirm. What lands in the database afterwards is the real check.
+          const row = document.querySelector('table.grid tbody tr:nth-child(2)')
+          const r = row.getBoundingClientRect()
+          row.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true, cancelable: true, clientX: r.left + 260, clientY: r.top + 10,
+          }))
+          const wait = (ms) => new Promise((d) => setTimeout(d, ms))
+          const click = (el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+          return wait(250)
+            .then(() => {
+              click([...document.querySelectorAll('.menu-item')]
+                .find((b) => b.textContent.includes('Move to family')))
+              return wait(300)
+            })
+            .then(() => {
+              click(document.querySelector('.dialog-list .dialog-option'))
+              return wait(150)
+            })
+            .then(() => {
+              click([...document.querySelectorAll('.dialog-foot .btn')]
+                .find((b) => b.textContent.trim() === 'Move'))
+              return wait(600)
+            })
+            .then(() => true)
+        })()`,
+        movefamily: `(() => {
+          const row = document.querySelector('table.grid tbody tr:nth-child(2)')
+          const r = row.getBoundingClientRect()
+          row.dispatchEvent(new MouseEvent('contextmenu', {
+            bubbles: true, cancelable: true, clientX: r.left + 260, clientY: r.top + 10,
+          }))
+          return new Promise((done) => setTimeout(() => {
+            const item = [...document.querySelectorAll('.menu-item')]
+              .find((b) => b.textContent.includes('Move to family'))
+            item.click()
+            done(true)
+          }, 300))
+        })()`,
         parameters: `(() => {
           const btn = [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Parameters')
           btn?.click()
@@ -160,7 +224,10 @@ function createWindow(): BrowserWindow {
           .then(() => win.webContents.capturePage())
           .then((img) => {
             writeFileSync(shot, img.toPNG())
-            app.quit()
+            boot?.db.close()
+            // exit, not quit: under WSLg `app.quit()` waits on a window close
+            // that never completes, and this harness exists to capture and go.
+            app.exit(0)
           })
       }, 3000)
     }

@@ -230,6 +230,45 @@ facts. `Back up` writes the whole database as JSON, provenance included.
 animates a measurement: when an external is toggled, the gross size changes immediately
 rather than counting up to its new value.
 
+### Right-click
+
+Every menu names its subject at the top, so a menu is never ambiguous about what it will
+act on. An action that cannot run is **disabled with the reason in its tooltip**, not
+hidden — a menu that changes shape depending on invisible state is a menu you have to
+learn twice. Destructive items come last, separated and tinted.
+
+| Right-click on | Menu |
+|---|---|
+| Section heading | New family here · Rename · Move up / down · New section · **Delete section** |
+| Family | Open · Rename · Move to section ▸ · Parameters · Duplicate parameters into a new family · Export CSV · New family · **Delete family** |
+| Part row | Open details · Copy part number · Copy row (TSV) · Move to family · Also add to family · Remove from this family · Set lifecycle ▸ · Select / Compare · **Delete part** |
+| Several parts selected | The same, acting on the whole selection and counting it in every label |
+| Column header | Sort ascending / descending / clear · Hide column · Edit parameters · **Remove parameter** |
+| Parameter row | Show / hide column · Better direction ▸ · Copy key · **Remove parameter** |
+| Leader tile | Open the part · Copy part number · Sort the table by it · Why this one? |
+| Empty rail | New family · New section |
+
+Right-clicking a row **inside** a multi-selection acts on the selection; right-clicking
+outside it acts on the row under the cursor and leaves the selection alone.
+
+Submenus are used only for short, closed lists — sections, lifecycle, sort direction.
+Choosing among 36 families goes through a **searchable picker dialog** instead, grouped by
+section and showing each family's part count. A nested submenu of 36 items is not a
+usable control.
+
+`window.prompt` does not exist in Electron, so rename, pick and confirm are real
+components (`Dialogs.tsx`). They earn their keep: a refusal from the main process is shown
+**inside the dialog that asked**, so "40 parts are in no other family" appears next to the
+question rather than as a toast that has already faded.
+
+### Moving parts between families
+
+Because a part can belong to several families, "move" and "also add" are separate
+commands and the menu says which is which. Move takes the part out of the family you are
+looking at; add leaves every existing membership alone. Removing a part from its only
+family is refused, not silently allowed — the part would still exist and you would have no
+way to reach it.
+
 ### Not yet built
 
 Column resizing and reordering, the numeric range filter row, the density toggle, row

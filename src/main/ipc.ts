@@ -25,6 +25,18 @@ import {
   OcrRequest,
   ApplyReviewRequest,
   AiSettingsSchema,
+  SectionCreateRequest,
+  SectionRenameRequest,
+  SectionDeleteRequest,
+  SectionMoveRequest,
+  FamilySetSectionRequest,
+  FamilyCreateRequest,
+  FamilyRenameRequest,
+  FamilyDeleteRequest,
+  SetFamilyRequest,
+  RemoveFromFamilyRequest,
+  SetLifecycleRequest,
+  IdsRequest,
   IdRequest as _IdRequest,
   type AppStatus,
   type CategoryDetail,
@@ -48,6 +60,11 @@ import { applyReview, discardReview } from '../extraction/apply.js'
 import { LocalOpenAiProvider } from '../ai/local-openai.js'
 import type { ExtractionProvider } from '../ai/provider.js'
 import { listCategories } from '../db/repositories/categories.js'
+import {
+  componentFamilies, createFamily, createSection, deleteComponents, deleteFamily,
+  deleteSection, familyDeletionImpact, listSections, moveFamilyToSection, moveSection,
+  removeComponentsFromFamily, renameFamily, renameSection, setComponentFamily, setLifecycle,
+} from '../db/repositories/taxonomy.js'
 import {
   categoryColumns,
   dataQuality,
@@ -100,6 +117,9 @@ export function registerIpc(ipc: IpcMain, boot: BootstrapResult): void {
       slug: c.slug,
       name: c.name,
       group: c.group,
+      sectionId: c.sectionId,
+      sectionOrder: c.sectionOrder,
+      local: c.local,
       componentCount: c.componentCount,
     })),
   )
@@ -437,6 +457,96 @@ export function registerMutationIpc(
     const { jobId } = z.object({ jobId: z.number().int().positive() }).parse(payload)
     discardReview(db, jobId)
   })
+
+  // ---- Sections and families ----------------------------------------------
+  //
+  // Every one of these returns `{ ok, error }` rather than throwing, because
+  // each has a refusal the user needs to read: a duplicate name, a section that
+  // vanished, or parts that would be left in no family at all.
+
+  ipc.handle(MUTATION_CHANNELS.sectionList, () => listSections(db))
+
+  ipc.handle(MUTATION_CHANNELS.sectionCreate, (_e, payload: unknown) => {
+    const r = createSection(db, SectionCreateRequest.parse(payload).name)
+    return r.ok ? { ok: true, error: null, id: r.id } : { ok: false, error: r.error, id: null }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.sectionRename, (_e, payload: unknown) => {
+    const req = SectionRenameRequest.parse(payload)
+    return renameSection(db, req.id, req.name)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.sectionDelete, (_e, payload: unknown) => {
+    const req = SectionDeleteRequest.parse(payload)
+    const r = deleteSection(db, req.id, req.reassignTo)
+    return r.ok
+      ? { ok: true, error: null, movedFamilies: r.movedFamilies }
+      : { ok: false, error: r.error, movedFamilies: 0 }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.sectionMove, (_e, payload: unknown) => {
+    const req = SectionMoveRequest.parse(payload)
+    return moveSection(db, req.id, req.direction)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.familySetSection, (_e, payload: unknown) => {
+    const req = FamilySetSectionRequest.parse(payload)
+    return moveFamilyToSection(db, req.slug, req.sectionId)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.familyCreate, (_e, payload: unknown) => {
+    const req = FamilyCreateRequest.parse(payload)
+    const r = createFamily(db, {
+      name: req.name,
+      sectionId: req.sectionId,
+      copyParametersFrom: req.copyParametersFrom,
+    })
+    return r.ok ? { ok: true, error: null, slug: r.slug } : { ok: false, error: r.error, slug: null }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.familyRename, (_e, payload: unknown) => {
+    const req = FamilyRenameRequest.parse(payload)
+    return renameFamily(db, req.slug, req.name)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.familyImpact, (_e, payload: unknown) =>
+    familyDeletionImpact(db, SlugRequest.parse(payload).slug),
+  )
+
+  ipc.handle(MUTATION_CHANNELS.familyDelete, (_e, payload: unknown) => {
+    const req = FamilyDeleteRequest.parse(payload)
+    const r = deleteFamily(db, req.slug, { reassignTo: req.reassignTo })
+    return r.ok
+      ? { ok: true, error: null, movedComponents: r.movedComponents }
+      : { ok: false, error: r.error, movedComponents: 0 }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.componentSetFamily, (_e, payload: unknown) => {
+    const req = SetFamilyRequest.parse(payload)
+    const r = setComponentFamily(db, req.ids, req.toSlug, req.mode, req.fromSlug)
+    return r.ok
+      ? { ok: true, error: null, moved: r.moved, alreadyThere: r.alreadyThere }
+      : { ok: false, error: r.error, moved: 0, alreadyThere: 0 }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.componentRemoveFromFamily, (_e, payload: unknown) => {
+    const req = RemoveFromFamilyRequest.parse(payload)
+    const r = removeComponentsFromFamily(db, req.ids, req.slug)
+    return r.ok ? { ok: true, error: null, removed: r.removed } : { ok: false, error: r.error, removed: 0 }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.componentFamilies, (_e, payload: unknown) =>
+    componentFamilies(db, IdRequest.parse(payload).id),
+  )
+
+  ipc.handle(MUTATION_CHANNELS.componentSetLifecycle, (_e, payload: unknown) => {
+    const req = SetLifecycleRequest.parse(payload)
+    return setLifecycle(db, req.ids, req.lifecycle)
+  })
+
+  ipc.handle(MUTATION_CHANNELS.componentsDelete, (_e, payload: unknown) =>
+    deleteComponents(db, IdsRequest.parse(payload).ids),
+  )
 
   ipc.handle(MUTATION_CHANNELS.providerStatus, async () => {
     const provider = new ClaudeCliProvider({

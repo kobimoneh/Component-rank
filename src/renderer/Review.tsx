@@ -185,7 +185,7 @@ export function Review({ outcome, categories, busy, onClose, onSaved }: Props): 
           <input value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
           <label>Part number *</label>
           <input className="mono" value={mpn} onChange={(e) => setMpn(e.target.value)} />
-          <label>Category</label>
+          <label>Family</label>
           <select value={slug} onChange={(e) => setSlug(e.target.value)}>
             <option value="">— none —</option>
             {categories.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}

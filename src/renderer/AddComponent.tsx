@@ -167,7 +167,7 @@ export function AddComponent({
                 <label>Part number *</label>
                 <input className="mono" value={mpn} onChange={(e) => setMpn(e.target.value)} placeholder="TPS7A0233PYCHR" />
 
-                <label>Category</label>
+                <label>Family</label>
                 <select value={slug} onChange={(e) => setSlug(e.target.value)}>
                   <option value="">— none —</option>
                   {categories.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}

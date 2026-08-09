@@ -4,6 +4,7 @@ import type { LeaderBoardDto } from '../shared/ipc.js'
 interface Props {
   readonly board: LeaderBoardDto | null
   readonly onOpen: (componentId: number) => void
+  readonly onMenu?: (e: React.MouseEvent, leader: LeaderBoardDto['leaders'][number]) => void
 }
 
 /**
@@ -16,7 +17,7 @@ interface Props {
  * A parameter with no direction gets no tile — declaring a "best" switching
  * frequency would assert a preference the data does not support.
  */
-export function Leaders({ board, onOpen }: Props): JSX.Element | null {
+export function Leaders({ board, onOpen, onMenu }: Props): JSX.Element | null {
   if (!board) return null
 
   if (board.leaders.length === 0) {
@@ -36,6 +37,7 @@ export function Leaders({ board, onOpen }: Props): JSX.Element | null {
           className="leader"
           role="listitem"
           onClick={() => onOpen(l.componentId)}
+          onContextMenu={(e) => onMenu?.(e, l)}
           title={
             `${l.mpn} — ${l.manufacturer}\n` +
             `Best of ${l.contenders} part${l.contenders === 1 ? '' : 's'} with a value` +

@@ -879,3 +879,189 @@ textarea { width: 100%; resize: vertical; font-family: inherit; }
   height: 100%; background: var(--accent);
   transition: width 220ms var(--ease-out);
 }
+
+/* ------------------------------------------------------------ context menu */
+
+.menu-holder {
+  position: fixed;
+  z-index: 120;
+  /* Positioned by measurement, so it never opens off-screen. */
+}
+
+.menu {
+  background: var(--surface-glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  outline: 0;
+  font-size: 12.5px;
+  animation: menu-in 110ms var(--ease-out);
+}
+@keyframes menu-in { from { opacity: 0; transform: translateY(-3px) scale(0.985); } }
+
+.menu-title {
+  padding: 3px 9px 6px 4px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  max-width: 300px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.menu-row { position: relative; }
+
+.menu-item {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  padding: 5px 9px 5px 4px;
+  border: 0; border-radius: 6px;
+  background: none; color: var(--text);
+  font: inherit; text-align: left; cursor: default;
+  white-space: nowrap;
+}
+.menu-item:hover:not(:disabled), .menu-item.active:not(:disabled) {
+  background: var(--accent); color: #fff;
+}
+.menu-item:hover:not(:disabled) .menu-hint,
+.menu-item.active:not(:disabled) .menu-hint { color: rgb(255 255 255 / 0.72); }
+/* Disabled items stay readable: the reason is in the tooltip, and a menu item
+   you cannot read is a menu item you cannot learn from. */
+.menu-item:disabled { color: var(--text-faint); }
+.menu-item.danger { color: var(--bad); }
+.menu-item.danger:hover:not(:disabled), .menu-item.danger.active:not(:disabled) {
+  background: var(--bad); color: #fff;
+}
+
+.menu-check { width: 12px; flex: none; text-align: center; font-size: 11px; }
+.menu-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.menu-hint {
+  color: var(--text-faint); font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.menu-arrow { color: var(--text-faint); font-size: 14px; line-height: 1; }
+.menu-item:hover .menu-arrow, .menu-item.active .menu-arrow { color: inherit; }
+
+.menu-sep { height: 1px; margin: 4px 6px; background: var(--border); }
+.menu-heading {
+  padding: 7px 9px 3px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.menu-empty { padding: 7px 10px; color: var(--text-faint); }
+
+.submenu {
+  position: absolute; left: 100%; top: -4px;
+  padding-left: 2px;
+  max-height: 70vh; overflow-y: auto;
+}
+/* Flip the submenu when there is no room on the right. */
+@media (max-width: 720px) { .submenu { left: auto; right: 100%; padding: 0 2px 0 0; } }
+
+.nav-empty {
+  padding: 3px 14px 5px 19px;
+  font-size: 11px; font-style: italic;
+  color: var(--text-faint);
+}
+.nav-group { cursor: default; }
+
+/* ----------------------------------------------------------------- dialogs */
+
+.dialog-scrim {
+  position: fixed; inset: 0; z-index: 130;
+  background: rgb(6 9 13 / 0.5);
+  backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+
+.dialog {
+  width: min(480px, 100%);
+  max-height: min(640px, 100%);
+  display: flex; flex-direction: column;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  animation: dialog-in 160ms var(--ease-out);
+}
+@keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.99); } }
+
+.dialog-head { padding: 15px 17px 0; }
+.dialog-title { font-size: 14.5px; font-weight: 620; letter-spacing: -0.012em; }
+.dialog-sub { margin-top: 5px; font-size: 12px; color: var(--text-dim); line-height: 1.45; }
+
+.dialog-body {
+  padding: 14px 17px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  font-size: 12.5px; line-height: 1.5;
+}
+.dialog-body p { margin: 0; }
+.dialog-body .hint { color: var(--text-dim); font-size: 12px; }
+
+.dialog-body .field { display: flex; flex-direction: column; gap: 5px; }
+.dialog-body .field > span { font-size: 11.5px; color: var(--text-dim); }
+.dialog-body input {
+  height: 30px; padding: 0 9px;
+  border: 1px solid var(--border); border-radius: 7px;
+  background: var(--bg); color: var(--text); font: inherit;
+}
+.dialog-body input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.dialog-search { flex: none; }
+
+.dialog-list {
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg);
+  overflow-y: auto;
+  max-height: 300px;
+  min-height: 120px;
+}
+
+.dialog-option {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0; border-bottom: 1px solid var(--border);
+  background: none; color: var(--text);
+  font: inherit; text-align: left; cursor: default;
+}
+.dialog-option:last-child { border-bottom: 0; }
+.dialog-option:hover { background: var(--bg-hover); }
+.dialog-option.picked { background: var(--accent); color: #fff; }
+.dialog-option-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dialog-option-group { font-size: 11px; color: var(--text-faint); }
+.dialog-option-hint {
+  font-size: 11px; color: var(--text-faint);
+  font-variant-numeric: tabular-nums; min-width: 22px; text-align: right;
+}
+.dialog-option.picked .dialog-option-group,
+.dialog-option.picked .dialog-option-hint { color: rgb(255 255 255 / 0.75); }
+.dialog-empty { padding: 12px; color: var(--text-faint); font-size: 12px; }
+
+.dialog-error {
+  margin: 0 17px;
+  padding: 8px 10px;
+  border: 1px solid var(--bad); border-radius: 7px;
+  background: var(--bad-soft); color: var(--bad);
+  font-size: 12px; line-height: 1.45;
+}
+
+.dialog-foot {
+  padding: 13px 17px 15px;
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+
+.btn-danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn-danger:hover { background: var(--bad); filter: brightness(1.1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu, .dialog { animation: none; }
+}

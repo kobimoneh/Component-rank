@@ -67,6 +67,24 @@ app — no code change, and a re-import never puts back something you removed.
 
 ![The slide-over: IC area and gross solution side by side, a prompt to confirm imported dimensions, and the four separate size measurements.](docs/screenshot-drawer.png)
 
+### Organise it the way you think about it
+
+Right-click anything. Families can be renamed, created, duplicated, moved between sections
+and deleted; sections can be renamed, reordered, created and deleted; parts can be moved
+between families, added to a second one, or bulk-edited from a selection.
+
+![Right-clicking a family: open, rename, move to section, parameters, duplicate, export, delete.](docs/screenshot-family-menu.png)
+
+Because a part can belong to several families at once, **move** and **also add** are
+separate commands. And nothing is deleted before it is counted: removing a family that
+holds the only membership of forty parts tells you so and asks where they should go,
+rather than leaving them in no family at all.
+
+![Moving a part: a searchable picker grouped by section, with each family's part count.](docs/screenshot-move-family.png)
+
+Everything you rearrange survives the next re-import — renames, placements and deletions
+all leave a record the sync respects.
+
 ---
 
 ## The rules this codebase is built to enforce

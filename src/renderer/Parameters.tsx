@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { JSX } from 'react'
 import type { DimensionDto, SpecDefDto } from '../shared/ipc.js'
+import { ContextMenu, type MenuState } from './ContextMenu.js'
 
 interface Props {
   readonly open: boolean
@@ -31,6 +32,7 @@ export function Parameters({ open, slug, categoryName, onClose, onChanged }: Pro
   const [defs, setDefs] = useState<SpecDefDto[]>([])
   const [dims, setDims] = useState<DimensionDto[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [menu, setMenu] = useState<MenuState | null>(null)
 
   const [name, setName] = useState('')
   const [type, setType] = useState<(typeof TYPES)[number]['value']>('scalar')
@@ -108,10 +110,55 @@ export function Parameters({ open, slug, categoryName, onClose, onChanged }: Pro
     })
   }
 
+  /** Everything the row's controls do, reachable from a right-click as well. */
+  const rowMenu = (e: React.MouseEvent, d: SpecDefDto): void => {
+    e.preventDefault()
+    setMenu({
+      x: e.clientX,
+      y: e.clientY,
+      title: d.name,
+      items: [
+        {
+          id: 'column',
+          label: d.tableVisible ? 'Hide from the table' : 'Show as a table column',
+          onSelect: () => patch(d, { tableVisible: !d.tableVisible }),
+        },
+        {
+          id: 'better',
+          label: 'Better direction',
+          submenu: ([
+            ['none', 'Informational — never ranked'],
+            ['lower', 'Lower is better'],
+            ['higher', 'Higher is better'],
+          ] as const).map(([value, label]) => ({
+            id: `better-${value}`,
+            label,
+            checked: d.better === value,
+            onSelect: () => patch(d, { better: value }),
+          })),
+        },
+        {
+          id: 'copy',
+          label: 'Copy parameter key',
+          hint: d.key,
+          onSelect: () => void navigator.clipboard?.writeText(d.key).catch(() => undefined),
+        },
+        { id: 'sep', separator: true },
+        {
+          id: 'remove',
+          label: 'Remove parameter…',
+          danger: true,
+          hint: d.valueCount > 0 ? `${d.valueCount} values` : undefined,
+          onSelect: () => remove(d),
+        },
+      ],
+    })
+  }
+
   return (
     <>
       <div className="scrim" data-open="true" onClick={onClose} aria-hidden />
-      <div className="modal" role="dialog" aria-label="Category parameters">
+      <div className="modal" role="dialog" aria-label="Family parameters">
         <div className="modal-head">
           <strong>Parameters — {categoryName}</strong>
           <button className="btn" onClick={onClose}>✕</button>
@@ -133,7 +180,7 @@ export function Parameters({ open, slug, categoryName, onClose, onChanged }: Pro
             </thead>
             <tbody>
               {defs.map((d) => (
-                <tr key={d.key}>
+                <tr key={d.key} onContextMenu={(e) => rowMenu(e, d)}>
                   <td>
                     <input
                       type="checkbox"
@@ -238,6 +285,8 @@ export function Parameters({ open, slug, categoryName, onClose, onChanged }: Pro
           <button className="btn btn-primary" onClick={add} disabled={!name.trim()}>Add parameter</button>
         </div>
       </div>
+
+      <ContextMenu state={menu} onClose={() => setMenu(null)} />
     </>
   )
 }

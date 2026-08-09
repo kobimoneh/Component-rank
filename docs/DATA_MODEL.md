@@ -153,6 +153,66 @@ erDiagram
 
 ---
 
+## Sections, families, and the words for them
+
+The schema and the screen use different words for the same two things:
+
+| On screen | In the schema | What it is |
+|---|---|---|
+| Family | `category` | One comparison table — "Tiny LDO", "RF PA 2.4 GHz" |
+| Section | `section` | A rail heading holding families — "Power", "RF PA" |
+
+The schema keeps the older names so the importer and every existing query stay put.
+
+A section used to be `category.group_name`, a bare string that arrived with the import.
+That is fine for reading and useless for editing: nothing to rename, nothing to reorder,
+and the display order lived in a constant array in the renderer, so a section you created
+had nowhere to go. Migration 005 makes it a row.
+
+```mermaid
+erDiagram
+  SECTION  ||--o{ CATEGORY : "heads"
+  CATEGORY ||--o{ COMPONENT_CATEGORY : contains
+```
+
+`group_name` is deliberately **kept**. It records what upstream says the grouping is, and
+remains the source for placing newly imported families. `section_id` is where the family
+actually sits in your rail. They agree until you move something, and `section_pinned`
+records that you did — after which a re-sync leaves the placement alone while continuing
+to sync everything else about the family.
+
+Section order comes from `section.sort_order`, seeded from the order each heading's first
+family appears in the import. The sync path, creating sections one at a time on a fresh
+database, produces the same order — so the rail does not depend on whether the database
+predates the migration.
+
+### What survives a re-import
+
+| You did this | What stops the import undoing it |
+|---|---|
+| Renamed a family | `locally_modified = 1`; sync skips the row and reports "kept local" |
+| Moved a family to another section | `section_pinned = 1`; sync updates the family but not its placement |
+| Deleted a family | A `deleted_category` tombstone; sync reports it as `skippedDeleted` |
+| Removed a parameter | A `category_removed_spec` tombstone (migration 002) |
+| Created a family or parameter | `source = 'local'`; sync never touches local rows |
+
+`categoryHash` covers `group` as well as name, specs and ranking. It did not, which meant a
+family upstream had simply moved to another heading hashed as unchanged and the move never
+arrived — caught by the section tests, not by review.
+
+### Deleting is counted first
+
+Deleting a family cascades to its parameters and their values, unlinks its parts, and sets
+`component.category_id` to NULL for any part that pointed at it. A part that is in no other
+family would therefore become unreachable in a rail organised by family — it does not
+vanish, it just stops being anywhere you can find it.
+
+So `familyDeletionImpact()` counts the orphans first, and `deleteFamily()` **refuses**
+until you name a family to move them into. Deleting a section never deletes a family:
+they move where you say, or become ungrouped, and are pinned there.
+
+---
+
 ## Duplicate detection
 
 `UNIQUE (manufacturer_id, mpn_norm)` where `mpn_norm` is case- and separator-normalized.

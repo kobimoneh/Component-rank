@@ -572,3 +572,72 @@ path feel like the alternative.
 what the app will do with the PDF, with "Enter it by hand instead" collapsed
 below it for a part with no datasheet to hand. Choosing the drop target opens a
 file picker; dropping anywhere on the window works at any time and always has.
+
+---
+
+## D30 — A section is a row, not a string
+
+The rail grouped families by `category.group_name`, a bare string from the import, and
+ordered the headings with a constant array in `App.tsx`. Neither is editable: you cannot
+rename a string that thirty rows share without touching all thirty, and a section you
+created had no entry in the array, so it had nowhere to sort to.
+
+**Decision.** `section(id, name, name_norm, sort_order)`, with `category.section_id`
+pointing at it. `group_name` stays, and keeps its old job: recording what upstream says,
+and placing families that arrive from a future import.
+
+The two can disagree, so `category.section_pinned` records that **you** placed this family.
+Sync then updates everything about the family except where it sits. This is the same
+contract as `locally_modified` for renames and `category_removed_spec` for parameters —
+your edit wins, and the sync report says so rather than silently reasserting itself.
+
+Seeding order was the subtle part. The migration orders sections by where each heading's
+first family appears in the import; the sync path, creating sections one at a time on an
+empty database, produces the same order. A first attempt hard-coded a preferred order in
+the migration, which meant the rail looked different depending on whether your database
+predated the change — two behaviours from one build.
+
+Writing the tests found a real bug in code that had shipped: `categoryHash` did not include
+`group`, so a family upstream had merely moved to a different heading hashed as
+**unchanged**, and the move never arrived. Now included.
+
+## D31 — Deleting counts the cost before it asks
+
+Deleting a family cascades to its parameters and their values and unlinks its parts.
+A part that was in no other family survives the delete and becomes unreachable: the rail is
+organised by family, so a part in none of them is not on any screen. It has not been
+deleted, which is worse than if it had — there is no error to notice.
+
+**Decision.** `familyDeletionImpact()` counts parts, orphans and parameters first, and the
+dialog states all three. `deleteFamily()` **refuses** while any part would be orphaned
+until you name a family to move them into; the parts move first, then the family goes.
+Deleting a section never deletes a family at all — they move where you say, or become
+ungrouped, and are pinned there so the next import cannot drag them back to a heading you
+deleted.
+
+The same rule governs `removeComponentsFromFamily`: taking a part out of its only family is
+refused, with the count, rather than allowed.
+
+## D32 — Menus are a DOM component, and disabled items keep their reason
+
+Electron's native menu needs a main-process round trip per item, and `window.prompt` does
+not exist at all, so rename and confirm needed real components regardless.
+
+**Decision.** `ContextMenu.tsx` and `Dialogs.tsx`, in the renderer, sharing the app's
+typography and tokens. Two rules they enforce:
+
+- **An action that cannot run is shown disabled with the reason**, never hidden. A menu
+  whose shape depends on invisible state has to be learned twice.
+- A refusal from the main process is rendered **inside the dialog that asked the
+  question**. "40 parts are in no other family" belongs next to the choice, not in a toast
+  that fades before it is read.
+
+Submenus carry short closed lists only. Choosing among 36 families uses a searchable
+picker grouped by section — a nested submenu of 36 rows is not a usable control.
+
+`navigator.clipboard` is gated on a secure context and the packaged renderer loads from
+`file://`, so copying falls back to a hidden textarea and `execCommand`. Ugly, always works.
+
+Verified end to end rather than by eye: a scripted right-click → *Move to family* → pick →
+*Move* through the real UI moved a part, and the database went from `tiny-ldo=5,
+buck-5v-3v3=4` to `tiny-ldo=4, buck-5v-3v3=5`.

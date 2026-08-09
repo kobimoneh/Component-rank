@@ -66,8 +66,32 @@ export interface AppStatus {
 export interface CategoryNavItem {
   readonly slug: string
   readonly name: string
+  /** Section heading; empty when the family sits under no section. */
   readonly group: string
+  readonly sectionId: number | null
+  readonly sectionOrder: number
+  /** Created here rather than imported from component-report. */
+  readonly local: boolean
   readonly componentCount: number
+}
+
+export interface SectionDto {
+  readonly id: number
+  readonly name: string
+  readonly sortOrder: number
+  readonly familyCount: number
+}
+
+export interface FamilyImpactDto {
+  readonly name: string
+  readonly componentCount: number
+  readonly orphanCount: number
+  readonly parameterCount: number
+}
+
+export interface TaxonomyOutcome {
+  readonly ok: boolean
+  readonly error: string | null
 }
 
 export interface ColumnDef {
@@ -220,6 +244,25 @@ export interface RendererApi {
   discardReview(req: { jobId: number }): Promise<void>
   getAiSettings(): Promise<AiSettings & { status: ProviderStatusInfo | null }>
   setAiSettings(req: AiSettings): Promise<ProviderStatusInfo>
+
+  // Sections and families
+  listSections(): Promise<SectionDto[]>
+  createSection(req: SectionCreateRequest): Promise<TaxonomyOutcome & { id: number | null }>
+  renameSection(req: SectionRenameRequest): Promise<TaxonomyOutcome>
+  deleteSection(req: SectionDeleteRequest): Promise<TaxonomyOutcome & { movedFamilies: number }>
+  moveSection(req: SectionMoveRequest): Promise<TaxonomyOutcome>
+  setFamilySection(req: FamilySetSectionRequest): Promise<TaxonomyOutcome>
+  createFamily(req: FamilyCreateRequest): Promise<TaxonomyOutcome & { slug: string | null }>
+  renameFamily(req: FamilyRenameRequest): Promise<TaxonomyOutcome>
+  familyImpact(req: SlugRequest): Promise<FamilyImpactDto | null>
+  deleteFamily(req: FamilyDeleteRequest): Promise<TaxonomyOutcome & { movedComponents: number }>
+
+  // Membership and bulk edits, driven by the right-click menus
+  setComponentFamily(req: SetFamilyRequest): Promise<TaxonomyOutcome & { moved: number; alreadyThere: number }>
+  removeFromFamily(req: RemoveFromFamilyRequest): Promise<TaxonomyOutcome & { removed: number }>
+  componentFamilies(req: IdRequest): Promise<Array<{ slug: string; name: string; primary: boolean }>>
+  setLifecycle(req: SetLifecycleRequest): Promise<number>
+  deleteComponents(req: IdsRequest): Promise<number>
 }
 
 export interface ProviderStatusInfo {
@@ -305,7 +348,94 @@ export const MUTATION_CHANNELS = {
   aiSettingsGet: 'ai:settings:get',
   aiSettingsSet: 'ai:settings:set',
   ingestOcr: 'ingest:ocr',
+
+  // Taxonomy: sections, families, and which family a part is in.
+  sectionList: 'section:list',
+  sectionCreate: 'section:create',
+  sectionRename: 'section:rename',
+  sectionDelete: 'section:delete',
+  sectionMove: 'section:move',
+  familySetSection: 'family:setSection',
+  familyCreate: 'family:create',
+  familyRename: 'family:rename',
+  familyImpact: 'family:impact',
+  familyDelete: 'family:delete',
+  componentSetFamily: 'component:setFamily',
+  componentRemoveFromFamily: 'component:removeFromFamily',
+  componentFamilies: 'component:families',
+  componentSetLifecycle: 'component:setLifecycle',
+  componentsDelete: 'component:deleteMany',
 } as const
+
+// ------------------------------------------------------------------ taxonomy
+
+const NonEmpty = z.string().trim().min(1).max(120)
+const Ids = z.array(z.number().int().positive()).min(1).max(5000)
+
+export const SectionCreateRequest = z.object({ name: NonEmpty })
+export type SectionCreateRequest = z.infer<typeof SectionCreateRequest>
+
+export const SectionRenameRequest = z.object({
+  id: z.number().int().positive(),
+  name: NonEmpty,
+})
+export type SectionRenameRequest = z.infer<typeof SectionRenameRequest>
+
+export const SectionDeleteRequest = z.object({
+  id: z.number().int().positive(),
+  /** Families move here; null leaves them ungrouped. They are never deleted. */
+  reassignTo: z.number().int().positive().nullable().default(null),
+})
+export type SectionDeleteRequest = z.infer<typeof SectionDeleteRequest>
+
+export const SectionMoveRequest = z.object({
+  id: z.number().int().positive(),
+  direction: z.enum(['up', 'down']),
+})
+export type SectionMoveRequest = z.infer<typeof SectionMoveRequest>
+
+export const FamilySetSectionRequest = z.object({
+  slug: z.string().min(1),
+  sectionId: z.number().int().positive().nullable(),
+})
+export type FamilySetSectionRequest = z.infer<typeof FamilySetSectionRequest>
+
+export const FamilyCreateRequest = z.object({
+  name: NonEmpty,
+  sectionId: z.number().int().positive().nullable().default(null),
+  copyParametersFrom: z.string().min(1).nullable().default(null),
+})
+export type FamilyCreateRequest = z.infer<typeof FamilyCreateRequest>
+
+export const FamilyRenameRequest = z.object({ slug: z.string().min(1), name: NonEmpty })
+export type FamilyRenameRequest = z.infer<typeof FamilyRenameRequest>
+
+export const FamilyDeleteRequest = z.object({
+  slug: z.string().min(1),
+  /** Move every part here first. Required when a part is in no other family. */
+  reassignTo: z.string().min(1).nullable().default(null),
+})
+export type FamilyDeleteRequest = z.infer<typeof FamilyDeleteRequest>
+
+export const SetFamilyRequest = z.object({
+  ids: Ids,
+  toSlug: z.string().min(1),
+  mode: z.enum(['move', 'add']),
+  fromSlug: z.string().min(1).nullable().default(null),
+})
+export type SetFamilyRequest = z.infer<typeof SetFamilyRequest>
+
+export const RemoveFromFamilyRequest = z.object({ ids: Ids, slug: z.string().min(1) })
+export type RemoveFromFamilyRequest = z.infer<typeof RemoveFromFamilyRequest>
+
+export const SetLifecycleRequest = z.object({
+  ids: Ids,
+  lifecycle: z.enum(['active', 'nrnd', 'eol', 'obsolete', 'unknown']),
+})
+export type SetLifecycleRequest = z.infer<typeof SetLifecycleRequest>
+
+export const IdsRequest = z.object({ ids: Ids })
+export type IdsRequest = z.infer<typeof IdsRequest>
 
 export const OcrRequest = z.object({
   jobId: z.number().int().positive(),
