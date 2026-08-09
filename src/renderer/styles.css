@@ -166,20 +166,6 @@ body {
   letter-spacing: -0.012em;         /* larger text tightens */
 }
 
-.brand-mark {
-  width: 15px; height: 15px;
-  border: 1.5px solid var(--accent);
-  border-radius: 3px;
-  position: relative;
-  flex: none;
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-.brand-mark::after {
-  content: '';
-  position: absolute; inset: 3px 5px 3px 3px;
-  background: var(--accent);
-  border-radius: 1px;
-}
 
 .topbar {
   grid-area: topbar;
@@ -724,3 +710,50 @@ textarea { width: 100%; resize: vertical; font-family: inherit; }
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 ::-webkit-scrollbar-track { background: var(--bg); }
+
+/* ------------------------------------------------------------- responsive */
+/* The window can now be as small as 820x560, so the layout has to survive it.
+   The sidebar narrows, then collapses to icons-free compact labels; the table
+   keeps its own horizontal scroll rather than forcing the page to scroll. */
+
+@media (max-width: 1180px) {
+  .app { grid-template-columns: 200px 1fr; }
+  .leader { min-width: 122px; }
+}
+
+@media (max-width: 1000px) {
+  .app { grid-template-columns: 168px 1fr; }
+  .nav-item { padding-left: 14px; font-size: 12px; }
+  .cat-header { padding: 10px 13px 9px; }
+  .cat-title { font-size: 14.5px; }
+  .search-box { max-width: none; }
+  /* Long button labels are the first thing to go, not the data. */
+  .btn-collapse { padding: 0 8px; }
+  .btn-collapse .label-long { display: none; }
+}
+
+@media (max-width: 880px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'topbar' 'main';
+  }
+  .brand, .sidebar { display: none; }
+  .sidebar.mobile-open {
+    display: block;
+    position: fixed; top: 46px; bottom: 0; left: 0; width: 240px;
+    z-index: 30; box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Keep the drawer usable on a narrow window. */
+@media (max-width: 700px) {
+  .drawer { width: 100vw; }
+  .headline-grid { grid-template-columns: 1fr; }
+}
+
+.label-short { display: none; }
+@media (max-width: 1000px) {
+  .label-short { display: inline; }
+}
+
+.brand-logo { color: var(--accent); display: flex; align-items: center; filter: drop-shadow(0 0 6px var(--accent-glow)); }

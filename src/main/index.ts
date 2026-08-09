@@ -1,23 +1,44 @@
 import { app, BrowserWindow, shell, ipcMain, session, dialog } from 'electron'
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bootstrap, type BootstrapResult } from './bootstrap.js'
 import { registerIpc, registerMutationIpc } from './ipc.js'
+import {
+  initialBounds, loadWindowState, MIN_HEIGHT, MIN_WIDTH, trackWindow,
+} from './window-state.js'
+import { readApiConfig, startLocalApi, type LocalApi } from '../server/local-api.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 
+/** Window/taskbar icon. Linux needs it set explicitly; Windows takes it from the exe. */
+function appIcon(): string | undefined {
+  const packaged = process.resourcesPath ? join(process.resourcesPath, 'resources', 'icon.png') : null
+  for (const candidate of [packaged, join(here, '../../resources/icon.png'), join(process.cwd(), 'resources/icon.png')]) {
+    if (candidate && existsSync(candidate)) return candidate
+  }
+  return undefined
+}
+
 let boot: BootstrapResult | null = null
+let localApi: LocalApi | null = null
 
 function createWindow(): BrowserWindow {
+  const state = boot ? loadWindowState(boot.db) : null
+  const geometry = state ? initialBounds(state) : { width: 1440, height: 900 }
+
   const win = new BrowserWindow({
-    width: 1440,
-    height: 900,
-    minWidth: 960,
-    minHeight: 600,
+    ...geometry,
+    // Modest minimums: 960x600 refused perfectly reasonable window sizes.
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
+    resizable: true,
+    maximizable: true,
+    fullscreenable: true,
     show: false,
     backgroundColor: '#0e1116',
     title: 'Component Library',
+    icon: appIcon(),
     webPreferences: {
       preload: join(here, '../preload/index.cjs'),
       // Security posture, per docs/ARCHITECTURE.md: the renderer gets no Node,
@@ -31,6 +52,9 @@ function createWindow(): BrowserWindow {
   })
 
   win.once('ready-to-show', () => {
+    // Restore the maximized state before showing, so the window never appears
+    // at one size and then jumps to another.
+    if (state?.maximized) win.maximize()
     win.show()
     // Dev/CI capture hook: render the window to a PNG and exit. Used to verify
     // the renderer without a human at the screen.
@@ -83,6 +107,8 @@ function createWindow(): BrowserWindow {
     void shell.openExternal(url)
   })
 
+  if (boot) trackWindow(win, boot.db)
+
   const devServer = process.env['ELECTRON_RENDERER_URL']
   if (devServer) {
     void win.loadURL(devServer)
@@ -128,6 +154,20 @@ app.whenReady().then(() => {
     return
   }
 
+  // The local ingestion API is off unless explicitly enabled, and always binds
+  // loopback only. See docs/AI_INTEGRATION.md.
+  const apiConfig = readApiConfig(boot.db)
+  if (apiConfig.enabled) {
+    startLocalApi(boot.db, apiConfig)
+      .then((api) => {
+        localApi = api
+        console.warn(`Local ingestion API listening on http://127.0.0.1:${api.port}`)
+      })
+      .catch((err: Error) => {
+        boot?.warnings.push(`Local API failed to start: ${err.message}`)
+      })
+  }
+
   createWindow()
 
   app.on('activate', () => {
@@ -141,6 +181,8 @@ app.on('window-all-closed', () => {
 })
 
 app.on('before-quit', () => {
+  void localApi?.close()
+  localApi = null
   boot?.db.close()
   boot = null
 })

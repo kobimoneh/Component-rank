@@ -21,7 +21,7 @@ export interface BootstrapResult {
   readonly schemaVersion: number
   readonly sync: SyncReport | null
   readonly seed: SeedReport | null
-  readonly warnings: readonly string[]
+  readonly warnings: string[]
 }
 
 function resourceDir(): string {

@@ -358,3 +358,71 @@ Note the guard only runs when upstream *changes* a category; an unchanged
 category is skipped wholesale, so the removal survives either way. The test
 covers both paths separately, because conflating them hid the fact that the
 guard was never being exercised.
+
+---
+
+## D21 — Window geometry is persisted, and maximize was genuinely broken
+
+Reported as "the window size control top right can't do it". Probing the real
+window found three defects rather than one:
+
+- `maximize()` worked but **relocated the window to another display** (x jumped
+  248 → 2566 on a multi-monitor setup).
+- `setBounds` afterwards only partially applied, because the window was still in
+  the maximized state and the window manager kept its own placement.
+- The app never remembered its size or position at all, so every launch reset it.
+
+**Decision.** `window-state.ts` persists bounds and the maximized flag in
+`setting`, restores the maximized state *before* the window is shown so it never
+appears at one size then jumps, and only reuses a saved position if it still
+overlaps a connected display — otherwise unplugging a monitor strands the window
+off-screen and the app looks like it failed to start.
+
+`minWidth` dropped from 960 to 820 and `minHeight` from 600 to 560; the old
+minimum refused perfectly reasonable window sizes. The layout now has real
+breakpoints down to 820 px, with the sidebar narrowing and long button labels
+collapsing before any data does.
+
+---
+
+## D22 — Datasheet bytes live in the database
+
+A datasheet referenced by an absolute path breaks portability the moment the
+folder moves — and portability is a stated requirement, not a nicety.
+
+**Decision.** The PDF bytes are a `BLOB` in SQLite, deduplicated by SHA-256, with
+per-page extracted text in `datasheet_page` alongside the **method** that
+produced it (`text-layer`, `ocr`, `vision`). A document's overall status is the
+*weakest* method used on any page, so one OCR'd page stops the whole datasheet
+being presented as if it had a clean text layer.
+
+Page text is not optional metadata: evidence verification needs something to
+check a quote against. Without stored text, every extracted value is correctly
+rejected as unverifiable.
+
+`GET /stats` reports `stored` and `referenced` separately — the seed import
+creates 150 rows that are URL links with no content, and counting those as
+"150 datasheets" would overstate what the database actually holds offline.
+
+---
+
+## D23 — The offline agent may propose, never apply
+
+The requirement was to point a local model at a large library and let it fill
+things in. The obvious design — let the agent write values — is the one that
+turns a wrong model into a corrupted database.
+
+**Decision.** A loopback-only, token-authenticated HTTP API with no endpoint that
+writes a confirmed specification. An agent can create components, store
+datasheets, post OCR text and submit proposals; every proposal has its evidence
+checked against the stored page text inside `submitProposal`, not in the caller,
+and lands in `proposed_value` for a human.
+
+Being wrong at scale therefore produces a review queue, never a corrupted
+library.
+
+Supporting choices: the job claim is a conditional `UPDATE ... WHERE
+status='queued'`, so two workers cannot take the same job; the token is compared
+in constant time; bodies are capped at 64 MB; and the listener binds `127.0.0.1`
+by configuration rather than relying on a firewall. No web framework — adding a
+dependency tree to the trusted process to save fifty lines is a bad trade.

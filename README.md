@@ -35,9 +35,12 @@ one, with every number traceable to where it came from.
 | JSON backup + CSV export | ✅ |
 | Coloured ranks + per-parameter leaders | ✅ 22 colour-contrast tests |
 | Add / edit / remove category parameters | ✅ 23 tests |
-| Datasheet AI ingestion | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
+| Datasheets stored in the database + per-page OCR text | ✅ |
+| Local API for an offline AI agent | ✅ 26 round-trip tests |
+| Windows standalone packaging | ✅ config proven; installer builds in CI |
+| Datasheet AI ingestion (in-app review screen) | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
 
-`npm test` → **250 passing**. `npm run typecheck` and `npm run lint` → clean.
+`npm test` → **276 passing**. `npm run typecheck` and `npm run lint` → clean.
 
 `tests/acceptance.test.ts` walks the brief's twenty V1 criteria as a single session:
 import the taxonomy → add an MCU, an LDO and a flash device by hand → store max
@@ -107,6 +110,7 @@ the two stay in step, then lets the definitions grow here without touching sourc
 | [DATASHEET_EXTRACTION.md](docs/DATASHEET_EXTRACTION.md) | AI ingestion, provenance, anti-hallucination |
 | [UX.md](docs/UX.md) | Screens, interaction, motion policy |
 | [COLOUR.md](docs/COLOUR.md) | Rank ramp, best/worst, contrast arithmetic |
+| [AI_INTEGRATION.md](docs/AI_INTEGRATION.md) | **Driving the app from a local, offline model** |
 | [DECISIONS.md](docs/DECISIONS.md) | Engineering decisions and why they were made |
 
 ---
@@ -126,14 +130,36 @@ There are **no native modules**. The database is `node:sqlite`, built into the N
 Electron bundles, so there is no `node-gyp` step and no ABI mismatch between the test
 runner and the app.
 
-### Windows packaging
+### Windows — standalone install
 
-```bash
-npm run package:win   # electron-builder NSIS
-```
+Two artifacts, both unsigned personal builds:
 
-Development happens under WSL/Linux; the Windows installer is produced on Windows (or a
-`windows-latest` CI runner). No wine is required for the Linux build.
+- `ComponentLibrary-<version>-x64.exe` — NSIS installer, per-user, choose your directory,
+  start-menu and desktop shortcuts.
+- `ComponentLibrary-<version>-portable.exe` — single file, no install, runs from a stick.
+
+Built by [`.github/workflows/build-windows.yml`](.github/workflows/build-windows.yml) on
+every push, downloadable from the run's artifacts; tagging `v*` attaches them to a release.
+
+To build locally **on Windows**: `npm ci && npm run package:win`.
+
+Cross-building from Linux gets as far as `release/win-unpacked/Component Library.exe` and
+then fails — electron-builder needs wine to embed the icon into the executable. That is why
+the installer is built on a Windows runner rather than here.
+
+The app is fully self-contained: no runtime to install, no `node-gyp`, no native modules.
+Your database lives in `%APPDATA%\component-library\components.sqlite`.
+
+### Offline AI ingestion
+
+There is a loopback-only, token-authenticated HTTP API for pointing a **locally running
+model** at the library — upload datasheets, post your own OCR text, and propose extracted
+values. Datasheet bytes are stored *in* the database, so it stays one portable file.
+
+The contract is one-way: **an agent may propose, only a human applies.** Every proposed
+value has its quote verified against the stored page text before it is even queued.
+
+Off by default. See [AI_INTEGRATION.md](docs/AI_INTEGRATION.md).
 
 ---
 

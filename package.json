@@ -49,7 +49,6 @@
     },
     "files": [
       "out/**/*",
-      "resources/**/*",
       "package.json"
     ],
     "extraResources": [
@@ -60,19 +59,41 @@
     ],
     "win": {
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
-      "artifactName": "ComponentLibrary-${version}-setup.${ext}"
+      "icon": "resources/icon.ico",
+      "artifactName": "ComponentLibrary-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Component Library",
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico"
     },
     "linux": {
       "target": [
         "AppImage"
       ],
+      "icon": "resources/icon.png",
       "category": "Development"
+    },
+    "portable": {
+      "artifactName": "ComponentLibrary-${version}-portable.exe"
     }
   }
 }

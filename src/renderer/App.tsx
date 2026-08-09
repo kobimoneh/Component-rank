@@ -13,6 +13,7 @@ import { Compare } from './Compare.js'
 import type { CompareResult, LeaderBoardDto } from '../shared/ipc.js'
 import { Leaders } from './Leaders.js'
 import { Parameters } from './Parameters.js'
+import { Logo } from './Logo.js'
 
 type SortState = { key: string; dir: 'asc' | 'desc' } | null
 
@@ -236,7 +237,7 @@ export function App(): JSX.Element {
   return (
     <div className="app">
       <div className="brand">
-        <span className="brand-mark" aria-hidden />
+        <span className="brand-logo" aria-hidden><Logo size={19} /></span>
         <span>Component Library</span>
       </div>
 
@@ -253,7 +254,7 @@ export function App(): JSX.Element {
         </div>
         <div style={{ flex: 1 }} />
         <button className="btn btn-primary" onClick={() => setAddOpen(true)}>
-          + Add component
+          + Add<span className="label-long"> component</span>
         </button>
         <button
           className="btn"
@@ -266,7 +267,7 @@ export function App(): JSX.Element {
             })
           }}
         >
-          Export CSV
+          <span className="label-long">Export </span>CSV
         </button>
         <button
           className="btn"
@@ -277,7 +278,8 @@ export function App(): JSX.Element {
             })
           }}
         >
-          Back up
+          <span className="label-long">Back up</span>
+          <span className="label-short">⤓</span>
         </button>
         <button
           className="btn"

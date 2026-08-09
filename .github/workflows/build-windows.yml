@@ -1,0 +1,65 @@
+name: Build Windows
+
+# Produces the standalone Windows installer and a portable .exe.
+#
+# This runs on Windows rather than cross-building from Linux for one concrete
+# reason: electron-builder needs wine on Linux to embed the icon and update the
+# executable's resources. Everything up to that point cross-builds fine — the
+# packaged app appears in release/win-unpacked — but the final step fails with
+# "wine is required". A windows-latest runner sidesteps it entirely.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Must match the Node that Electron 43 bundles (24.18.1), so node:sqlite
+          # behaves identically in the tests and in the app.
+          node-version: '24'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build and package
+        run: npm run package:win
+        env:
+          # No code-signing certificate configured. Windows SmartScreen will warn
+          # on first run; that is expected for an unsigned personal build.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ComponentLibrary-windows
+          path: |
+            release/*.exe
+            release/*.blockmap
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
+          generate_release_notes: true
