@@ -103,6 +103,7 @@ export interface UpdateComponentPatch {
   readonly lifecycle?: Lifecycle
   readonly productUrl?: string | null
   readonly notes?: string
+  readonly whereUsed?: string
   readonly price1k?: number | null
   readonly favorite?: boolean
   readonly flag?: 'reference' | 'best_in_class' | 'avoid' | null
@@ -119,6 +120,7 @@ export function updateComponent(db: SqlDriver, id: number, patch: UpdateComponen
   if (patch.lifecycle !== undefined) put('lifecycle', patch.lifecycle)
   if (patch.productUrl !== undefined) put('product_url', patch.productUrl)
   if (patch.notes !== undefined) put('notes', patch.notes)
+  if (patch.whereUsed !== undefined) put('where_used', patch.whereUsed)
   if (patch.price1k !== undefined) put('price_1k_usd', patch.price1k)
   if (patch.favorite !== undefined) put('favorite', patch.favorite ? 1 : 0)
   if (patch.flag !== undefined) put('flag', patch.flag)

@@ -20,6 +20,7 @@ interface DetailRow {
   categoryName: string | null
   lifecycle: string
   notes: string
+  where_used: string
   price_1k_usd: number | null
   favorite: number
   pkg_type: string | null
@@ -99,7 +100,7 @@ export function componentDetail(db: SqlDriver, id: number): ComponentDetail | nu
     .prepare(`
       SELECT c.id, c.mpn, m.name AS manufacturer,
              cat.slug AS categorySlug, cat.name AS categoryName,
-             c.lifecycle, c.notes, c.price_1k_usd, c.favorite,
+             c.lifecycle, c.notes, c.where_used, c.price_1k_usd, c.favorite,
              p.type AS pkg_type, p.name AS pkg_name, p.pin_count,
              p.x_min, p.x_nom, p.x_max, p.y_min, p.y_nom, p.y_max,
              p.z_min, p.z_nom, p.z_max,
@@ -218,6 +219,7 @@ export function componentDetail(db: SqlDriver, id: number): ComponentDetail | nu
     categoryName: row.categoryName,
     lifecycle: row.lifecycle,
     notes: row.notes,
+    whereUsed: row.where_used ?? '',
     datasheetUrl: datasheet?.url ?? null,
     price1k: row.price_1k_usd,
     favorite: row.favorite === 1,

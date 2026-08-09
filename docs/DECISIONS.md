@@ -472,3 +472,61 @@ The remaining few pixels are window-manager frame slop.
 
 `MAXIMIZE_SELFTEST=1` runs that check on demand; like `SCREENSHOT_PATH` it is
 env-gated and never runs for a user.
+
+---
+
+## D25 — pdf.js transfers the buffer you give it
+
+Sixteen tests failed at once with `DataCloneError: Cannot transfer object of
+unsupported type` — but only after the first one passed.
+
+pdf.js **transfers** (detaches) the `data` buffer it is handed. The first
+`getDocument` worked; every later call on the same bytes failed because the
+underlying `ArrayBuffer` no longer existed.
+
+This is not a test artefact. In the app the same array is used to hash the
+document, store it, and then extract from it. Whichever ran last would have got a
+detached buffer.
+
+**Decision.** `extractPdfText` passes `new Uint8Array(bytes)` — a copy. One
+allocation, and a whole class of "worked the first time" bugs disappears.
+
+---
+
+## D26 — Drop → review → save happens in-app, not through a worker script
+
+The API added in D23 is right for driving a large library from your own tooling,
+but requiring it to add one part would have made the common case painful — and
+the common case is what decides whether 500 components is practical.
+
+**Decision.** The whole pipeline runs inside the app: pdf.js reads the text, a
+cheap keyword pass guesses the category so the model is asked about the right
+parameters, the page selector sends only the pages that mention them, and the
+existing verifier checks every quote. One drop, one review, one Save.
+
+Two things this preserves rather than bypasses:
+
+- **Nothing reaches the library before review.** The pipeline writes to the
+  proposal tables; `applyReview` is the only path onward and only runs when you
+  press Save.
+- **A missing model is a working state, not an error.** With no model configured
+  the drop still stores the document and its searchable text, and the review
+  screen says exactly that. You get the datasheet in the database and type the
+  values yourself — which is strictly better than refusing the drop.
+
+The page selector matters more than it looks: a 90-page datasheet does not fit in
+a local model's context, and sending all of it would be slower *and* worse. Only
+the pages that mention the category's parameters are sent, first page always
+included because it carries the part number.
+
+---
+
+## D27 — "Where used?" is free text on purpose
+
+A structured relation to a projects table would be the obvious modelling choice
+and the wrong one. The value is in typing "Sensor node rev C — replaced the
+AP7350" in five seconds while you still remember it; a schema would turn that
+into a form.
+
+It is searchable, so "what did I use on the sensor node?" is answerable, and it
+is filled in by hand — no extraction writes to it.

@@ -347,13 +347,59 @@ A numeric parameter must declare a dimension, so its units stay comparable.
 
 ---
 
+## The in-app path — no scripts required
+
+The API above exists for driving the library at scale from your own tooling. For
+adding parts one at a time you do not need it at all:
+
+**Drag a PDF onto the window.** The app stores it, extracts its text with pdf.js,
+guesses the category from the document's own words, asks the configured model for
+exactly that category's parameters, verifies every quote against the page it
+cites, and opens the review screen. Press Save.
+
+Configure the model in **⚙ → Extraction model**. Any OpenAI-compatible server:
+
+| Server | Base URL |
+|---|---|
+| Ollama | `http://127.0.0.1:11434/v1` |
+| llama.cpp | `http://127.0.0.1:8080/v1` |
+| LM Studio | `http://127.0.0.1:1234/v1` |
+| vLLM | `http://127.0.0.1:8000/v1` |
+
+With **no** model configured the drop still works: the document and its
+searchable page text are stored, and the review screen says plainly that nothing
+was extracted. That is a useful state — you get the datasheet in the database and
+can type the values in yourself.
+
+### What the review screen shows
+
+- **Each pipeline stage** and what it did — stored, text extracted, category
+  suggested, model called, validated, verified. A failure names the stage.
+- **Identity** — manufacturer, part number, category, and "Where used?", all editable.
+- **Package variants** — every package the datasheet documents, with max dimensions
+  and computed area. If the ordering code does not pick one, you pick.
+  A variant with no stated maximum is labelled `nominal`.
+- **Every value** with its confidence and its quote. Click the quote to see it
+  **highlighted in the page it came from**.
+- **Verified values are ticked by default; unverified ones are not.** A fabricated
+  quote arrives struck through at whatever confidence the model claimed.
+- **Suggested externals**, each includable, which become the solution profile and
+  therefore the gross size.
+
+Anything you edit is saved as `manual`; anything you accept untouched is saved as
+`extracted` with its provenance.
+
+---
+
 ## Status
 
-The API, storage, queue and verification are **built and tested** —
-`tests/local-api.test.ts` drives the full round trip, including a deliberately
-fabricated quote that gets rejected.
+Built and tested end to end:
 
-What is **not** built: the in-app review screen for the proposal queue. Proposals
-accumulate in `proposed_value` and can be read via `GET /jobs/:id/proposal`, but
-accepting them into the library currently means calling `applyExtraction`
-directly. That screen is the remaining phase-5 work.
+- `tests/ingest-pipeline.test.ts` — 30 tests over the real pdf.js path, including
+  a deliberately fabricated quote that is rejected at 0.99 confidence and a
+  scanned document that is flagged rather than mined for nonsense.
+- `tests/local-api.test.ts` — 26 tests over the HTTP round trip.
+
+Not built: **OCR inside the app**. A scanned datasheet is detected and reported,
+but converting it to text still means running your own OCR and posting the pages
+via `PUT /datasheets/:id/pages`.

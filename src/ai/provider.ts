@@ -14,7 +14,7 @@ import type { PageText, ExtractedClaim } from '../extraction/evidence.js'
  * something that does not work.
  */
 
-export type ProviderId = 'claude-cli' | 'anthropic-api'
+export type ProviderId = 'claude-cli' | 'anthropic-api' | 'local-openai'
 
 /** Model output is validated against this before it can reach the database. */
 export const ClaimSchema = z.object({

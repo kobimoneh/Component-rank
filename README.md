@@ -38,9 +38,13 @@ one, with every number traceable to where it came from.
 | Datasheets stored in the database + per-page OCR text | ✅ |
 | Local API for an offline AI agent | ✅ 26 round-trip tests |
 | Windows standalone packaging | ✅ config proven; installer builds in CI |
-| Datasheet AI ingestion (in-app review screen) | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
+| **Drop PDF → review → save**, entirely in-app | ✅ 30 pipeline tests |
+| In-app PDF text extraction (pdf.js) | ✅ |
+| Import review screen with highlighted evidence | ✅ |
+| "Where used?" per component | ✅ |
+| Scanned-PDF OCR inside the app | ⏳ post-V1 — post OCR text via the local API — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
 
-`npm test` → **292 passing**. `npm run typecheck` and `npm run lint` → clean.
+`npm test` → **322 passing**. `npm run typecheck` and `npm run lint` → clean.
 
 `tests/acceptance.test.ts` walks the brief's twenty V1 criteria as a single session:
 import the taxonomy → add an MCU, an LDO and a flash device by hand → store max
@@ -149,6 +153,19 @@ the installer is built on a Windows runner rather than here.
 
 The app is fully self-contained: no runtime to install, no `node-gyp`, no native modules.
 Your database lives in `%APPDATA%\component-library\components.sqlite`.
+
+### Drop a datasheet
+
+![The review screen: each pipeline stage reported, identity and category detected, and every extracted value shown with the quote that supports it.](docs/screenshot-review.png)
+
+Drag a PDF anywhere onto the window. The app stores it in the database, reads its text,
+guesses the category from the document's own words, asks your model for that category's
+parameters, checks every quote against the page it cites, and shows you the result. Nothing
+is written to the library until you press **Save**.
+
+Point it at a model in **⚙ → Extraction model**: any OpenAI-compatible server works —
+Ollama, llama.cpp, LM Studio, vLLM. With no model configured the drop still stores the
+document and its searchable text, and says so.
 
 ### Offline AI ingestion
 

@@ -129,6 +129,7 @@ export interface ComponentDetail {
   readonly categoryName: string | null
   readonly lifecycle: string
   readonly notes: string
+  readonly whereUsed: string
   readonly datasheetUrl: string | null
   readonly price1k: number | null
   readonly favorite: boolean
@@ -211,6 +212,13 @@ export interface RendererApi {
   updateSpecDef(req: UpdateSpecDefRequest): Promise<{ ok: boolean; error: string | null }>
   dimensions(): Promise<DimensionDto[]>
   leaders(req: SlugRequest): Promise<LeaderBoardDto>
+
+  // Datasheet ingestion
+  ingestDatasheet(req: IngestRequest): Promise<IngestOutcomeDto>
+  applyReview(req: ApplyReviewRequest): Promise<ApplyResultDto>
+  discardReview(req: { jobId: number }): Promise<void>
+  getAiSettings(): Promise<AiSettings & { status: ProviderStatusInfo | null }>
+  setAiSettings(req: AiSettings): Promise<ProviderStatusInfo>
 }
 
 export interface ProviderStatusInfo {
@@ -290,7 +298,154 @@ export const MUTATION_CHANNELS = {
   specDefUpdate: 'specdef:update',
   dimensions: 'specdef:dimensions',
   leaders: 'category:leaders',
+  ingestDatasheet: 'ingest:datasheet',
+  applyReview: 'ingest:apply',
+  discardReview: 'ingest:discard',
+  aiSettingsGet: 'ai:settings:get',
+  aiSettingsSet: 'ai:settings:set',
 } as const
+
+export const IngestRequest = z.object({
+  fileName: z.string().min(1),
+  /** The PDF bytes, base64. Renderer cannot read files itself. */
+  dataBase64: z.string().min(1),
+  mpnHint: z.string().nullable().optional(),
+  categoryHint: z.string().nullable().optional(),
+  componentId: z.number().int().positive().nullable().optional(),
+})
+export type IngestRequest = z.infer<typeof IngestRequest>
+
+export const ApplyReviewRequest = z.object({
+  jobId: z.number().int().positive(),
+  componentId: z.number().int().positive().nullable().optional(),
+  identity: z.object({
+    manufacturer: z.string().min(1),
+    mpn: z.string().min(1),
+    family: z.string().nullable().optional(),
+    categorySlug: z.string().nullable(),
+    datasheetId: z.number().int().positive().nullable(),
+    whereUsed: z.string().optional(),
+  }),
+  package: z
+    .object({
+      name: z.string().nullable().optional(),
+      pinCount: z.number().int().positive().nullable().optional(),
+      xMin: z.number().positive().nullable().optional(),
+      xNom: z.number().positive().nullable().optional(),
+      xMax: z.number().positive().nullable().optional(),
+      yMin: z.number().positive().nullable().optional(),
+      yNom: z.number().positive().nullable().optional(),
+      yMax: z.number().positive().nullable().optional(),
+      zMin: z.number().positive().nullable().optional(),
+      zNom: z.number().positive().nullable().optional(),
+      zMax: z.number().positive().nullable().optional(),
+    })
+    .nullable(),
+  fields: z.array(z.object({
+    specKey: z.string().min(1),
+    value: z.string(),
+    page: z.number().int().positive().nullable(),
+    evidence: z.string().nullable(),
+    confidence: z.number().min(0).max(1),
+    edited: z.boolean(),
+  })),
+  externals: z.array(z.object({
+    name: z.string().min(1),
+    function: z.string().optional(),
+    qty: z.number().int().positive().optional(),
+    necessity: z.enum(['required', 'recommended', 'optional', 'configuration']).optional(),
+    valueText: z.string().nullable().optional(),
+    packageName: z.string().nullable().optional(),
+    xMm: z.number().positive().nullable().optional(),
+    yMm: z.number().positive().nullable().optional(),
+  })),
+})
+export type ApplyReviewRequest = z.infer<typeof ApplyReviewRequest>
+
+export const AiSettingsSchema = z.object({
+  provider: z.enum(['none', 'local-openai', 'claude-cli']),
+  baseUrl: z.string(),
+  model: z.string(),
+  claudeBin: z.string(),
+})
+export type AiSettings = z.infer<typeof AiSettingsSchema>
+
+export interface StageReportDto {
+  readonly stage: string
+  readonly ok: boolean
+  readonly detail: string
+}
+
+export interface ReviewFieldDto {
+  readonly specKey: string
+  readonly label: string
+  readonly rawValue: string | null
+  readonly unit: string | null
+  readonly page: number | null
+  readonly evidence: string | null
+  readonly verified: boolean
+  readonly status: string
+  readonly explanation: string
+  readonly confidence: number
+  readonly pageText: string | null
+}
+
+export interface PackageVariantDto {
+  readonly name: string
+  readonly orderingCodeFragment: string | null
+  readonly pinCount: number | null
+  readonly xMin: number | null; readonly xNom: number | null; readonly xMax: number | null
+  readonly yMin: number | null; readonly yNom: number | null; readonly yMax: number | null
+  readonly zMin: number | null; readonly zNom: number | null; readonly zMax: number | null
+  readonly page: number | null
+  readonly evidence: string | null
+}
+
+export interface SuggestedExternalDto {
+  readonly name: string
+  readonly function: string
+  readonly qty: number
+  readonly necessity: string
+  readonly valueText: string | null
+  readonly packageName: string | null
+  readonly xMm: number | null
+  readonly yMm: number | null
+  readonly page: number | null
+  readonly evidence: string | null
+}
+
+export interface IngestOutcomeDto {
+  readonly jobId: number
+  readonly datasheetId: number
+  readonly stages: readonly StageReportDto[]
+  readonly identity: {
+    readonly manufacturer: string | null
+    readonly mpn: string | null
+    readonly productName: string | null
+    readonly categorySlug: string | null
+    readonly categoryConfidence: number
+    readonly duplicate: { id: number; mpn: string; manufacturer: string } | null
+  } | null
+  readonly packageVariants: readonly PackageVariantDto[]
+  readonly packageChoiceRequired: boolean
+  readonly resolvedPackage: PackageVariantDto | null
+  readonly fields: readonly ReviewFieldDto[]
+  readonly externals: readonly SuggestedExternalDto[]
+  readonly needsOcr: boolean
+  readonly pageCount: number
+  readonly error: string | null
+}
+
+export interface ApplyResultDto {
+  readonly ok: boolean
+  readonly componentId: number | null
+  readonly created: boolean
+  readonly written: number
+  readonly keptManual: number
+  readonly rejected: number
+  readonly error: string | null
+  readonly duplicate: { id: number; mpn: string; manufacturer: string } | null
+}
 
 export const AddSpecDefRequest = z.object({
   slug: z.string().min(1),
@@ -414,6 +569,7 @@ export const UpdateComponentRequest = z.object({
     lifecycle: z.enum(['active', 'nrnd', 'eol', 'obsolete', 'unknown']).optional(),
     productUrl: z.string().nullable().optional(),
     notes: z.string().optional(),
+    whereUsed: z.string().optional(),
     price1k: z.number().nullable().optional(),
     favorite: z.boolean().optional(),
     flag: z.enum(['reference', 'best_in_class', 'avoid']).nullable().optional(),

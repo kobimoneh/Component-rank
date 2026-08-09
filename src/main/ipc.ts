@@ -1,4 +1,5 @@
 import type { IpcMain } from 'electron'
+import { z } from 'zod'
 import type { BootstrapResult } from './bootstrap.js'
 import {
   CHANNELS,
@@ -20,6 +21,10 @@ import {
   AddSpecDefRequest,
   SpecKeyRequest,
   UpdateSpecDefRequest,
+  IngestRequest,
+  ApplyReviewRequest,
+  AiSettingsSchema,
+  IdRequest as _IdRequest,
   type AppStatus,
   type CategoryDetail,
   type CategoryNavItem,
@@ -37,6 +42,10 @@ import {
   addSpecDef, availableDimensions, listSpecDefs, removeSpecDef, updateSpecDef,
 } from '../db/repositories/spec-defs.js'
 import { categoryLeaders } from '../db/repositories/leaders.js'
+import { ingestDatasheet } from '../extraction/pipeline.js'
+import { applyReview, discardReview } from '../extraction/apply.js'
+import { LocalOpenAiProvider } from '../ai/local-openai.js'
+import type { ExtractionProvider } from '../ai/provider.js'
 import { listCategories } from '../db/repositories/categories.js'
 import {
   categoryColumns,
@@ -339,6 +348,89 @@ export function registerMutationIpc(
   ipc.handle(MUTATION_CHANNELS.leaders, (_e, payload: unknown) =>
     categoryLeaders(db, SlugRequest.parse(payload).slug),
   )
+
+  // ---- Datasheet ingestion -------------------------------------------------
+
+  const setting = (key: string, fallback = ''): string =>
+    db.prepare('SELECT value FROM setting WHERE key = ?').get<{ value: string }>(key)?.value ?? fallback
+
+  const putSetting = (key: string, value: string): void => {
+    db.prepare(`
+      INSERT INTO setting (key, value) VALUES (?,?)
+      ON CONFLICT (key) DO UPDATE SET value = excluded.value
+    `).run(key, value)
+  }
+
+  const readAiSettings = () => ({
+    provider: (setting('ai.provider', 'none') as 'none' | 'local-openai' | 'claude-cli'),
+    baseUrl: setting('ai.baseUrl', 'http://127.0.0.1:11434/v1'),
+    model: setting('ai.model', 'qwen2.5:7b'),
+    claudeBin: setting('ai.claudeBin', ''),
+  })
+
+  const buildProvider = (): ExtractionProvider | null => {
+    const s = readAiSettings()
+    if (s.provider === 'local-openai') {
+      return new LocalOpenAiProvider({ baseUrl: s.baseUrl, model: s.model })
+    }
+    if (s.provider === 'claude-cli') {
+      return new ClaudeCliProvider({ binaryPath: s.claudeBin })
+    }
+    return null
+  }
+
+  ipc.handle(MUTATION_CHANNELS.aiSettingsGet, async () => {
+    const s = readAiSettings()
+    const provider = buildProvider()
+    const status = provider ? await provider.status() : null
+    return { ...s, status: status ? { id: status.id, available: status.available, reason: status.reason } : null }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.aiSettingsSet, async (_e, payload: unknown) => {
+    const s = AiSettingsSchema.parse(payload)
+    putSetting('ai.provider', s.provider)
+    putSetting('ai.baseUrl', s.baseUrl)
+    putSetting('ai.model', s.model)
+    putSetting('ai.claudeBin', s.claudeBin)
+    const provider = buildProvider()
+    const status = provider ? await provider.status() : null
+    return status
+      ? { id: status.id, available: status.available, reason: status.reason }
+      : { id: 'none', available: false, reason: 'No extraction model configured.' }
+  })
+
+  ipc.handle(MUTATION_CHANNELS.ingestDatasheet, async (_e, payload: unknown) => {
+    const req = IngestRequest.parse(payload)
+    const bytes = new Uint8Array(Buffer.from(req.dataBase64, 'base64'))
+    return ingestDatasheet(
+      db,
+      {
+        bytes,
+        fileName: req.fileName,
+        mpnHint: req.mpnHint ?? null,
+        categoryHint: req.categoryHint ?? null,
+        componentId: req.componentId ?? null,
+      },
+      buildProvider(),
+    )
+  })
+
+  ipc.handle(MUTATION_CHANNELS.applyReview, (_e, payload: unknown) => {
+    const req = ApplyReviewRequest.parse(payload)
+    return applyReview(db, {
+      jobId: req.jobId,
+      componentId: req.componentId ?? null,
+      identity: req.identity,
+      package: req.package,
+      fields: req.fields,
+      externals: req.externals,
+    })
+  })
+
+  ipc.handle(MUTATION_CHANNELS.discardReview, (_e, payload: unknown) => {
+    const { jobId } = z.object({ jobId: z.number().int().positive() }).parse(payload)
+    discardReview(db, jobId)
+  })
 
   ipc.handle(MUTATION_CHANNELS.providerStatus, async () => {
     const provider = new ClaudeCliProvider({

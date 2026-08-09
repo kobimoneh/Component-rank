@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import type { JSX, ReactNode } from 'react'
 import type { ComponentDetail } from '../shared/ipc.js'
 
@@ -176,6 +176,8 @@ export function Drawer({ component: c, open, onClose, onChanged }: Props): JSX.E
                 )}
               </Section>
 
+              <WhereUsed component={c} onChanged={onChanged} />
+
               <Section title="Notes" defaultOpen={false}>
                 <pre className="notes">{c.notes || 'No notes.'}</pre>
               </Section>
@@ -184,6 +186,56 @@ export function Drawer({ component: c, open, onClose, onChanged }: Props): JSX.E
         )}
       </aside>
     </>
+  )
+}
+
+/**
+ * "Where used?" — free text you fill in by hand.
+ *
+ * Deliberately not a relation to a projects table: the value is in writing
+ * "Sensor node rev C, replaced the AP7350" in five seconds, and a schema would
+ * get in the way of that. It is searchable, so "what did I use on the sensor
+ * node?" is answerable.
+ */
+function WhereUsed({
+  component: c, onChanged,
+}: {
+  component: ComponentDetail
+  onChanged: () => void
+}): JSX.Element {
+  const [text, setText] = useState(c.whereUsed)
+  const [dirty, setDirty] = useState(false)
+
+  useEffect(() => {
+    setText(c.whereUsed)
+    setDirty(false)
+  }, [c.id, c.whereUsed])
+
+  const save = (): void => {
+    if (!dirty) return
+    void window.api
+      .updateComponent({ id: c.id, patch: { whereUsed: text } })
+      .then(() => {
+        setDirty(false)
+        onChanged()
+      })
+  }
+
+  return (
+    <Section title="Where used?" badge={c.whereUsed ? undefined : 'empty'}>
+      <textarea
+        rows={3}
+        value={text}
+        placeholder="Sensor node rev C · replaced the AP7350 · 4-layer only"
+        onChange={(e) => { setText(e.target.value); setDirty(true) }}
+        onBlur={save}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+        <span className="hint">Your boards, projects and revisions. Searchable.</span>
+        <span style={{ flex: 1 }} />
+        {dirty && <button className="btn" onClick={save}>Save</button>}
+      </div>
+    </Section>
   )
 }
 

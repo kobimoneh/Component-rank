@@ -304,13 +304,13 @@ export function searchComponents(db: SqlDriver, query: string, limit = 50): Sear
       JOIN manufacturer m ON m.id = c.manufacturer_id
       LEFT JOIN category cat ON cat.id = c.category_id
       WHERE LOWER(c.mpn) LIKE ? OR LOWER(m.name) LIKE ? OR LOWER(c.notes) LIKE ?
-         OR LOWER(cat.name) LIKE ?
+         OR LOWER(cat.name) LIKE ? OR LOWER(c.where_used) LIKE ?
       ORDER BY
         CASE WHEN LOWER(c.mpn) LIKE ? THEN 0 ELSE 1 END,
         c.mpn
       LIMIT ?
     `)
-    .all<SearchHit>(like, like, like, like, `${q.toLowerCase()}%`, limit)
+    .all<SearchHit>(like, like, like, like, like, `${q.toLowerCase()}%`, limit)
 }
 
 export interface DataQuality {

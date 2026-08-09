@@ -88,6 +88,35 @@ function createWindow(): BrowserWindow {
           row?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
           return true
         })()`,
+        review: `(() => {
+          const lines = [
+            'TPS7A02 Nanopower 200-mA Low-Dropout Voltage Regulator',
+            'Texas Instruments ELECTRICAL CHARACTERISTICS',
+            'IQ Quiescent current, no load 25 nA',
+            'Dropout voltage at 200 mA 105 mV',
+            'VIN Input voltage range 1.5 to 6.0 V',
+            'Package DSBGA-4 maximum dimensions 0.665 mm x 0.665 mm',
+          ]
+          const content = lines.map((l, i) => 'BT /F1 11 Tf 40 ' + (740 - i * 16) + ' Td (' + l + ') Tj ET').join('\\n')
+          const objs = [
+            '<< /Type /Catalog /Pages 2 0 R >>',
+            '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+            '<< /Length ' + content.length + ' >>\\nstream\\n' + content + '\\nendstream',
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+          ]
+          let pdf = '%PDF-1.4\\n'; const offs = []
+          objs.forEach((b, i) => { offs.push(pdf.length); pdf += (i+1) + ' 0 obj\\n' + b + '\\nendobj\\n' })
+          const xref = pdf.length
+          pdf += 'xref\\n0 ' + (objs.length+1) + '\\n0000000000 65535 f \\n'
+          for (const o of offs) pdf += String(o).padStart(10,'0') + ' 00000 n \\n'
+          pdf += 'trailer\\n<< /Size ' + (objs.length+1) + ' /Root 1 0 R >>\\nstartxref\\n' + xref + '\\n%%EOF\\n'
+          const file = new File([new TextEncoder().encode(pdf)], 'tps7a02.pdf', { type: 'application/pdf' })
+          const dt = new DataTransfer()
+          dt.items.add(file)
+          window.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }))
+          return true
+        })()`,
         parameters: `(() => {
           const btn = [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Parameters')
           btn?.click()
@@ -105,7 +134,7 @@ function createWindow(): BrowserWindow {
       setTimeout(() => {
         void win.webContents
           .executeJavaScript(action)
-          .then(() => new Promise((r) => setTimeout(r, 1200)))
+          .then(() => new Promise((r) => setTimeout(r, process.env['SCREENSHOT_ACTION'] === 'review' ? 6000 : 1200)))
           .then(() => win.webContents.capturePage())
           .then((img) => {
             writeFileSync(shot, img.toPNG())

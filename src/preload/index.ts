@@ -47,6 +47,12 @@ const api: RendererApi = {
   updateSpecDef: (req) => invoke(MUTATION_CHANNELS.specDefUpdate, req),
   dimensions: () => invoke(MUTATION_CHANNELS.dimensions),
   leaders: (req) => invoke(MUTATION_CHANNELS.leaders, req),
+
+  ingestDatasheet: (req) => invoke(MUTATION_CHANNELS.ingestDatasheet, req),
+  applyReview: (req) => invoke(MUTATION_CHANNELS.applyReview, req),
+  discardReview: (req) => invoke(MUTATION_CHANNELS.discardReview, req),
+  getAiSettings: () => invoke(MUTATION_CHANNELS.aiSettingsGet),
+  setAiSettings: (req) => invoke(MUTATION_CHANNELS.aiSettingsSet, req),
 }
 
 contextBridge.exposeInMainWorld('api', api)

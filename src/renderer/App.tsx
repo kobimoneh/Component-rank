@@ -14,6 +14,10 @@ import type { CompareResult, LeaderBoardDto } from '../shared/ipc.js'
 import { Leaders } from './Leaders.js'
 import { Parameters } from './Parameters.js'
 import { Logo } from './Logo.js'
+import { DropZone } from './DropZone.js'
+import { Review } from './Review.js'
+import { AiSettingsPanel } from './AiSettings.js'
+import type { IngestOutcomeDto } from '../shared/ipc.js'
 
 type SortState = { key: string; dir: 'asc' | 'desc' } | null
 
@@ -36,6 +40,9 @@ export function App(): JSX.Element {
   const [toast, setToast] = useState<string | null>(null)
   const [board, setBoard] = useState<LeaderBoardDto | null>(null)
   const [paramsOpen, setParamsOpen] = useState(false)
+  const [review, setReview] = useState<IngestOutcomeDto | null>(null)
+  const [aiOpen, setAiOpen] = useState(false)
+  const [ingesting, setIngesting] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const refresh = useCallback(() => {
@@ -283,6 +290,13 @@ export function App(): JSX.Element {
         </button>
         <button
           className="btn"
+          onClick={() => setAiOpen(true)}
+          title="Choose the model used to read datasheets"
+        >
+          ⚙
+        </button>
+        <button
+          className="btn"
           onClick={() => {
             const root = document.documentElement
             const next = root.dataset['theme'] === 'light' ? 'dark' : 'light'
@@ -504,6 +518,36 @@ export function App(): JSX.Element {
         onClose={() => setParamsOpen(false)}
         onChanged={refresh}
       />
+
+      <DropZone
+        onStart={() => setIngesting(true)}
+        onDone={(outcome) => {
+          setIngesting(false)
+          setReview(outcome)
+        }}
+        onError={(m) => {
+          setIngesting(false)
+          notify(m)
+        }}
+      />
+
+      <Review
+        outcome={review}
+        categories={categories}
+        busy={ingesting}
+        onClose={() => {
+          if (review) void window.api.discardReview({ jobId: review.jobId })
+          setReview(null)
+        }}
+        onSaved={(id) => {
+          setReview(null)
+          refresh()
+          setOpenId(id)
+          notify('Component saved from datasheet.')
+        }}
+      />
+
+      <AiSettingsPanel open={aiOpen} onClose={() => setAiOpen(false)} onChanged={refresh} />
 
       {toast && <div className="toast">{toast}</div>}
     </div>
