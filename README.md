@@ -40,7 +40,7 @@ one, with every number traceable to where it came from.
 | Windows standalone packaging | ✅ config proven; installer builds in CI |
 | Datasheet AI ingestion (in-app review screen) | ⏳ Phase 5 — contract, schemas and evidence verifier built and tested (24 tests); no model is called yet |
 
-`npm test` → **276 passing**. `npm run typecheck` and `npm run lint` → clean.
+`npm test` → **292 passing**. `npm run typecheck` and `npm run lint` → clean.
 
 `tests/acceptance.test.ts` walks the brief's twenty V1 criteria as a single session:
 import the taxonomy → add an MCU, an LDO and a flash device by hand → store max

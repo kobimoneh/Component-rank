@@ -426,3 +426,49 @@ status='queued'`, so two workers cannot take the same job; the token is compared
 in constant time; bodies are capped at 64 MB; and the listener binds `127.0.0.1`
 by configuration rather than relying on a firewall. No web framework — adding a
 dependency tree to the trusted process to save fifty lines is a bad trade.
+
+---
+
+## D24 — Maximize was landing on the primary display, not the current one
+
+Reported as "the windows button bounces it between screens and doesn't enlarge
+the software". Measured on the real two-display session:
+
+```
+DISPLAYS: id 33 — 2560x1440 at x=1920  (primary)
+          id  1 — 1920x1080 at x=0,y=357
+window on display 1 → maximize() → x=2566, display 33
+```
+
+The window manager maximizes onto the **primary** display regardless of where
+the window actually is. It does enlarge — on the monitor you were not looking at.
+
+**Decision.** `correctMaximizeAcrossDisplays` remembers which display the window
+was on, and when a maximize lands somewhere else, unmaximizes and fills the work
+area of the original display instead. A second click restores the previous size.
+The correction only fires when the display actually changed, so on a platform
+where maximize behaves it never interferes.
+
+Two things had to be measured rather than reasoned about, and each broke a first
+attempt:
+
+1. **The `maximize` event fires before the window manager has placed the
+   window.** Reading bounds synchronously reports the *old* display, the check
+   concludes nothing moved, and the window lands on the wrong monitor anyway.
+   Evaluation is deferred ~220 ms.
+2. **A single `setBounds` after `unmaximize` applies the size but not the
+   position.** That produced a 1919-wide window still starting at x=662 —
+   full-size, correct display by majority overlap, and straddling both monitors.
+   `applyBounds` re-applies once the manager has settled.
+
+Verified end to end against the real application window, not a mock:
+
+```
+before = 1200x800 at (461,462) display 1
+after  = 1919x1079 at (6,384)  display 1     SAME_DISPLAY=true ENLARGED=true
+```
+
+The remaining few pixels are window-manager frame slop.
+
+`MAXIMIZE_SELFTEST=1` runs that check on demand; like `SCREENSHOT_PATH` it is
+env-gated and never runs for a user.

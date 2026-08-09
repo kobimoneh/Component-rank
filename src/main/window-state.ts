@@ -123,3 +123,134 @@ export function trackWindow(win: BrowserWindow, db: SqlDriver): void {
     persist()
   })
 }
+
+/**
+ * Maximize correction for multi-display setups.
+ *
+ * Measured on a two-display WSLg session: display 33 is primary
+ * (2560x1440 at x=1920), display 1 is secondary (1920x1080 at x=0). A window
+ * sitting on display 1 and told to maximize lands on display **33** at x=2566.
+ * From the user's seat the window vanishes to the other monitor and the app on
+ * the screen they were looking at never enlarges.
+ *
+ * The fix is to maximize manually into the work area of the display the window
+ * was already on. That was verified to work: 1919x1079, still on display 1.
+ *
+ * The correction only fires when the display actually changed, so on a platform
+ * where maximize behaves correctly this code never interferes.
+ */
+
+export type MaximizeAction = 'none' | 'correct' | 'restore'
+
+/**
+ * What to do when a `maximize` event arrives.
+ *
+ *  - `restore`  — we are already manually maximized, so this click means restore.
+ *  - `correct`  — the window jumped to another display; put it back and fill that one.
+ *  - `none`     — maximize behaved; leave it alone.
+ */
+export function maximizeAction(opts: {
+  readonly beforeDisplayId: number | null
+  readonly afterDisplayId: number
+  readonly manuallyMaximized: boolean
+}): MaximizeAction {
+  if (opts.manuallyMaximized) return 'restore'
+  if (opts.beforeDisplayId === null) return 'none'
+  return opts.beforeDisplayId === opts.afterDisplayId ? 'none' : 'correct'
+}
+
+/** True when two rectangles are the same within a pixel of slop. */
+export function sameRect(a: Rectangle, b: Rectangle, slop = 2): boolean {
+  return (
+    Math.abs(a.x - b.x) <= slop && Math.abs(a.y - b.y) <= slop &&
+    Math.abs(a.width - b.width) <= slop && Math.abs(a.height - b.height) <= slop
+  )
+}
+
+/**
+ * Apply bounds, then apply them again once the window manager has settled.
+ *
+ * Measured: a single `setBounds` right after `unmaximize` applies the size but
+ * keeps the old x/y, leaving a full-width window starting at the old offset —
+ * straddling both monitors. The second application sticks.
+ */
+function applyBounds(win: BrowserWindow, bounds: Rectangle): void {
+  win.setBounds(bounds)
+  setTimeout(() => {
+    if (win.isDestroyed()) return
+    const current = win.getBounds()
+    if (!sameRect(current, bounds)) win.setBounds(bounds)
+  }, 90)
+}
+
+export function correctMaximizeAcrossDisplays(win: BrowserWindow): void {
+  let homeDisplayId: number | null = null
+  let restoreBounds: Rectangle | null = null
+  let manuallyMaximized = false
+  let correcting = false
+
+  const remember = (): void => {
+    if (win.isDestroyed() || win.isMaximized() || correcting) return
+    const bounds = win.getBounds()
+    if (manuallyMaximized) {
+      // Still sitting in our manual maximize? Keep the remembered home.
+      const home = screen.getAllDisplays().find((d) => d.id === homeDisplayId)
+      if (home && sameRect(bounds, home.workArea)) return
+      // Dragged or resized out of it — it is a normal window again.
+      manuallyMaximized = false
+    }
+    homeDisplayId = screen.getDisplayMatching(bounds).id
+    restoreBounds = bounds
+  }
+
+  win.on('move', remember)
+  win.on('resize', remember)
+  remember()
+
+  /**
+   * Evaluated on a short delay, not synchronously.
+   *
+   * The `maximize` event fires before the window manager has finished placing
+   * the window: reading bounds immediately reports the *old* display, the check
+   * concludes nothing moved, and the window then lands on the wrong monitor
+   * anyway. Measured directly — the first version of this fix did exactly that.
+   */
+  const evaluate = (): void => {
+    if (win.isDestroyed()) return
+    const after = screen.getDisplayMatching(win.getBounds())
+    const action = maximizeAction({
+      beforeDisplayId: homeDisplayId,
+      afterDisplayId: after.id,
+      manuallyMaximized,
+    })
+
+    if (action === 'restore') {
+      correcting = true
+      win.unmaximize()
+      if (restoreBounds) applyBounds(win, restoreBounds)
+      manuallyMaximized = false
+      setTimeout(() => { correcting = false }, 400)
+      return
+    }
+
+    if (action === 'correct') {
+      const home = screen.getAllDisplays().find((d) => d.id === homeDisplayId)
+      if (!home) return
+      correcting = true
+      // unmaximize first: setBounds while maximized is only partially applied.
+      win.unmaximize()
+      applyBounds(win, home.workArea)
+      manuallyMaximized = true
+      setTimeout(() => { correcting = false }, 400)
+    }
+  }
+
+  win.on('maximize', () => {
+    setTimeout(evaluate, 220)
+  })
+
+  win.on('unmaximize', () => {
+    // Ignore the unmaximize we caused ourselves.
+    if (!correcting) manuallyMaximized = false
+  })
+}

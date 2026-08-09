@@ -1,11 +1,12 @@
-import { app, BrowserWindow, shell, ipcMain, session, dialog } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, session, dialog, screen } from 'electron'
 import { writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { bootstrap, type BootstrapResult } from './bootstrap.js'
 import { registerIpc, registerMutationIpc } from './ipc.js'
 import {
-  initialBounds, loadWindowState, MIN_HEIGHT, MIN_WIDTH, trackWindow,
+  correctMaximizeAcrossDisplays, initialBounds, loadWindowState,
+  MIN_HEIGHT, MIN_WIDTH, trackWindow,
 } from './window-state.js'
 import { readApiConfig, startLocalApi, type LocalApi } from '../server/local-api.js'
 
@@ -56,6 +57,25 @@ function createWindow(): BrowserWindow {
     // at one size and then jumps to another.
     if (state?.maximized) win.maximize()
     win.show()
+    // Dev check for the multi-display maximize correction: maximize the real
+    // window and report whether it stayed on its display and enlarged.
+    if (process.env['MAXIMIZE_SELFTEST']) {
+      setTimeout(() => {
+        const before = win.getBounds()
+        const dBefore = screen.getDisplayMatching(before)
+        win.maximize()
+        setTimeout(() => {
+          const after = win.getBounds()
+          const dAfter = screen.getDisplayMatching(after)
+          console.warn('SELFTEST before=' + JSON.stringify(before) + ' display=' + dBefore.id)
+          console.warn('SELFTEST after =' + JSON.stringify(after) + ' display=' + dAfter.id)
+          console.warn('SELFTEST SAME_DISPLAY=' + (dBefore.id === dAfter.id))
+          console.warn('SELFTEST ENLARGED=' + (after.width > before.width && after.height > before.height))
+          app.quit()
+        }, 1600)
+      }, 2500)
+    }
+
     // Dev/CI capture hook: render the window to a PNG and exit. Used to verify
     // the renderer without a human at the screen.
     const shot = process.env['SCREENSHOT_PATH']
@@ -108,6 +128,9 @@ function createWindow(): BrowserWindow {
   })
 
   if (boot) trackWindow(win, boot.db)
+  // Maximize lands on the primary display rather than the one the window is on
+  // (measured under WSLg). Corrected only when the display actually changes.
+  correctMaximizeAcrossDisplays(win)
 
   const devServer = process.env['ELECTRON_RENDERER_URL']
   if (devServer) {
