@@ -120,6 +120,13 @@ the two stay in step, then lets the definitions grow here without touching sourc
 
 ---
 
+## Where it goes next
+
+[docs/ROADMAP.md](docs/ROADMAP.md) — four independent reviews of the shipped code, and the
+ten things that would take it from a well-built table to a tool nothing else replaces.
+It opens with the finding that matters most: gross solution size, the reason this app
+exists, is hardcoded `null` in every table.
+
 ## Documentation
 
 | Document | Covers |
